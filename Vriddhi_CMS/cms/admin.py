@@ -6,7 +6,7 @@ class BoardAdmin(admin.ModelAdmin):
     list_filter = ('id', 'board_name')
     list_display = ['id', 'board_name']
     ordering = ['id']
-    
+
 class SubjectAdmin(admin.ModelAdmin):
     list_filter = ('id', 'subject_name')
     list_display = ['id', 'subject_name']
@@ -15,7 +15,7 @@ class SubjectAdmin(admin.ModelAdmin):
 class AttributeAdmin(admin.ModelAdmin):
     list_display = ['types']
     ordering = ['id']
-    
+
 class CourseAdmin(admin.ModelAdmin):
     list_filter = ('subject', 'board', 'grade','type', 'language')
     list_display = ['id', 'board', 'subject', 'grade', 'type','description','picture','get_topics', 'language']
@@ -82,7 +82,7 @@ class ContentMetaAttributeAdmin(admin.ModelAdmin):
 class MetaAttributeTypeAdmin(admin.ModelAdmin):
     search_fields = ["name","code"]
     list_display = ["name",'code','status',"workstream_type","created_by","created_on"]
-    
+
 admin.site.register(Board, BoardAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Course, CourseAdmin)
