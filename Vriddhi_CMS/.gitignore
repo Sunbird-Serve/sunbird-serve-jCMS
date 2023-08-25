@@ -9,8 +9,8 @@
 /bin/
 *.log
 .env
-static
-static/*
+static/uploads/
+static/uploads/*
 logfiles
 logfiles/*
 local_settings.py

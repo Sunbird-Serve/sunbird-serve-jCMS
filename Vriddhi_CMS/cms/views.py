@@ -30,25 +30,15 @@ def home(request):
     return render(request, 'home.html')
 
 def get_courses(request):
-    # print('hiiiii')
     board_id = request.GET.get("board_id")
-
     courses = Course.objects.filter(board_id=board_id)
-    
     course_data = [{"id": course.id, "name": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
-
     response_data = json.dumps(course_data)
-    
     return HttpResponse(response_data, content_type="application/json")
 
 def get_topics(request):
-    # print('hiiiii')
     course_id = request.GET.get("course_id")
-
     topics = Topic.objects.filter(course_id=course_id)
-    
     topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
-
     response_data = json.dumps(topic_data)
-    
     return HttpResponse(response_data, content_type="application/json")
