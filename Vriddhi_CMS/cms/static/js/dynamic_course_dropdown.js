@@ -3,8 +3,10 @@
         // Reference to the dropdowns
         var boardDropdown = $("#id_board"); 
         var courseDropdown = $("#id_course"); 
+        var topicDropdown = $("#id_topic"); 
 
         courseDropdown.attr("disabled", "disabled");
+        topicDropdown.attr("disabled", "disabled");
 
         boardDropdown.change(function() {
 
@@ -30,6 +32,30 @@
                 
             } 
         });
+
+        courseDropdown.change(function() {
+
+            var selectedCourseId = $(this).val();
+            if (selectedCourseId) {
+                topicDropdown.removeAttr("disabled");
+
+                $.ajax({
+                    url: "/get_topics/",  // URL to fetch courses
+                    data: { course_id: selectedCourseId },
+                    dataType: 'json',  // Specify the data type explicitly
+                    success: function(data) {
+                        // Clear and populate course dropdown
+                        topicDropdown.empty();
+                        topicDropdown.append($("<option></option>").attr("value", "").text("Select Topic"));
+                        $.each(data, function(index, topic) {
+                            topicDropdown.append($("<option></option>").attr("value", topic.id).text(topic.name));
+                        });
+                    },
+                });
+                
+            } 
+        });
+
 
     });
 })(django.jQuery);

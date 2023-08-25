@@ -41,6 +41,12 @@ class BoardAdminForm(forms.ModelForm):
     class Meta:
         model = Topic
 
+class CombinedForm(forms.ModelForm):
+    board = forms.ModelChoiceField(queryset=Board.objects.all(), empty_label="Select Board", label="Board")
+    course = forms.ModelChoiceField(queryset=Course.objects.all(), empty_label=None, label="Course")
+    
+    class Meta:
+        model = SubTopics
 
 class TopicAdmin(admin.ModelAdmin):
     form = BoardAdminForm #Add dynamic field
@@ -58,8 +64,13 @@ class TopicDetailsAdmin(admin.ModelAdmin):
     ordering = ['id']
 
 class SubTopicsAdmin(admin.ModelAdmin):
+    form = CombinedForm
     list_display = ['id','name', 'topic', 'created_date', 'updated_date','author_id','created_by','updated_by','status']
-
+    fields = [
+        'board', 'course', 'topic', 'name', 'created_date', 'updated_date', 'author_id', 'created_by', 'updated_by', 'status'
+    ]
+    class Media:
+        js = ('js/dynamic_course_dropdown.js',)
         
 class ContentDetailAdmin(admin.ModelAdmin):
     search_fields = ["topic__title","subtopic__name","name","url"]
