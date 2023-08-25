@@ -45,5 +45,4 @@ def get_topics(request):
 
 def view_course(request):
     get_course_details = Course.objects.all()
-    print(get_course_details)
-    return render(request, 'course_view.html')
+    return render(request, 'course_view.html',{'get_course_details': get_course_details})

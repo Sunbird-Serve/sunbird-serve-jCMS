@@ -1,1 +1,17 @@
-<h1>Course Page</h1>
+{% extends 'base.html' %}
+{% block title %}Course Details{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        {% for course in get_course_details %}
+            <div class="col-md-4 mb-4">
+                <div class="course-card">
+                    <h5 class="course-title">{{ course.board.board_name }}</h5>
+                    <p class="course-detail"><strong>Subject:</strong> {{ course.subject.subject_name }}</p>
+                    <p class="course-detail"><strong>Grade:</strong> {{ course.grade }}</p>
+                </div><br><br>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
