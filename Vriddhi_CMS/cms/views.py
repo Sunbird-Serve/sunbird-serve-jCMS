@@ -42,3 +42,8 @@ def get_topics(request):
     topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
     response_data = json.dumps(topic_data)
     return HttpResponse(response_data, content_type="application/json")
+
+def view_course(request):
+    get_course_details = Course.objects.all()
+    print(get_course_details)
+    return render(request, 'course_view.html')
