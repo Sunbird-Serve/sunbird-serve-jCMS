@@ -74,7 +74,7 @@ STATICFILES_FINDERS = (
 
 TEMPLATE_DIRS = (
     # ... other template directories ...
-    '/home/ttpl-rt-113/Desktop/document/JCMS/env/django/contrib/admin/templates',
+    '/home/ttpl-rt-113/Documents/jCMS/sunbird-serve-jCMS/env/django/contrib/admin/templates',
 )
 
 
