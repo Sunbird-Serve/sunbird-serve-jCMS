@@ -1,17 +1,111 @@
 {% extends 'base.html' %}
 {% block title %}Course Details{% endblock %}
 {% block content %}
+<div id="loader" style="display: none;">
+    <div class="loader"></div>
+</div>
+
+
+{% comment %} <select id="filterDropdown">
+    <option value="all">All</option>
+    {% for board in get_all_board %}
+        <option value="{{ board.id }}">{{ board.board_name }}</option>
+    {% endfor %}
+</select> {% endcomment %}
+
+
+
+
 <div class="container mt-4">
     <div class="row">
-        {% for course in get_course_details %}
-            <div class="col-md-4 mb-4">
-                <div class="course-card">
-                    <h5 class="course-title">{{ course.board.board_name }}</h5>
-                    <p class="course-detail"><strong>Subject:</strong> {{ course.subject.subject_name }}</p>
-                    <p class="course-detail"><strong>Grade:</strong> {{ course.grade }}</p>
-                </div><br><br>
-            </div>
-        {% endfor %}
+        <div class="col-md-6">
+            <select class="custom-select" id="filterDropdown">
+                <option value="" >Select Board</option>
+                <option value="all" >All Board</option>
+                {% for board in get_all_board %}
+                    <option value="{{ board.id }}">{{ board.board_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </div>
 </div>
+
+
+
+
+
+
+<div class="container mt-4">
+    <div class="container mt-4">
+        <div class="row" id="courseContainer">
+            {% for course in courses %}
+                <div class="col-md-4 mb-4">
+                    <div class="course-card">
+                        <h5 class="course-title">{{ course.board.board_name }}</h5>
+                        <p class="course-detail"><strong>Subject:</strong> {{ course.subject.subject_name }}</p>
+                        <p class="course-detail"><strong>Grade:</strong> {{ course.grade }}</p>
+                    </div><br><br>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if courses.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ courses.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ courses.number }} of {{ courses.paginator.num_pages }}.
+        </span>
+
+        {% if courses.has_next %}
+            <a href="?page={{ courses.next_page_number }}">next</a>
+            <a href="?page={{ courses.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#filterDropdown').change(function() {
+            $("#loader").show();
+            var boardId = $(this).val();
+            var data ={boardId:boardId};
+            $.get("/get_filtered_courses/",data,function(response,status){
+                $("#courseContainer").html(response);
+
+                var courses = response;
+                $("#courseContainer").empty(); // Clear previous content
+
+                for (var i = 0; i < courses.length; i++) {
+                    var course = courses[i];
+                    var courseCard = `
+                        <div class="col-md-4 mb-4">
+                            <div class="course-card">
+                                <h5 class="course-title">${course.board}</h5>
+                                <p class="course-detail"><strong>Subject:</strong> ${course.subject}</p>
+                                <p class="course-detail"><strong>Grade:</strong> ${course.grade}</p>
+                            </div>
+                        </div>`;
+                    $("#courseContainer").append(courseCard);
+                }
+                $("#loader").hide();
+            })
+        });
+    });
+</script>
+
+
 {% endblock %}
