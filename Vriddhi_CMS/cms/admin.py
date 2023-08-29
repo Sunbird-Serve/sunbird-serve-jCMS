@@ -6,7 +6,7 @@ class BoardAdmin(admin.ModelAdmin):
     list_filter = ('id', 'board_name')
     list_display = ['id', 'board_name']
     ordering = ['id']
-
+    
 class SubjectAdmin(admin.ModelAdmin):
     list_filter = ('id', 'subject_name')
     list_display = ['id', 'subject_name']
@@ -15,7 +15,7 @@ class SubjectAdmin(admin.ModelAdmin):
 class AttributeAdmin(admin.ModelAdmin):
     list_display = ['types']
     ordering = ['id']
-
+    
 class CourseAdmin(admin.ModelAdmin):
     list_filter = ('subject', 'board', 'grade','type', 'language')
     list_display = ['id', 'board', 'subject', 'grade', 'type','description','picture','get_topics', 'language']
@@ -35,11 +35,23 @@ class LanguageAdmin(admin.ModelAdmin):
     list_display = ['name', 'code', 'status','created_on']
     ordering = ['id']
 
+# Create dynamicfield for board
+class BoardAdminForm(forms.ModelForm):
+    board = forms.ModelChoiceField(queryset=Board.objects.all(), empty_label="Select Board")
+    class Meta:
+        model = Topic
+
+
 class TopicAdmin(admin.ModelAdmin):
+    form = BoardAdminForm #Add dynamic field
     list_filter = ('course',)
     list_display = ['title', 'course', 'url','status','priority']
     ordering = ['priority']
+    # Arrange field in DjangoAdmin
+    fields = ['board', 'course', 'title', 'url', 'num_sessions', 'status', 'priority']
 
+    class Media:
+        js = ('js/dynamic_course_dropdown.js',)
 
 class TopicDetailsAdmin(admin.ModelAdmin):
     list_display = ['topic','attribute','url','drafturl','types','status','author','last_updated_date','updated_by']
@@ -48,6 +60,7 @@ class TopicDetailsAdmin(admin.ModelAdmin):
 class SubTopicsAdmin(admin.ModelAdmin):
     list_display = ['id','name', 'topic', 'created_date', 'updated_date','author_id','created_by','updated_by','status']
 
+        
 class ContentDetailAdmin(admin.ModelAdmin):
     search_fields = ["topic__title","subtopic__name","name","url"]
     list_display = ["get_topicId","get_subtopicId","topic",'subtopic','url','name','description','status',"workstream_type",'url_host',"content_type","author","priority","version","duration","is_primary","created_by","created_on","updated_by","updated_on"]
@@ -82,7 +95,7 @@ class ContentMetaAttributeAdmin(admin.ModelAdmin):
 class MetaAttributeTypeAdmin(admin.ModelAdmin):
     search_fields = ["name","code"]
     list_display = ["name",'code','status',"workstream_type","created_by","created_on"]
-
+    
 admin.site.register(Board, BoardAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Course, CourseAdmin)

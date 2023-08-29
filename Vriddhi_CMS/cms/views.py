@@ -34,11 +34,9 @@ def user_login(request):
 def home(request):
     return render(request, 'home.html')
 
-
-
-
-
-
-
-
-
+def get_courses(request):
+    board_id = request.GET.get("board_id")
+    courses = Course.objects.filter(board_id=board_id)
+    course_data = [{"id": course.id, "name": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
+    response_data = json.dumps(course_data)
+    return HttpResponse(response_data, content_type="application/json")
