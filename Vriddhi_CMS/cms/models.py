@@ -265,4 +265,21 @@ class ContentMetaAttribute(models.Model):
     def __unicode__(self):
         return self.key
 
+class BaseModel(models.Model):
+    # Define common fields and methods for your base model here
+    # For example:
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        abstract = True
+
+class FLTeacher_Content_View_Status(BaseModel):
+    content_detail = models.ForeignKey(ContentDetail, null=True, blank=True, related_name='fsvs_content_id')
+    status = models.CharField(max_length=50, choices=(('1', 'Viewed'), ('2', 'Pending'), ('3', 'Inprogress')),default="1")
+    progress = models.IntegerField(default=0)
+    number_of_times_viewed = models.IntegerField(default=1)
+    user = models.ForeignKey(User, null=True, related_name='fsvs_auth_user', blank=True)
+    topic = models.ForeignKey(Topic, null=True, blank=True, related_name="fsvs_topic")
+    subtopic = models.ForeignKey(SubTopics, null=True, blank=True, related_name="fsvs_sub_topic")
 

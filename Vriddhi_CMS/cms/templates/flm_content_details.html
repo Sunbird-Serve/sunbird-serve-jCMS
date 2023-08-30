@@ -1,0 +1,490 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<div class="w-full bg-gray-50" style="font-family: 'Roboto', sans-serif;">
+    <div class="flex flex-col md:flex-row py-10">
+        <div class="w-full md:w-1/4 rounded-full flex items-center justify-center">
+            <a href="/v2/offering/topic-details/?center_id={{centerId}}&offering_id={{offeringId}}&ayfy_id={{ayId}}&topic_id={{topicId}}" class="hover:no-underline ">
+                <div class="flex items-center justify-around text-center">
+                    <div class="text-center text-4xl mx-4 text-red-600 transform hover:scale-150"><i class="fas fa-long-arrow-alt-left"></i></div>
+                    <div class="text-xl font-bold text-left px-1">{{subtopic_name|title}}</div>
+                </div>
+            </a>
+        </div>
+        <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board}} - {{subject}} {{grade}} grade </div>
+        <div class="w-full md:w-1/4 px-4">
+            <div class="text-center bg-yellow-400 font-bold text-xl p-2 rounded-lg cursor-pointer hove:scale-105" onclick="$('#rating_pop').show()">Rate this Content</div>
+        </div>
+    </div>
+    <div class="flex flex-col lg:flex-row  items-center justify-around w-full lg:h-[45rem]">
+        <div class="w-full h-full">
+            <div class="md:mx-10 flex items-center justify-start">
+                <div id="no_video" class="flex items-center justify-center bg-blue-200 border-2" style="display: none; width: 800px; height: 320px;"><div class="text-4xl font-bold">NO Compatble Video Available</div></div>
+                <video id="my_video_player" class="video-js vjs-default-skin" controls fluid width="800" height="320" poster="/static/images/evidyalogo.jpg" data-setup="{}"
+                tabindex="-1" src="https://s3.ap-south-1.amazonaws.com/prod.evidyaloka.org/couse_documents/videos/DSERT/Science/T4308_ST4401_V1.mp4" muted="muted">
+                    <source id="VideoSource" src="https://youtu.be/4Y1aGTZGpCA"  type="video/youtube"/>
+                    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to aweb browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+                </video>
+            </div>
+            <div class="flex w-full px-2 md:px-10 my-10 pb-4 border-b">
+                <div class="w-3/5">
+                    <h3 id="current_video_title" class="text-left text-3xl font-bold">Introduction</h3>
+                    <p id="current_video_description" class="text-left text-xl mt-4">This is the default video</p>
+                </div>
+
+            </div>
+
+        </div>
+        <div id="flm_play_list" class="w-full h-[32rem] md:h-[42rem] lg:mr-10 md:-mt-10 md:border border-black overflow-y-auto md:overscroll-none"></div>
+    </div>
+    <div class="w-full shadow-2xl border-r-2 border-gray-700">
+        <div id="menu" class="parent grid grid-flow-row grid-cols-2 md:grid-cols-4 rounded-lg parent" tabindex="0">
+            <div id="worksheet_tab" onclick="make_worksheet_table()" tabindex="1" class="flex items-center justify-center w-full cursor-pointer bg-gray-300 border-blue-200 border-t-2 border-r-2 border-gray-300 hover:border-blue-200 hover:bg-gray-400 font-bold rounded-t-2xl">
+                <div class="text-center text-2xl p-4"><i class="fas fa-scroll"></i></div>
+                <div class="text-cneter p-2">
+                    <p id="">Worksheets</p>
+                </div>
+            </div>
+            <div id="textbook_tab" onclick="make_textbook_table()" tabindex="2" class="flex items-center justify-center w-full cursor-pointer bg-gray-300 border-blue-200 border-t-2 border-x-2 border-gray-300 hover:border-blue-200 hover:bg-gray-400 font-bold rounded-t-2xl">
+                <div class="text-center text-2xl p-4"><i class="fas fa-book"></i></div>
+                <div class="text-cneter p-2">
+                    <p id="">Text Books</p>
+                </div>
+            </div>
+
+
+
+            {% if showTpContent == 1 %}
+             <div id="thirdparty_tab" onclick="make_thirdparty_content_table()" tabindex="4" class="mx-1 flex items-center justify-center w-full cursor-pointer bg-gray-300 border-blue-200 border-t-2 border-l-2 border-gray-300 hover:border-blue-200 hover:bg-gray-400 font-bold rounded-t-2xl">
+                <div class="text-center text-2xl p-4"><i class="fas fa-book"></i></div>
+                <div class="text-cneter p-2">
+                    <p id="">Diksha Textbooks</p>
+                </div>
+            </div>
+             {% endif %}
+        </div>
+    </div>
+    <div class=" bg-gradient-to-r from-gray-50 to-blue-200">
+        <div class="md:py-20 flex bg-gradient-to-t from-gray-100 to-blue-200">
+            <div id="content_wraper" class="w-full" style="display: none;">
+                <div id="content_details" class="flex"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="doubtmodal" class="z-10 abolute fixed top-10 left-0 w-full h-screen flex items-center justify-center bg-gray-500 bg-opacity-80 transform scale-0 transition-transform duration-300">
+    <div class="bg-white w-10/12 h-3/5 rounded-lg border-2 border-gray-400 font-sans">
+
+        <div class="w-full h-3/4 flex p-8">
+            <div class="w-3/4 sapce-y-4">
+                <div class="my-4 flex">
+                    <label for="doubtStudentId" class="text-gray-700 font-bold">Select student :</label>
+                    <select name="doubtStudentId" id="doubtStudentId" class="w-96 border-2 border-gray-600 mx-20">
+                        <option value="" disabled>Select student</option>
+                    </select>
+                </div>
+                <div class="w-full h-48 mb-20">
+                    <label for="doubt_text" class="text-gray-700 font-bold">Doubt Text :</label>
+                    <textarea class="p-3" name="new_doubt_text" id="doubt_text" cols="10" rows="1" placeholder="doubt text"></textarea></div>
+                <div class="h-12 w-96">
+                    <label for="imgInp" class="text-gray-700 font-bold">Select Image(Only png, jpg):</label>
+                    <input accept=".png, .jpg" type='file' id="imgInp" />
+                </div>
+
+
+                <div class="flex items-center justify-center space-x-4">
+                    <div class="px-6 py-2 w-64 mt-8 rounded-lg bg-[#f47b4e] hover:bg-red-400 cursor-pointer my-4 font-bold text-white text-center" onclick="postDoubt()">Post Doubt</div>
+                    <div id="doubt_post_loader" class="mt-8 font-bold text-4xl" style="display: none;">Posting ....</div>
+                </div>
+
+            </div>
+            <div class="w-1/4 flex items-center justify-ccenter my-4">
+                <img class="w-96 h-96 bg-no-repeat bg-center" id="blah" src="#" alt="" />
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div id="doubtdetailmodal" class="z-10 abolute fixed top-10 left-0 w-full h-screen flex items-center justify-center bg-gray-500 bg-opacity-80 transform transition-transform duration-300" style="display: none;">
+    <div class="bg-white w-4/5 h-3/5 rounded-lg border-2 border-gray-400 font-sans">
+        <div class="flex items-center bg-[#f47b4e]">
+            <div class="w-11/12 text-center font-semibold text-white text-3xl">Doubt Details</div>
+            <div id="closebutton2" onclick="$('#doubtdetailmodal').hide()" type="button" class="w-1/12 focus:outline-none hover:text-white cursor-pointer mt-4 flex justify-center">
+                <div><i class="fas fa-times fa-2x"></i></div>
+            </div>
+        </div>
+        <div class=" overflow-x-auto">
+            <!-- component -->
+            <div class="w-full">
+                <div class="shadow overflow-hidden rounded border-b border-gray-200">
+                    <table class="min-w-full bg-white">
+                        <tbody id="detailpop" class="text-gray-700">
+                            <tr>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Student Name</th>
+                                <td id="detail_student_name" class="w-1/6 text-left border py-3 px-4"></td>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Status</th>
+                                <td id="detail_student_status" class="w-3/6 text-left border py-3 px-4"></td>
+                            </tr>
+                            <tr>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Topic</th>
+                                <td id="detail_topic_name" class="w-1/6 text-left border py-3 px-4"></td>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Subtopic</th>
+                                <td id="detail_subtopic_name" class="w-3/6 text-left border py-3 px-4"></td>
+                            </tr>
+                            <tr>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Asked Date</th>
+                                <td id="detail_doubt_asked_date" class="w-1/6 text-left border py-3 px-4"></td>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Doubt</th>
+                                <td class="w-3/6 text-left border py-3 px-4">
+                                    <div class="py-4 text-green-400 font-bold border-b"><a id="detail_doubt_attachment" href="#">view atchment</a></div>
+                                    <div id="detail_doubt_text" class="py-2"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Assigned To</th>
+                                <td id="detail_assigned_to" class="w-1/6 text-left border py-3 px-4"></td>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Responded By</th>
+                                <td id="detail_responded_by" class="w-3/6 text-left border py-3 px-4"></td>
+                            </tr>
+                            <tr>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Response on</th>
+                                <td id="detail_response_on" class="w-1/6 text-left border py-3 px-4"></td>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Responded Text</th>
+                                <td id="detail_responded_text" class="w-3/6 text-left border py-3 px-4"></td>
+                            </tr>
+                            <tr>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Attachment Type</th>
+                                <td id="detail_response_attachment_type" class="w-1/6 text-left border py-3 px-4"></td>
+                                <th class="w-1/6 text-left border font-bold py-3 px-4">Attachments</th>
+                                <td class="w-3/6 text-left border py-3 px-4 font-bold text-green-400">
+                                    <a id="detail_response_attachment" target="__blank" href="#"></a>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-12 backdrop-filter backdrop-blur transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0" id="rating_pop" style="display: none;">
+    <div class="container relative w-full md:w-3/4 w-full md:h-3/5 md:mt-96 bg-white rounded border-4 border-green-700">
+        <div class="py-8 md:px-5">
+            <div class="flex justify-between">
+                <div class="w-11/12 text-2xl font-bold uppercase text-center">Rating For - {{subtopic_name|title}}</div>
+                <div class="w-1/12 text-2xl font-bold cursor-pointer flex justify-end hover:text-red-500" onclick="$('#rating_pop').hide()">
+                    <i class="fas fa-times fa-2x"></i>
+                </div>
+            </div>
+            <div id="att_pop_data" class="flex flex-col space-y-20">
+                <div class="flex flex-col items-center justify-center space-y-20">
+                    <div class="flex w-full space-x-6">
+                        <div class="font-bold">How was the video</div>
+                        <div class="flex video_rating space-x-4">
+                            <div class="video__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="video__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="video__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="video__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="video__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                        </div>
+                    </div>
+                    <div class="flex w-full space-x-6">
+                        <div class="font-bold">How was the worksheet</div>
+                        <div class="flex workbook_rating space-x-4">
+                            <div class="workbook__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="workbook__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="workbook__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="workbook__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                            <div class="workbook__rating__star cursor-pointer"><i class="far fa-star"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full flex space-x-6">
+                    <div class="font-bold">Comment</div>
+                    <textarea name="comment" id="comment" cols="30" rows="10"></textarea>
+                </div>
+                <div class="w-full mt-24">
+                    <div class="flex justify-center">
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onclick="submit_rating()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.colorbox.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-tab.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script>
+    // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+            return cookieValue;
+        }
+    }
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $(document).ready(function() {
+        var csrftoken = getCookie('csrftoken');
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
+</script>
+
+
+<script>
+
+    var videos_data = '{{videos_data}}'
+    var worksheets_data = '{{worksheets_data}}'
+    var textbooks_data = '{{textbook_data}}'
+    var tpContentList = '{{tpContentList}}'
+    
+    var subtopic_id = '{{subtopic_id}}'
+    var subtopic_name = '{{subtopic_name}}'
+    var player = videojs('my_video_player');
+    var $x = $('#menu div').click(function() {
+        $x.removeClass('selected');
+        $(this).addClass('selected');
+    })
+    console.log(tpContentList)
+
+    $('document').ready(function() {
+        let video_id = document.getElementById('video0')
+        if (video_id) {
+            $('#no_video').hide()
+            $('#my_video_player').show()
+            video_id.click();
+        } else {
+            $('#no_video').show()
+            $('#my_video_player').hide()
+            //playVideo('https://youtu.be/4Y1aGTZGpCA', 'youtube', 'Introduction to eVidyaloka', 'eVidyaloka is a platform for students to learn and interact with the world of education.', 1);
+        }
+        $('#doubts_tab').click()
+    });
+
+
+    function playVideo(videoSource, type, title, description, id) {
+        document.getElementById('current_video_title').innerHTML = title
+        document.getElementById('current_video_description').innerHTML = description
+        player.src({
+            src: videoSource,
+            type: 'video/' + type
+        });
+
+        player.currentTime(50)
+        player.muted(false);
+        player.play();
+
+        player.on('play', (event) => {
+            update_video_playback(id, player.currentTime());
+            console.log('play time', player.currentTime());
+        });
+
+        player.on('pause', (event) => {
+            update_video_playback(id, player.currentTime());
+            console.log('pause time', player.currentTime());
+        });
+
+    }
+
+    function make_videos_table() {
+        player.autoplay('muted');
+        // $("#flm_play_list div").remove();
+        for (let index = 0; index < videos_data.length; index++) {
+            const video = videos_data[index];
+            let thumbnailUrl = '/static/img/video_placeholder.png'
+            let type = "'mp4'"
+            let duration = parseInt(video['duration'])
+            if (duration) {
+                duration = new Date(duration * 1000).toISOString().substr(11, 8)
+            }
+
+
+            // if (video['thumbnailUrl'] != '') {
+            //     thumbnailUrl = video['thumbnailUrl']
+            // }
+
+            if (video['contentHost'] == 'youtube') {
+                type = "'youtube'"
+            }
+
+            let url = "'" + video["url"] + "'"
+            let title = "'" + (video["title"]).replace("'", "") + "'"
+            let description = "'" + (video["description"]).replace("'", "") + "'"
+            let id = "'" + video["id"] + "'"
+            $('#flm_play_list').append('<div class="m-4 py-2 border-b hover:bg-gray-200 hover:text-green-500">\
+                                    <div class=" w-full flex">\
+                                        <div id="video' + index + '" onclick="playVideo(' + url + ', ' + type + ', ' + title + ', ' + description + ', ' + id + ')" class="cursor-pointer h-32 md:h-48 w-72 md:w-1/2 bg-contain md:bg-cover bg-center bg-no-repeat flex items-end justify-end" style="background-image: url(' + thumbnailUrl + ')" title="' + video['title'] + '"><p class="p-2 bg-blue-400 rounded-full text-base text-gray-800">' + duration + '</p></div>\
+                                        <div class="w-3/4 md:w-1/2 p-4 flex flex-col justify-between leading-normal">\
+                                            <div class="h-4">\
+                                                <div class="font-bold text-xl md:text-3xl">' + video['title'] + '</div>\
+                                            </div>\
+                                            <div class="font-bold text-base md:text-xl">'+video['author']+'</div>\
+                                        </div>\
+                                    </div>\
+                                </div>');
+        }
+    }
+    
+
+
+    function make_worksheet_table() {
+        $('#content_wraper').show()
+        $('#doubts_wraper').hide()
+        player.pause();
+        $("#content_details div").remove();
+        if (worksheets_data.length > 0) {
+        console.log("make_worksheet_table ",worksheets_data)
+            for (let index = 0; index < worksheets_data.length; index++) {
+                const worksheet = worksheets_data[index];
+                let url = "'" + worksheet['url'] + "'"
+                let id = "'" + worksheet['id'] + "'"
+
+                $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400  shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
+                            <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                            <div class="h-full mx-2 flex items-stretch justify-center">\
+                                <p class="font-bold text-3xl self-start text-center py-20">' + worksheet['title'] + '</p>\
+                            </div></div></div>')
+            }
+        } else {
+            $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
+        }
+    }
+
+    function make_textbook_table() {
+        $('#content_wraper').show()
+        $('#doubts_wraper').hide()
+        player.pause();
+        $("#content_details div").remove();
+        if (textbooks_data.length > 0) {
+            for (let index = 0; index < textbooks_data.length; index++) {
+                const textbook = textbooks_data[index];
+                let url = "'" + textbook['url'] + "'"
+
+                $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400  shadow-2xl bg-contain bg-center bg-no-repeat rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="window.open(' + url + ')" style="background-image: url()" > \
+                            <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                            <div class="h-full mx-2 flex items-stretch justify-center">\
+                                <p class="font-bold text-3xl self-start text-center py-20">' + textbook['title'] + '</p>\
+                            </div></div></div>')
+            }
+        } else {
+            $('#content_details').append('<div class="text-center text-bold text-3xl py-42"> No Content Available </div>')
+        }
+    }
+
+    function make_doubts_list() {
+
+        $('#content_wraper').hide()
+        $('#doubts_wraper').show()
+        player.pause();
+        $("#content_details div").remove();
+        for (let index = 0; index < doubts_data.length; index++) {
+            const doubt = doubts_data[index];
+            if (doubt.parent_thread_id != null) {
+                let reply = `<details open class="comment" id="comment-${doubt.id}">
+                            <a href="#comment-${doubt.id}" class="comment-border-link">
+                                <span class="sr-only">Jump to comment-2</span>
+                            </a>
+                            <summary>
+                                <div class="comment-heading">
+                                    <div class="comment-info">
+                                        <a class="comment-author">${doubt.created_by_id}-${doubt.created_by__first_name} ${doubt.created_by__last_name}</a>
+                                        <p class="m-0">${doubt.created_on}</p>
+                                    </div>
+                                </div>
+                            </summary>
+
+                            <div class="comment-body">
+                                <p>${doubt.text}</p>
+                            </div>
+                        </details>`
+
+                $('#reply-' + doubt.parent_thread_id).append(reply);
+            } else {
+
+                let comment = `<div class="comment-thread">
+                            <!-- Comment 1 start -->
+                            <details open class="comment" id="comment-${doubt.id}">
+                                <a href="#comment-${doubt.id}" class="comment-border-link">
+                                    <span class="sr-only">Jump to comment-1</span>
+                                </a>
+                                <summary>
+                                    <div class="comment-heading">
+                                        <div class="comment-info">
+                                            <a class="comment-author">${doubt.student_id}-${doubt.student__name}</a>
+                                            <p class="m-0">${doubt.created_on}</p>
+                                        </div>
+                                    </div>
+                                </summary>
+
+                                <div class="comment-body">
+                                    <p class="py-2">${doubt.text}</p>
+                                </div>
+
+                                <div id="reply-${doubt.id}" class="replies"></div>
+                            </details>
+                        </div>`
+
+                $('#content_details').append(comment)
+            }
+        }
+    }
+
+    function make_thirdparty_content_table() {
+        $('#content_wraper').show()
+        $('#doubts_wraper').hide()
+        player.pause();
+        $("#content_details div").remove();
+        if (tpContentList.length > 0) {
+        console.log("tpContentList ",tpContentList)
+            for (let index = 0; index < tpContentList.length; index++) {
+                const worksheet = tpContentList[index];
+                let url = "'" + worksheet['url'] + "'"
+                let id = "'" + worksheet['id'] + "'"
+
+                $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400  shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
+                            <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                            <div class="h-full mx-2 flex items-stretch justify-center">\
+                                <p class="font-bold text-3xl self-start text-center py-20">' + worksheet['title'] + '</p>\
+                            </div></div></div>')
+            }
+        } else {
+            $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
+        }
+    }
+
+
+</script>
+
+{% endblock %}

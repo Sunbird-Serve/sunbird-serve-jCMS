@@ -6,20 +6,48 @@
     <title>{% block title %}Default Title{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/styles.css" rel="stylesheet">
+    <link href="/static/css/content_details.css" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/static/js/tailwindcss3.js"></script>
+    <script src="/static/js/all.min.js"></script>
+    <link rel="stylesheet" href="/static/css/jquery-ui.css" />
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
+
+    {% comment %} <link rel="stylesheet" type="text/css" href="/static/css/main.min.css" /> {% endcomment %}
+    <link rel="stylesheet" type="text/css" href="/static/css/evl.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/custom_styles.css" />
+    <link rel='stylesheet' href='/static/css/breadcrumb.css'>
+    <link rel="stylesheet" type="text/css" href="/static/css/calendar/theme.css" />
+    <link rel='stylesheet' type='text/css' href='/static/css/calendar/fullcalendar.1.5.3.min.css'/>
+    <link rel="stylesheet" href="/static/css/colorbox.css"/>
+    <!------------------------------------Inserted block ------------------------->
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="/static/images/LPF.jpg">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/css_new/bootstrapv3.3.6.min.css" rel="stylesheet">
+    <link href="/static/css/css_new/theme-minified.css" rel="stylesheet">
 
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Include the menu template here -->
-            <div class="col-md-3">
+            {% comment %} <div class="col-md-3">
                 {% include 'menu.html' %}
-            </div>
-            <div class="col-md-9">
-                <!-- Your page content here -->
-                {% block content %}{% endblock %}
-            </div>
+            </div> {% endcomment %}
+            {% comment %} <div class="col-md-12"> {% endcomment %}
+                {% comment %} <div class="about-container" style='padding-bottom : 20px; padding-top:0px;'>
+                    <div id="navbar1" class="navbar-collapse collapse dropdown_color navbar_width" style=""> {% endcomment %}
+                        {% block content %}{% endblock %}
+                    {% comment %} </div>
+                </div> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
         </div>
     </div>
 </body>

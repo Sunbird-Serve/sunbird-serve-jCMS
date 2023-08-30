@@ -72,11 +72,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-TEMPLATE_DIRS = (
-    # ... other template directories ...
-    '/home/ttpl-rt-113/Documents/jCMS/sunbird-serve-jCMS/env/django/contrib/admin/templates',
-)
-
 
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 

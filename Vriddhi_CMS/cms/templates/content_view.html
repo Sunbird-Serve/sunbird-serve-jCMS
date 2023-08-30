@@ -1,15 +1,5 @@
-{% extends "base.html" %}{% load staticfiles%} {% load filters %} {% block body_container2 %}
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
-
-<script src="/static/css/tailwindcss3.js"></script>
-<script src="/static/css/fontawesome/js/all.min.js"></script>
-
-
+{% extends "base.html" %}
+{% block content %}
 <style>
     .toggle__dot {
         top: -.25rem;
@@ -176,7 +166,6 @@
     }
 </style>
 
-<div {% if request.user.is_authenticated %}{% else %}class="mt-36" {% endif %}></div>
 <!-- alert popup -->
 <div id="confirmPopup1" class="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" style="display: none;">
     <div class="absolute bg-black opacity-80 inset-0 z-0"></div>
@@ -197,49 +186,15 @@
         </div>
     </div>
 </div>
+
 <div class="w-full h-screen md:h-4/6 flex flex-col md:flex-row">
-    <div class="flex flex-row w-full pb-2 mobile_show">
-        <div class="md:w-3/5  mt-10 text-center font-bold text-3xl p-2 justify-self-center">{{subject}} {{grade}} grade – {{centerName}}</div>
-        <div class="md:w-2/5 mt-4 flex justify-self-end space-x-2">
-            {% if userType == 'teacher' %}
-            <div onclick="location.href='/myevidyaloka/'" class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Center</div>
-            {% if is_digital or is_sampoorna %}
-            <div onclick="modalHandler(true)" class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold"></div>
-            {% else %}
-            <div onclick="location.href='/myevidyaloka/?mark_attendence=true'" class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold">Mark Attendance</div>
-            {% endif %} {% else %}
-            <div onclick="location.href='/centeradmin/?center_id={{centerId}}&ay_id={{ayId}}' " class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Center</div>
-            {% if is_digital or is_sampoorna %}
-            <div onclick="modalHandler(true)" class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold">Mark Attendance</div>
-            {% else %}
-            <div onclick="location.href='/centeradmin/?center_id={{centerId}}&ay_id={{ayId}}&mark_attendence=true' " class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold">Mark Attendance</div>
-            {% endif %} {% endif %}
-        </div>
-    </div>
+
     <div class="w-full md:w-1/5 md:h-full bg-gray-600 border-r-2 border-gray-400 ">
         <div class="font-bold text-3xl pt-4 px-2 text-center text-white">Topics</div>
         <div id="topics" class="mt-8 bg-white overflow-y-auto no_scroll_bar rounded-lg parent topics_container" tabindex="0"></div>
     </div>
-    <div class="w-full md:w-4/5 h-full bg-gray-50 justify-center shadow-inner shadow-2xl">
-        <div class="flex mobile_hide">
-            <div class="w-full md:w-3/5 lg:w-4/5 mt-10 text-center font-bold text-3xl p-2 justify-self-center">{{subject}} {{grade}} grade – {{centerName}}</div>
-            <div class="w-full md:w-2/5 mt-4 justify-self-end space-y-4">
-                {% if userType == 'teacher' %}
-                <div onclick="location.href='/myevidyaloka/'" class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Center</div>
-                {% if is_digital or is_sampoorna %}
-                <div onclick="modalHandler(true)" class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold">Mark Attendance</div>
-                {% else %}
-                <div onclick="location.href='/myevidyaloka/?mark_attendence=true'" class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold">Mark Attendance</div>
-                {% endif %} {% else %}
-                <div onclick="location.href='/centeradmin/?center_id={{centerId}}&ay_id={{ayId}}' " class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Center</div>
-                {% if is_digital or is_sampoorna %}
-                <div onclick="modalHandler(true)" class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold">Mark Attendance</div>
-                {% else %}
-                <div onclick="location.href='/centeradmin/?center_id={{centerId}}&ay_id={{ayId}}&mark_attendence=true' " class="mx-12 px-2 py-4 bg-yellow-300 hover:bg-yellow-500 cursor-pointer rounded-lg text-center font-bold">Mark Attendance</div>
-                {% endif %} {% endif %}
-            </div>
-        </div>
 
+    <div class="w-full md:w-4/5 h-full bg-gray-50 justify-center shadow-inner shadow-2xl">
         <h5 id="topic_name" class="text-left mx-24 p-4 font-bold text-xl mx-4 text-blue-600"></h5>
         <div class="px-2 lg:px-24 overflow-y-auto border-t-2 border-blue-400 rounded-lg subtopics_container">
             <table class="w-full table-fixed ">
@@ -252,7 +207,7 @@
                     </tr>
                 </thead>
 
-                <tbody id="subtopics">
+                <tbody id="subtopicsDetails">
 
                 </tbody>
             </table>
@@ -377,118 +332,24 @@
 
 
 <script>
-    // using jQuery
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+    //var topicsJSON = '{{ topic_data|safe }}';
+    //var topics = JSON.parse(topicsJSON);
+//
+    //console.log("topics:", topics);
 
-    function csrfSafeMethod(method) {
-        // these HTTP methods do not require CSRF protection
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    $(document).ready(function() {
-        var csrftoken = getCookie('csrftoken');
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-    });
-</script>
-
-{{ topics|json_script:"topic_details" }} {{ centerId|json_script:"centerID" }} {{ offeringId|json_script:"offeringID" }}{{ ayId|json_script:"ayID" }}{{btopicId|json_script:"btopicID"}}{{is_update|json_script:"is_update_bool"}}
-{{enrolledStudents|json_script:"enrolledStudents_data"}}
-
-<script>
-    var topics = JSON.parse(document.getElementById('topic_details').textContent);
-    var centerId = JSON.parse(document.getElementById('centerID').textContent);
-    var offeringId = JSON.parse(document.getElementById('offeringID').textContent);
-    var ayId = JSON.parse(document.getElementById('ayID').textContent);
-    var backtopicId = JSON.parse(document.getElementById('btopicID').textContent);
-
-    var is_update = JSON.parse(document.getElementById('is_update_bool').textContent);
-    var enrolledStudents = JSON.parse(document.getElementById('enrolledStudents_data').textContent);
-    console.log('centerid', centerId,)
-    console.log('---topic--------',topics, is_update)
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-
-        if (backtopicId) {
-            var btopid = document.getElementById('topicdiv_' + backtopicId);
-            btopid.click()
-            btopid.className += " active"
+    
 
 
-        } else {
-            var deftopicdiv = document.getElementsByClassName('default_topic')[0]
-            deftopicdiv.click()
-            deftopicdiv.className += " active"
-        }
-
-
-    });
-
+    //Get topic details
     make_topics_table(topics)
+    function make_topics_table(topics) {
 
-    function toggle(n) {
-        var k = document.getElementById('k' + n);
-        var x = document.getElementById('x' + n);
-        var y = document.getElementById('y' + n);
-
-        // if (confirm('Do you really want to mark as completed ? This process cannot be undone')) {
-
-        if (x.value === "0") {
-            y.classList.add('translate-x-full')
-            k.classList.remove('bg-red-600')
-            k.classList.add('bg-green-600')
-            k.classList.add('cursor-not-allowed')
-            k.setAttribute('onclick', '')
-            x.value = "1";
-            document.getElementById('s' + n).innerHTML = 'Completed'
-            update_status(n, 1)
-            $("#checkbutton" + n + " div").remove();
-            $("#checkbutton" + n).append('<div class="text-center text-green-400 p-2"><i class="far fa-check-circle fa-2x"></i></div>');
-
-        }
-        //     // else {
-        //     //     y.classList.remove('translate-x-full')
-        //     //     k.classList.remove('bg-green-600')
-        //     //     k.classList.add('bg-red-600')
-        //     //     x.value = "0";
-        //     //     update_status(n, 0)
-
-        //     //     console.log(0)
-        //     // }
-        // } else {
-        //     console.log('Thing was not saved to the database.');
-        // }
-    }
-
-    function subtopic(topicId) {
-
-        make_subtopics_table(topics, topicId)
-
-    }
-
-    function make_topics_table(topicss) {
+        var topics = {{ topic_data_json|safe }};
+        console.log(topics);
         $("#topics div").remove();
-        for (let index = 0; index < topicss.length; index++) {
-            const topic = topicss[index];
+        for (let index = 0; index < topics.length; index++) {
+            const topic = topics[index];
+            console.log(topic);
             let id = 'topicdiv_' + topic["id"];
             let active = '';
             if (index == 0) {
@@ -504,478 +365,118 @@
         }
     }
 
+    //Get subtopic details
+    function subtopic(topicId) {
+        make_subtopics_table(topics, topicId)
+    }
+
     function make_subtopics_table(topics, topicId) {
-        $("#subtopics tr").remove();
 
-        for (let main_index = 0; main_index < topics.length; main_index++) {
-            const topic = topics[main_index];
-            if (topic["id"] == topicId) {
-                let subtopics = topic['subtopics']
-                document.getElementById('topic_name').innerHTML = topic["name"]
-                document.getElementById('subtopics_length').innerHTML = "(" + topic["subtopics"].length + ")"
-
-                for (let index = 0; index < subtopics.length; index++) {
-                    const subtopic = subtopics[index];
-                    let click = "location.href='/v2/subtopic/content-details/?subtopic_id=" + subtopic["id"] + "&topic_id=" + topic["id"] + "&offering_id=" + offeringId + "&center_id=" + centerId + "&ayfy_id=" + ayId + "'"
-                    let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
-
-                    let checkButton = ''
-
-                    if (subtopic['hasViewed'] == 1) {
-                        onclick = ''
-                        checkButton = '<div class="text-center text-green-400 p-2"><i class="far fa-check-circle fa-2x"></i></div>'
-                    }
-
-                    let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
-
-                    if (subtopic["type"].includes('2')){
-                        button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="student_confirm_pop(${topic["id"]})" >Take Quiz</button>`
-
-                    }
+        $("#subtopicsDetails").empty();
+        var data = {topicId: topicId}
+        $.get('/home/getSubtopic/',data,function(response,status){
+            var subtopics = response
 
 
-                    $("#subtopics").append(`<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
-                        <td class="text-center text-xl p-2 mobile_hide">${index + 1}</td>
-                        <td class="p-2 text-left">${subtopic["name"]}</td>
-                        <td class="">${button}</td>
-                        <td class="flex items-center justify-around pt-2 border-l">
-                            <div id="s${subtopic["id"]}" class="w-16 text-center text-base font-bold mobile_hide">Not Completed</div>
-                            <div id="checkbutton${subtopic["id"]}">${checkButton}<div>
-                        </td>
-                    </tr>`)
-                    if (subtopic['hasViewed'] == 1) {
-                        // document.getElementById('k' + subtopic["id"]).classList.remove('bg-red-600')
-                        // document.getElementById('y' + subtopic["id"]).classList.add('translate-x-full')
-                        // document.getElementById('k' + subtopic["id"]).classList.add('bg-green-600')
-                        // document.getElementById('k' + subtopic["id"]).classList.add('cursor-not-allowed')
-                        document.getElementById('s' + subtopic["id"]).innerHTML = 'Completed ' + subtopic['viewCount'] + ' times'
-                    }
-                }
+            for (let index = 0; index < subtopics.length; index++) {
+                var subtopic = subtopics[index];
+
+                let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic.id + "&topic_id=" + topicId + "'"
+                let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
+
+                console.log(subtopic.content_details);
+
+                let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
+
+                var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
+                    <td class="text-center text-xl p-2 mobile_hide">${index + 1}</td>
+                    <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.name}</td>
+                    <td class="">${button}</td>
+                    <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.status}</td>`;
+                    //for (let cIndex = 0; cIndex < subtopic.content_details.length; cIndex++) {
+                    //    var subtopicContent = subtopic.content_details[cIndex];
+                    //    subTopicTableData += `
+                    //        <span>${subtopicContent.url}</span><br>`;
+                    //}
+                    //`</td>`;
+                    
+                    
+                    //`<td>`;
+                    //    for (let cIndex = 0; cIndex < subtopic.content_details.length; cIndex++) {
+                    //        var subtopicContent = subtopic.content_details[cIndex];
+                    //        subTopicTableData += `
+                    //            ${subtopicContent.status}<br>`;
+                    //            
+                    //    }
+                    //`</td>`;
+                
+                subTopicTableData += `</tr>`;
+                $("#subtopicsDetails").append(subTopicTableData);
             }
-        }
+
+
+
+
+
+        //$("#subtopicsDetails").append(subTopicTableData);
+        })
+
+
+
+
+        //for (let main_index = 0; main_index < topics.length; main_index++) {
+        //    const topic = topics[main_index];
+        //    if (topic["id"] == topicId) {
+        //        let subtopics = topic['subtopics']
+        //        document.getElementById('topic_name').innerHTML = topic["name"]
+        //        document.getElementById('subtopics_length').innerHTML = "(" + topic["subtopics"].length + ")"
+//
+        //        for (let index = 0; index < subtopics.length; index++) {
+        //            const subtopic = subtopics[index];
+        //            let click = "location.href='/v2/subtopic/content-details/?subtopic_id=" + subtopic["id"] + "&topic_id=" + topic["id"] + "&offering_id=" + offeringId + "&center_id=" + centerId + "&ayfy_id=" + ayId + "'"
+        //            let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
+//
+        //            let checkButton = ''
+//
+        //            if (subtopic['hasViewed'] == 1) {
+        //                onclick = ''
+        //                checkButton = '<div class="text-center text-green-400 p-2"><i class="far fa-check-circle fa-2x"></i></div>'
+        //            }
+//
+        //            let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
+//
+        //            if (subtopic["type"].includes('2')){
+        //                button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="student_confirm_pop(${topic["id"]})" >Take Quiz</button>`
+//
+        //            }
+//
+//
+        //            $("#subtopics").append(`<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
+        //                <td class="text-center text-xl p-2 mobile_hide">${index + 1}</td>
+        //                <td class="p-2 text-left">${subtopic["name"]}</td>
+        //                <td class="">${button}</td>
+        //                <td class="flex items-center justify-around pt-2 border-l">
+        //                    <div id="s${subtopic["id"]}" class="w-16 text-center text-base font-bold mobile_hide">Not Completed</div>
+        //                    <div id="checkbutton${subtopic["id"]}">${checkButton}<div>
+        //                </td>
+        //            </tr>`)
+        //            if (subtopic['hasViewed'] == 1) {
+        //                // document.getElementById('k' + subtopic["id"]).classList.remove('bg-red-600')
+        //                // document.getElementById('y' + subtopic["id"]).classList.add('translate-x-full')
+        //                // document.getElementById('k' + subtopic["id"]).classList.add('bg-green-600')
+        //                // document.getElementById('k' + subtopic["id"]).classList.add('cursor-not-allowed')
+        //                document.getElementById('s' + subtopic["id"]).innerHTML = 'Completed ' + subtopic['viewCount'] + ' times'
+        //            }
+        //        }
+        //    }
+        //}
     }
-
-
-    function update_status(subtopic_id, status) {
-        $.ajax({
-            url: "/v2/sub-topics/update-status/", // the endpoint
-            type: "POST", // http method
-            data: {
-                "offering_id": offeringId,
-                "center_id": centerId,
-                "subtopic_id": parseInt(subtopic_id),
-                "has_viewed": parseInt(status)
-            },
-
-            success: function(response) {
-
-                console.log('response', response)
-            },
-
-            error: function(xhr, errmsg, err) {
-                toggle(subtopic_id)
-                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg + "></div>")
-                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-            }
-        });
-    }
-
-    topicId = undefined
-    studentId = undefined
-    function student_confirm_pop(getTopic_id){
-        console.log('inside student confirm popup')
-        topicId = getTopic_id
-        console.log(topicId)
-        $('#studentPopup').show();
-        
-    }
-
-    function startQuiz() {
-      window.open('/partner/quizplayer/?center_id='+ centerId +'&offering_id='+offeringId+'&ayfy_id='+ ayId +'&topic_id='+topicId+'&student_id='+ studentId+'&offering_id='+offeringId, '_blank');
-    }
-
-    $(document).ready(function () {
-        $('#selectStudent').selectize({
-            sortField: 'text',
-        
-        onChange: function(val) {
-        var selectedStudent = this.options[val]; // <-- pull data-data from the original options
-        studentId = selectedStudent.value
-        console.log(selectedStudent.value); // stores the data-data as a json object
-        }
-      });
-    });
-
 
 </script>
 
-<script>
-    
-
-    let modal = document.getElementById("att_pop");
-
-    function modalHandler(val) {
-        
-        if (val) {
-            fadeIn(modal);
-        } else {
-            fadeOut(modal);
-        }
-        var current_time = Date.now() - (new Date()).getTimezoneOffset() * 60000;
-        var today = new Date();
-
-        let mhour = today.getHours().toString();
-        if (mhour.length < 2) {
-            mhour = '0' + mhour;
-        }
-        let mminutes = today.getMinutes().toString();
-        if (mminutes.length < 2) {
-            mminutes = '0' + mminutes;
-        }
-        let previous_hour = (today.getHours() - 1).toString();
-        if (previous_hour.length < 2) {
-            previous_hour = '0' + previous_hour;
-        }
-        //console.log(mhour, previous_hour, mminutes)
-        document.getElementById('class_from_date').value = today.toISOString().substring(0, 10);
-        document.getElementById('class_from_time').value = previous_hour + ':' + mminutes;
-        document.getElementById('class_to_time').value = mhour + ':' + mminutes;
-        document.getElementById('flm_attendance_comment').value = ''
-        document.getElementById('present_count').innerText = '0'
-        let k = document.getElementById('ktx');
-        let x = document.getElementById('xtx');
-        let y = document.getElementById('ytx');
-        y.classList.remove('translate-x-full')
-        k.classList.remove('bg-green-600')
-        k.classList.add('bg-red-600')
-        x.value = 0;
-
-    }
-
-    function fadeOut(el) {
-        el.style.opacity = 1;
-        (function fade() {
-            if ((el.style.opacity -= 0.1) < 0) {
-                el.style.display = "none";
-            } else {
-                requestAnimationFrame(fade);
-            }
-        })();
-    }
-
-    function fadeIn(el, display) {
-        get_students()
-        el.style.opacity = 0;
-        el.style.display = display || "flex";
-        (function fade() {
-            let val = parseFloat(el.style.opacity);
-            if (!((val += 0.2) > 1)) {
-                el.style.opacity = val;
-                requestAnimationFrame(fade);
-            }
-        })();
-    }
-
-    function attendance_toggle(n) {
-        let k = document.getElementById('kt' + n);
-        let x = document.getElementById('xt' + n);
-        let y = document.getElementById('yt' + n);
-
-        if (x.value === "0") {
-            y.classList.add('translate-x-full')
-            k.classList.remove('bg-red-600')
-            k.classList.add('bg-green-600')
-            x.value = 1;
-
-            
-        } else {
-            y.classList.remove('translate-x-full')
-            k.classList.remove('bg-green-600')
-            k.classList.add('bg-red-600')
-            x.value = 0;
-
-        }
-        check_is_all_toggled()
-    }
-
-    function check_is_all_toggled() {
-        
-        i = 0
-        for (let index = 0; index < enrolledStudents.length; index++) {
-            i = i + parseInt(document.getElementById('xt' + enrolledStudents[index]['id']).value);
-        }
-
-        document.getElementById('present_count').innerText = i
-        let k = document.getElementById('ktx');
-        let x = document.getElementById('xtx');
-        let y = document.getElementById('ytx');
-
-        if (enrolledStudents.length == i) {
-            y.classList.add('translate-x-full')
-            k.classList.remove('bg-red-600')
-            k.classList.add('bg-green-600')
-            x.value = 1;
 
 
-        } else {
-            y.classList.remove('translate-x-full')
-            k.classList.remove('bg-green-600')
-            k.classList.add('bg-red-600')
-            x.value = 0;
 
-        }
-    }
-
-    function get_students() {
-
-        if($('#class_from_date').val() == '') {
-            // Fix the case class_from_date is unset
-            var today = new Date();
-            document.getElementById('class_from_date').value = today.toISOString().substring(0, 10);
-        }
-        
-        var date = new Date($('#class_from_date').val())
-        console.log(date)
-        //date.setDate(date.getDate() + 1)
-        console.log(date)
-        let classFromDate = date.getTime() / 1000 //to gmt
-
-        $.ajax({
-            url: "/v2/flm-attendance/", // the endpoint
-            type: "GET", // http method
-            data: {
-                "offeringId": offeringId,
-                "centerId": centerId,
-                "ayfyId": ayId,
-                "classFromDate": classFromDate
-            },
-
-            success: function(response) {
-                console.log(response)
-                if (is_update){
-                    document.getElementById('updateButton').innerHTML = 'Update';
-                }
-                if (response['status'] == 'success') {
-                    enrolledStudents = response['data']['students']
-                    make_students_table(response)
-                } else if (response['status'] == 'error') {
-                    alert(response['data']['message'])
-                }
-
-            }
-        });
-    }
-
-    function make_students_table(data) {
-        $("#students tr").remove();
-        let students = data['data']['students']
-        let old_student_ids = data['data']['old_student_ids']
-        let old_subtopics = data['data']['old_subtopics']
-        document.getElementById('teacher_name').innerText = data['data']['teacherName']
-        document.getElementById('ptx').value = students.length;
-        document.getElementById('total_students_count').innerText = students.length;
-        for (let index = 0; index < students.length; index++) {
-            const student = students[index];
-            $("#students").append('<tr class="flex items-center justify-around w-full border-b border-gray-300 hover:bg-gray-100">\
-                            <td id="ut' + student["id"] + '" class="py-2 w-auto">' + student["id"] + '</td>\
-                            <td class="py-2 w-2/4 text-center">' + student["name"] + '</td>\
-                            <td class="p-2 w-1/4 flex justify-center"><div id="kt' + student["id"] + '" onclick="attendance_toggle(' + student["id"] + ')" class="border rounded-full border-grey-200 flex items-center cursor-pointer w-16 justify-start bg-red-600 ">\
-                                    <div id="yt' + student["id"] + '" class="rounded-full border w-8 h-8 border-grey shadow-inner bg-white text-center shadow transform duration-300 text-sm font-bold"></div>\
-                                        <input id="xt' + student["id"] + '" class="hidden" type="number" value="0">\
-                                    </div></td></tr>')
-        }
-
-        for (let index = 0; index < old_student_ids.length; index++){
-            attendance_toggle(old_student_ids[index].toString())
-        }
-
-        if (old_subtopics.length > 0){
-            $('#selectTopics option[value="'+old_subtopics[0]["topicId"]+'"]').prop('selected', true);
-        }
-
-        let old_subtopic_ids = []
-        for (let index = 0; index < old_subtopics.length; index++){
-            old_subtopic_ids.push(old_subtopics[index]["subtopicId"])
-        }
-
-        
-
-        $("#selectSubtopics option").remove();
-        for (let index = 0; index < topics.length; index++) {
-            const element = topics[index];
-            if (element['id'] == $('#selectTopics').val()) {
-                for (let index = 0; index < element['subtopics'].length; index++) {
-                    const element2 = element['subtopics'][index]
-                    $("#selectSubtopics").append('<option value="' + element2['id'] + '">' + element2['name'] + '</option>');
-                }
-            }
-        }
-
-        $('#selectSubtopics option').each(function() {
-            if (old_subtopic_ids.includes(parseInt($(this).val()))) {
-                $(this).prop('selected', true);
-            }
-        });
-
-        $('#flm_attendance_comment').val(data['data']['old_comment']);
-        
-    }
-
-    function display_message(message) {
-        $("#att_pop_data div").remove();
-        $("#att_pop_data").append('<div role="alert" class="w-full h-96 flex items-center justify-center">\
-                                        <div role="alert">\
-                                            <div class="bg-red-500 text-white font-bold rounded-t w-full px-4 py-2">Message</div>\
-                                            <div class="border border-t-0 border-red-400 rounded-b w-full bg-red-100 px-4 py-3 text-red-700">\
-                                                <p>' + message + '</p>\
-                                            </div></div></div>');
-    }
-
-    $('#class_from_date').change(function() {
-        let d = new Date($('#class_from_date').val()); //Class Start Date
-        let todayDate = new Date(); //Today Date
-        if (d > todayDate) {
-            document.getElementById('err_msg').innerText = '** Class Date is greater than today.';
-        } else {
-            document.getElementById('err_msg').innerText = '';
-        }
-    })
-
-
-    function toggle_all() {
-
-        let k = document.getElementById('ktx');
-        let x = document.getElementById('xtx');
-        let y = document.getElementById('ytx');
-        let p = document.getElementById('ptx').value;
-
-        if (x.value === "0") {
-            y.classList.add('translate-x-full')
-            k.classList.remove('bg-red-600')
-            k.classList.add('bg-green-600')
-            x.value = 1;
-        } else {
-            y.classList.remove('translate-x-full')
-            k.classList.remove('bg-green-600')
-            k.classList.add('bg-red-600')
-            x.value = 0;
-
-        }
-
-        var xtx = x.value;
-        for (let index = 0; index < enrolledStudents.length; index++) {
-
-            let k = document.getElementById('kt' + enrolledStudents[index]['id']);
-            let x = document.getElementById('xt' + enrolledStudents[index]['id']);
-            let y = document.getElementById('yt' + enrolledStudents[index]['id']);
-
-            if (xtx === "1") {
-                y.classList.add('translate-x-full')
-                k.classList.remove('bg-red-600')
-                k.classList.add('bg-green-600')
-                x.value = 1;
-                document.getElementById('present_count').innerText = p
-
-
-            } else {
-                y.classList.remove('translate-x-full')
-                k.classList.remove('bg-green-600')
-                k.classList.add('bg-red-600')
-                x.value = 0;
-                document.getElementById('present_count').innerText = 0
-
-            }
-        }
-    }
-
-    function submit_attendance() {
-        var d = new Date($('#class_from_date').val())
-        let classFromTime = parseInt(Math.round(new Date(new Date(d.toString().split(":")[0].slice(0, -2) + $('#class_from_time').val()).getTime() + d.getTimezoneOffset() * 60000) / 1000));
-        let classToTime = parseInt(Math.round(new Date(new Date(d.toString().split(":")[0].slice(0, -2) + $('#class_to_time').val()).getTime() + d.getTimezoneOffset() * 60000) / 1000));
-        let comment = document.getElementById('flm_attendance_comment').value;
-        let topicId = document.getElementById('selectTopics').value;
-        let subtopicIds = document.getElementById('selectSubtopics')
-        subtopicIds = [...subtopicIds.options].filter(option => option.selected).map(option => option.value)
-        let students_data = []
-        for (let index = 0; index < enrolledStudents.length; index++) {
-            let student = {}
-            student['id'] = parseInt(document.getElementById('ut' + enrolledStudents[index]['id']).innerText);
-            student['is_present'] = parseInt(document.getElementById('xt' + enrolledStudents[index]['id']).value);
-            students_data.push(student)
-        }
-
-        if (subtopicIds.length == 0 || students_data.length == 0) {
-            alert("Please select atleast one student/subtopic.")
-            return false;
-        }
-
-        let data = {
-            "offeringId": offeringId,
-            "centerId": centerId,
-            "ayfyId": ayId,
-            "classStart": classFromTime,
-            "students": students_data,
-            "classEnd": classToTime,
-            "comment": comment,
-            'topicId': topicId,
-            'subtopicIds': subtopicIds
-        }
-        let students_data_json = JSON.stringify(data)
-        console.log(data);
-        $.ajax({
-            url: "/v2/flm-attendance/", // the endpoint
-            type: "POST", // http method
-            data: students_data_json, // data sent with the post request
-            dataType: "json",
-            ContentType: 'application/json; charset=utf-8',
-
-            success: function(response) {
-                console.log(response)
-                if (response['status'] == 'success') {
-                    alert(response['data']['message'])
-                    modalHandler()
-                    location.reload();
-                } else if (response['status'] == 'error') {
-                    alert(response['error']['message'])
-                    modalHandler()
-                }
-
-            }
-        });
-
-    }
-
-    $(document).on('change','#selectTopics',function(){
-        $("#selectSubtopics option").remove();
-        for (let index = 0; index < topics.length; index++) {
-            const element = topics[index];
-            if (element['id'] == $(this).val()){
-                for (let index = 0; index < element['subtopics'].length; index++) {
-                    const element2 = element['subtopics'][index]
-                    $("#selectSubtopics").append('<option value="' + element2['id'] + '">' + element2['name'] + '</option>');
-                }
-            }
-        }
-    });
-
-    
-
-    
-    {% if is_digital or is_sampoorna %}
-    $(document).ready(function() { 
-        modalHandler(true); 
-        
-    });
-    
-    {% endif %}
-    $(document).ready(function() { 
-        for (let index = 0; index < topics.length; index++) {
-            const element = topics[index];
-            $("#selectTopics").append('<option value="' + element['id'] + '">' + element['name'] + '</option>');
-        }
-        $('#selectTopics select option:first-child').click();
-    });
-</script>
 
 
 

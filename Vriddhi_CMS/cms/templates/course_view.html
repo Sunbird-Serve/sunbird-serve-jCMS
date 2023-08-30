@@ -18,7 +18,7 @@
 
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">
             <select class="custom-select" id="filterDropdown">
                 <option value="" >Select Board</option>
                 <option value="all" >All Board</option>
@@ -40,7 +40,8 @@
         <div class="row" id="courseContainer">
             {% for course in courses %}
                 <div class="col-md-4 mb-4">
-                    <div class="course-card">
+                    <div class="course-card course_details" >
+                        <input type="hidden" class="course_id" value="{{course.id}}">
                         <h5 class="course-title">{{ course.board.board_name }}</h5>
                         <p class="course-detail"><strong>Subject:</strong> {{ course.subject.subject_name }}</p>
                         <p class="course-detail"><strong>Grade:</strong> {{ course.grade }}</p>
@@ -103,6 +104,14 @@
                 }
                 $("#loader").hide();
             })
+        });
+
+
+        $(document).ready(function() {
+            $(document).on('click', '.course_details', function() {
+                var courseID = $(this).find('.course_id').val();
+                window.location.href = '/home/view_content/?courseID=' + courseID;
+            });
         });
     });
 </script>
