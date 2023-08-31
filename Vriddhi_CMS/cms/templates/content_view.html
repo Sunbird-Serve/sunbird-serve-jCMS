@@ -195,6 +195,11 @@
     </div>
 
     <div class="w-full md:w-4/5 h-full bg-gray-50 justify-center shadow-inner shadow-2xl">
+
+        <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board_name}} - {{subject_name}} - {{grade}} grade</div>
+
+
+
         <h5 id="topic_name" class="text-left mx-24 p-4 font-bold text-xl mx-4 text-blue-600"></h5>
         <div class="px-2 lg:px-24 overflow-y-auto border-t-2 border-blue-400 rounded-lg subtopics_container">
             <table class="w-full table-fixed ">
@@ -345,6 +350,9 @@
     function make_topics_table(topics) {
 
         var topics = {{ topic_data_json|safe }};
+        var board_name = "{{ board_name }}";
+        var subject_name = "{{ subject_name }}";
+        var grade = "{{ grade }}";
 
         $("#topics div").remove();
         for (let index = 0; index < topics.length; index++) {
@@ -366,6 +374,7 @@
     }
 
     //Get subtopic details
+
     function subtopic(topicId) {
         make_subtopics_table(topics, topicId)
     }
@@ -393,32 +402,11 @@
                     <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.name}</td>
                     <td class="">${button}</td>
                     <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.status}</td>`;
-                    //for (let cIndex = 0; cIndex < subtopic.content_details.length; cIndex++) {
-                    //    var subtopicContent = subtopic.content_details[cIndex];
-                    //    subTopicTableData += `
-                    //        <span>${subtopicContent.url}</span><br>`;
-                    //}
-                    //`</td>`;
-                    
-                    
-                    //`<td>`;
-                    //    for (let cIndex = 0; cIndex < subtopic.content_details.length; cIndex++) {
-                    //        var subtopicContent = subtopic.content_details[cIndex];
-                    //        subTopicTableData += `
-                    //            ${subtopicContent.status}<br>`;
-                    //            
-                    //    }
-                    //`</td>`;
                 
                 subTopicTableData += `</tr>`;
                 $("#subtopicsDetails").append(subTopicTableData);
             }
 
-
-
-
-
-        //$("#subtopicsDetails").append(subTopicTableData);
         })
 
 

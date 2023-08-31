@@ -2,19 +2,18 @@
 {% block content %}
 
 
-
 <div class="w-full bg-gray-50" style="font-family: 'Roboto', sans-serif;">
     <div class="flex flex-col md:flex-row py-10">
         <div class="w-full md:w-1/4 rounded-full flex items-center justify-center">
-            <a href="/v2/offering/topic-details/?center_id={{centerId}}&offering_id={{offeringId}}&ayfy_id={{ayId}}&topic_id={{topicId}}" class="hover:no-underline ">
+            <a href="/home/content_detail/?courseID={{courseId}}" class="hover:no-underline ">
                 <div class="flex items-center justify-around text-center">
                     <div class="text-center text-4xl mx-4 text-red-600 transform hover:scale-150"><i class="fas fa-long-arrow-alt-left"></i></div>
-                    <div class="text-xl font-bold text-left px-1">{{subtopic_name|title}}    </div>
+                    <div class="text-xl font-bold text-left px-1">{{subtopic_name|title}} </div>
                 </div>
             </a>
         </div>
 
-        <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board}} - {{subject}} {{grade}} </div>
+        <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board_name}} - {{subject}} {{grade}} </div>
         <div class="w-full md:w-1/4 px-4">
             <div class="text-center bg-yellow-400 font-bold text-xl p-2 rounded-lg cursor-pointer hove:scale-105" onclick="$('#rating_pop').show()">Rate this Content</div>
         </div>
@@ -38,14 +37,14 @@
             </div> 
             {% comment %} <video controls>
                 <source src="{{ Video.1.url }}" type="video/mp4">
-            </video> {% endcomment %}
+            </video>  {% endcomment %}
 
 
-            <div class="flex w-full px-2 md:px-10 my-10 pb-4 border-b">
+            {% comment %} <div class="flex w-full px-2 md:px-10 my-10 pb-4 border-b">
                 <div class="w-3/5">
                     <h3 id="video_title" class="text-left text-3xl font-bold">{{Video.1.title}}</h3>
                 </div>
-            </div> 
+            </div>  {% endcomment %}
         </div>
 
         <div id="new_play_list" class="w-full h-[32rem] md:h-[42rem] lg:mr-10 md:-mt-10 md:border border-black overflow-y-auto md:overscroll-none">
@@ -54,7 +53,7 @@
             <div class="m-4 py-2 border-b hover:bg-gray-200 hover:text-green-500">
               <div class="w-full flex">
                 <div id="video{{ forloop.counter }}" onclick="playVideo('{{ video.url }}', '{{ video.contentType }}', '{{ video.title }}', '{{ video.description }}', '{{ video.id }}')" class="cursor-pointer h-32 md:h-48 w-72 md:w-1/2 bg-contain md:bg-cover bg-center bg-no-repeat flex items-end justify-end" style="background-image: url('{{ video.thumbnailUrl }}')" title="{{ video.title }}">
-                  <p class="p-2 bg-blue-400 rounded-full text-base text-gray-800">{{ video.duration }}</p>
+                  <p class="p-2 bg-blue-400 rounded-full text-base text-gray-800">{{ video.duration }} -- {{ forloop.counter }}</p>
                 </div> 
                 <div class="w-3/4 md:w-1/2 p-4 flex flex-col justify-between leading-normal">
                   <div class="h-4">
@@ -269,7 +268,7 @@
 
     var subtopic_id = '{{subtopic_id}}'
     var subtopic_name = '{{subtopic_name}}'
-    //var player = videojs('my_video_player');
+    var player = videojs('my_video_player');
     var $x = $('#menu div').click(function() {
         $x.removeClass('selected');
         $(this).addClass('selected');
@@ -277,7 +276,8 @@
     
 
     $('document').ready(function() {
-        let video_id = document.getElementById('video0')
+
+        let video_id = document.getElementById('video1')
         if (video_id) {
             $('#no_video').hide()
             $('#my_video_player').show()
@@ -296,7 +296,7 @@
         document.getElementById('current_video_description').innerHTML = description
         player.src({
             src: videoSource,
-            type: 'video/' + type
+            //type: 'video/' + type
         });
 
         player.currentTime(50)
@@ -315,9 +315,12 @@
 
     }
 
+    make_videos_table()
     function make_videos_table() {
         player.autoplay('muted');
         // $("#flm_play_list div").remove();
+        var title = '{{title}}';
+    
         for (let index = 0; index < videos_data.length; index++) {
             const video = videos_data[index];
             let thumbnailUrl = '/static/img/video_placeholder.png'
@@ -340,17 +343,17 @@
             let title = "'" + (video["title"]).replace("'", "") + "'"
             let description = "'" + (video["description"]).replace("'", "") + "'"
             let id = "'" + video["id"] + "'"
-            $('#flm_play_list').append('<div class="m-4 py-2 border-b hover:bg-gray-200 hover:text-green-500">\
-                                    <div class=" w-full flex">\
-                                        <div id="video' + index + '" onclick="playVideo(' + url + ', ' + type + ', ' + title + ', ' + description + ', ' + id + ')" class="cursor-pointer h-32 md:h-48 w-72 md:w-1/2 bg-contain md:bg-cover bg-center bg-no-repeat flex items-end justify-end" style="background-image: url(' + thumbnailUrl + ')" title="' + video['title'] + '"><p class="p-2 bg-blue-400 rounded-full text-base text-gray-800">' + duration + '</p></div>\
-                                        <div class="w-3/4 md:w-1/2 p-4 flex flex-col justify-between leading-normal">\
-                                            <div class="h-4">\
-                                                <div class="font-bold text-xl md:text-3xl">' + video['title'] + '</div>\
-                                            </div>\
-                                            <div class="font-bold text-base md:text-xl">'+video['author']+'</div>\
-                                        </div>\
-                                    </div>\
-                                </div>');
+            //$('#flm_play_list').append('<div class="m-4 py-2 border-b hover:bg-gray-200 hover:text-green-500">\
+            //                        <div class=" w-full flex">\
+            //                            <div id="video' + index + '" onclick="playVideo(' + url + ', ' + type + ', ' + title + ', ' + description + ', ' + id + ')" class="cursor-pointer h-32 md:h-48 w-72 md:w-1/2 bg-contain md:bg-cover bg-center bg-no-repeat flex items-end justify-end" style="background-image: url(' + thumbnailUrl + ')" title="' + video['title'] + '"><p class="p-2 bg-blue-400 rounded-full text-base text-gray-800">' + duration + '</p></div>\
+            //                            <div class="w-3/4 md:w-1/2 p-4 flex flex-col justify-between leading-normal">\
+            //                                <div class="h-4">\
+            //                                    <div class="font-bold text-xl md:text-3xl">' + video['title'] + '</div>\
+            //                                </div>\
+            //                                <div class="font-bold text-base md:text-xl">'+video['author']+'</div>\
+            //                            </div>\
+            //                        </div>\
+            //                    </div>');
         }
     }
     

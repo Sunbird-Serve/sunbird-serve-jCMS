@@ -14,7 +14,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 # from django.core.paginator import Paginator
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
 from datetime import timedelta
 from django.shortcuts import render as render_response
 from django.utils.decorators import method_decorator
@@ -74,22 +74,20 @@ def view_course(request):
 
 def view_course(request):
     get_all_board = Board.objects.all()
-    get_course_details = Course.objects.all()
-
     # Number of items per page
-    items_per_page = 10  # You can adjust this according to your preference
+    items_per_page = 2  # You can adjust this according to your preference
 
-    paginator = Paginator(get_course_details, items_per_page)
-    page = request.GET.get('page')
+    queryset = Course.objects.all()
+    paginator = Paginator(queryset, items_per_page)
+    page_number = request.GET.get('page')
 
-    try:
-        courses = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        courses = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        courses = paginator.page(paginator.num_pages)
+    if page_number:
+        page_number = int(page_number)  # Convert to integer
+    else:
+        page_number = 1  # Default to first page
+    
+
+    courses = paginator.page(page_number)
 
     return render(request, 'course_view.html', {
         'get_all_board': get_all_board,
@@ -119,11 +117,20 @@ def view_content(request):
 
 def content_detail_view(request):
     course_id = request.GET.get('courseID')
+    courseData = Course.objects.get(id=course_id)
+    boardName = Board.objects.get(id=courseData.board_id)
+    subjectName = Subject.objects.get(id=courseData.subject_id)
+
     topics = Topic.objects.filter(course_id=course_id)
     topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
     response_data = json.dumps(topic_data)
-    return render(request, 'content_view.html', {'topic_data_json': response_data})
 
+    return render(request, 'content_view.html', {
+        'topic_data_json': response_data,
+        'board_name': boardName,
+        'subject_name': subjectName,
+        'grade': courseData.grade
+    })
 # def getSubtopic(request):
 #     topicId = request.GET.get('topicId')
 #     subTopic = SubTopics.objects.filter(topic_id = topicId)
@@ -402,6 +409,7 @@ class SubTopicDetailsView(View):
                 'subject': topicObj.course.subject.subject_name,
                 'grade': topicObj.course.grade,
                 'board': topicObj.course.board.board_name,
+                'courseId':topicObj.course_id,
                 'topicId':topicId
             }
             for i in range(len(contentRecords)):
@@ -432,6 +440,12 @@ class SubTopicDetailsView(View):
             context = contentDetailData
 
 
+
+            # videoList= []
+            # videoList.append(contentRec.url)
+            # cList = len(videoList)
+            # print(video_list_length)
+
             # cList, videoList = self.getContentFromThirdParty()
 
             # if cList and len(cList) > 0:
@@ -444,7 +458,11 @@ class SubTopicDetailsView(View):
             #     evdList = context['video']
             #     if evdList and len(evdList) > 0:
             #         evdList.extend(videoList)
-            
+
+            # response_data = json.dumps(context)
+            # print((response_data))
+            # return render(self.request, 'flm_content_details.html', {'contentDetails': response_data})
+
             return render_response(self.request, 'flm_content_details.html', context)
         except  Exception  as e:
             return HttpResponseNotFound("Page not found " + e.message)
