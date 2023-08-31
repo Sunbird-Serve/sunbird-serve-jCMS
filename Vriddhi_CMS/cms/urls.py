@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^home/content_detail/$', content_detail_view, name='content_detail'),
     url(r'^home/getSubtopic/?$', getSubtopic, name='getSubtopic'),
     url(r'^subtopic/content-details/?$', SubTopicDetailsView.as_view(), name="SubTopicDetailsView"),
+    url(r'^subtopic/content_rating/$', content_rating, name='content_rating'),
 
 
 

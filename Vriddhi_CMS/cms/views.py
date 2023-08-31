@@ -432,21 +432,18 @@ class SubTopicDetailsView(View):
             context = contentDetailData
 
 
+            # cList, videoList = self.getContentFromThirdParty()
 
-            cList, videoList = self.getContentFromThirdParty()
+            # if cList and len(cList) > 0:
+            #     context['tpContentList'] = cList
+            #     context['showTpContent'] = 1
+            # else:
+            #     context['showTpContent'] = 0
 
-            if cList and len(cList) > 0:
-                context['tpContentList'] = cList
-                context['showTpContent'] = 1
-            else:
-                context['showTpContent'] = 0
-
-            if videoList and len(videoList) > 0:
-                evdList = context['video']
-                if evdList and len(evdList) > 0:
-                    evdList.extend(videoList)
-
-
+            # if videoList and len(videoList) > 0:
+            #     evdList = context['video']
+            #     if evdList and len(evdList) > 0:
+            #         evdList.extend(videoList)
             
             return render_response(self.request, 'flm_content_details.html', context)
         except  Exception  as e:
@@ -472,6 +469,26 @@ class SubTopicDetailsView(View):
         except Exception as e:
             traceback.print_exc()
             return genUtility.getStandardErrorResponse(request, 'kInvalidRequest')
+
+def content_rating(request):
+    # {topicId: "4", subtopicId: "1", videoRating: 3, worksheetRating: 4, comment: "ss"}
+    if request.method == 'POST':
+        topicId = request.POST.get('topicId')
+        subtopicId = request.POST.get('subtopicId')
+        videoRating = request.POST.get('videoRating')
+        worksheetRating = request.POST.get('worksheetRating')
+        comment = request.POST.get('comment')
+
+
+        contentreating = FLMContentRating( subtopic_id=subtopicId, videoRating=videoRating, worksheetRating=worksheetRating, comment=comment, status='active', reviewer_id='0')
+        contentreating.save()
+        course_data={
+            "status" : "success",
+            "message": "Rating saved successfully",
+        }
+        response_data = json.dumps(course_data)
+        return HttpResponse(response_data, content_type="application/json")
+
 
 def logout_view(request):
     logout(request)

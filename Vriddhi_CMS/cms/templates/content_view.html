@@ -345,7 +345,7 @@
     function make_topics_table(topics) {
 
         var topics = {{ topic_data_json|safe }};
-        console.log(topics);
+
         $("#topics div").remove();
         for (let index = 0; index < topics.length; index++) {
             const topic = topics[index];
