@@ -3,8 +3,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 import json
 from django.http import HttpResponse
-from cms.models import Course
-from cms.models import Topic
+from cms.models import *
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+# from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def register(request):
     if request.method == 'POST':
