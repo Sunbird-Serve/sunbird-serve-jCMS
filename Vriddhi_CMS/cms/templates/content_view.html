@@ -196,7 +196,17 @@
 
     <div class="w-full md:w-4/5 h-full bg-gray-50 justify-center shadow-inner shadow-2xl">
 
-        <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board_name}} - {{subject_name}} - {{grade}} grade</div>
+
+        <div class="flex mobile_hide">
+            <div class="w-full md:w-3/5 lg:w-4/5 mt-10 text-center font-bold text-3xl p-2 justify-self-center">{{board_name}} - {{subject_name}} - {{grade}} grade</div>
+            <div class="w-full md:w-2/5 mt-4 justify-self-end space-y-4">
+                <div onclick="location.href='/home/view_course/'" class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Center</div>
+            </div>
+        </div>
+
+
+
+        {% comment %} <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board_name}} - {{subject_name}} - {{grade}} grade</div> {% endcomment %}
 
 
 
@@ -351,13 +361,22 @@
 
         var topics = {{ topic_data_json|safe }};
         var board_name = "{{ board_name }}";
+        var topic_id = "{{ topic_id }}"
         var subject_name = "{{ subject_name }}";
         var grade = "{{ grade }}";
+        var subtopic_id = "{{ subtopic_id }}";
+        var subtopic_name = "{{ subtopic_name }}";
+        var subtopic_status = "{{ subtopic_status }}";
+        var topic_name = "{{ topic_name }}";
+
+        $("#topic_name").empty(); 
+        $("#topic_name").append(`<b>${topic_name}</b>`);
+
+
 
         $("#topics div").remove();
         for (let index = 0; index < topics.length; index++) {
             const topic = topics[index];
-            console.log(topic);
             let id = 'topicdiv_' + topic["id"];
             let active = '';
             if (index == 0) {
@@ -371,6 +390,23 @@
                                     </div></div>')
 
         }
+
+        $("#subtopicsDetails").empty(); 
+
+        let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic_id + "&topic_id=" + topic_id + "'"
+        let onclick = 'onclick="popup(' + subtopic_id + ')"'
+        
+        let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
+
+        var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
+            <td class="text-center text-xl p-2 mobile_hide">1</td>
+            <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic_name}</td>
+            <td class="">${button}</td>
+            <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic_status}</td>`;
+        
+        subTopicTableData += `</tr>`;
+        $("#subtopicsDetails").append(subTopicTableData);
+
     }
 
     //Get subtopic details
@@ -386,14 +422,12 @@
         $.get('/home/getSubtopic/',data,function(response,status){
             var subtopics = response
 
-
             for (let index = 0; index < subtopics.length; index++) {
                 var subtopic = subtopics[index];
 
                 let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic.id + "&topic_id=" + topicId + "'"
                 let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
 
-                console.log(subtopic.content_details);
 
                 let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
 
@@ -405,7 +439,12 @@
                 
                 subTopicTableData += `</tr>`;
                 $("#subtopicsDetails").append(subTopicTableData);
+
+                $("#topic_name").empty(); 
+                $("#topic_name").append(`<b>${subtopic.topic_name}</b>`);
             }
+
+
 
         })
 

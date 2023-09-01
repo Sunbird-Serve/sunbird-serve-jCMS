@@ -106,7 +106,21 @@ def get_filtered_courses(request):
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
 
+def search_courses(request):
+    search_input = request.GET.get('searchInput')
 
+    # Initialize an empty list to store the filtered courses
+    filtered_courses = []
+
+    if search_input:
+        # Filter courses based on both subject name and grade
+        filtered_courses = Course.objects.filter(
+            Q(grade__icontains=search_input) | Q(subject__subject_name__icontains=search_input) | Q(board__board_name__icontains=search_input)
+        )
+    print(filtered_courses)
+    course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in filtered_courses]
+    response_data = json.dumps(course_data)
+    return HttpResponse(response_data, content_type="application/json")
 
 
 def view_content(request):
@@ -122,6 +136,14 @@ def content_detail_view(request):
     subjectName = Subject.objects.get(id=courseData.subject_id)
 
     topics = Topic.objects.filter(course_id=course_id)
+
+    firstTopic = Topic.objects.filter(course_id=course_id)[:1]
+
+    if firstTopic:
+        topic_id = firstTopic[0].id
+        subtopic = SubTopics.objects.get(topic_id=topic_id)
+   
+
     topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
     response_data = json.dumps(topic_data)
 
@@ -129,7 +151,12 @@ def content_detail_view(request):
         'topic_data_json': response_data,
         'board_name': boardName,
         'subject_name': subjectName,
-        'grade': courseData.grade
+        'grade': courseData.grade,
+        "topic_id":subtopic.topic_id,
+        "topic_name":subtopic.topic.title,
+        "subtopic_id": subtopic.id,
+        "subtopic_name": subtopic.name,
+        "subtopic_status": subtopic.status
     })
 # def getSubtopic(request):
 #     topicId = request.GET.get('topicId')
@@ -152,6 +179,7 @@ def getSubtopic(request):
             "id": subtopic.id,
             "name": subtopic.name,
             "status": subtopic.status,
+            "topic_name": subtopic.topic.title,
             "content_details": []  # Initialize an empty list to store content details
         }
         
@@ -439,7 +467,7 @@ class SubTopicDetailsView(View):
 
             context = contentDetailData
 
-
+            print(context)
 
             # videoList= []
             # videoList.append(contentRec.url)

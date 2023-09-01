@@ -20,6 +20,7 @@ urlpatterns = [
     # url(r'^home/topics/?$', TopicDetailsView.as_view(), name='topic_details_by_center'),
     url(r'^logout/$', logout_view, name='logout'),
     url(r'^get_filtered_courses/$', get_filtered_courses, name='get_filtered_courses'),
+    url(r'^search_courses/$', search_courses, name='search_courses'),
     # url(r'^get_filtered_subtopic/$', get_filtered_subtopic, name='get_filtered_subtopic'),
     
 ]

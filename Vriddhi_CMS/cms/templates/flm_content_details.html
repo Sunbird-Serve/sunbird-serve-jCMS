@@ -13,7 +13,7 @@
             </a>
         </div>
 
-        <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board_name}} - {{subject}} {{grade}} </div>
+        <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board}} - {{subject}} {{grade}} </div>
         <div class="w-full md:w-1/4 px-4">
             <div class="text-center bg-yellow-400 font-bold text-xl p-2 rounded-lg cursor-pointer hove:scale-105" onclick="$('#rating_pop').show()">Rate this Content</div>
         </div>
@@ -53,7 +53,7 @@
             <div class="m-4 py-2 border-b hover:bg-gray-200 hover:text-green-500">
               <div class="w-full flex">
                 <div id="video{{ forloop.counter }}" onclick="playVideo('{{ video.url }}', '{{ video.contentType }}', '{{ video.title }}', '{{ video.description }}', '{{ video.id }}')" class="cursor-pointer h-32 md:h-48 w-72 md:w-1/2 bg-contain md:bg-cover bg-center bg-no-repeat flex items-end justify-end" style="background-image: url('{{ video.thumbnailUrl }}')" title="{{ video.title }}">
-                  <p class="p-2 bg-blue-400 rounded-full text-base text-gray-800">{{ video.duration }} -- {{ forloop.counter }}</p>
+                  <p class="p-2 bg-blue-400 rounded-full text-base text-gray-800">{{ video.duration }} </p>
                 </div> 
                 <div class="w-3/4 md:w-1/2 p-4 flex flex-col justify-between leading-normal">
                   <div class="h-4">
