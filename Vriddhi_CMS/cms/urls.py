@@ -6,7 +6,12 @@ urlpatterns = [
     url(r'^register/$', register, name='register'),
     url(r'^home/$', home, name='home'),
     url(r'^get_courses/$', get_courses, name='get_courses'),
-    url(r'^get_topics/$', get_topics, name='get_topics'),
+    url(r'^get_topics/?$', get_topics, name='get_topics'),
+    url(r'^home/view_course/?$', view_course, name='view_course'),
+    url(r'^home/view_content/?$', view_content, name='view_content'),
+    url(r'^logout/$', logout_view, name='logout'),
+    url(r'^get_filtered_courses/$', get_filtered_courses, name='get_filtered_courses'),
+    
 ]
 
 (r'^static/admin/(?P<path>.*)$', 'django.views.static.serve',
