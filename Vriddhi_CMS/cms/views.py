@@ -39,13 +39,10 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('home/view_course')
     
     return render(request, 'login.html')
 
-# Home page view
-def home(request):
-    return render(request, 'home.html')
 
 # Get all courses
 def get_courses(request):
