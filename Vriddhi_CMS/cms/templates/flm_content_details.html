@@ -318,7 +318,6 @@
     make_videos_table()
     function make_videos_table() {
         player.autoplay('muted');
-        // $("#flm_play_list div").remove();
         var title = '{{title}}';
     
         for (let index = 0; index < videos_data.length; index++) {
@@ -329,11 +328,6 @@
             if (duration) {
                 duration = new Date(duration * 1000).toISOString().substr(11, 8)
             }
-
-
-            // if (video['thumbnailUrl'] != '') {
-            //     thumbnailUrl = video['thumbnailUrl']
-            // }
 
             if (video['contentHost'] == 'youtube') {
                 type = "'youtube'"
@@ -359,130 +353,73 @@
     
 
 
-    function make_worksheet_table() {
-        $('#content_wraper').show()
-        $('#doubts_wraper').hide()
-        player.pause();
-        $("#content_details div").remove();
-        if (worksheets_data.length > 0) {
-        console.log("make_worksheet_table ",worksheets_data)
-            for (let index = 0; index < worksheets_data.length; index++) {
-                const worksheet = worksheets_data[index];
-                let url = "'" + worksheet['url'] + "'"
-                let id = "'" + worksheet['id'] + "'"
+    //function make_worksheet_table() {
+    //    $('#content_wraper').show()
+    //    $('#doubts_wraper').hide()
+    //    player.pause();
+    //    $("#content_details div").remove();
+    //    if (worksheets_data.length > 0) {
+    //    console.log("make_worksheet_table ",worksheets_data)
+    //        for (let index = 0; index < worksheets_data.length; index++) {
+    //            const worksheet = worksheets_data[index];
+    //            let url = "'" + worksheet['url'] + "'"
+    //            let id = "'" + worksheet['id'] + "'"
+//
+    //            $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400  shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
+    //                        <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+    //                        <div class="h-full mx-2 flex items-stretch justify-center">\
+    //                            <p class="font-bold text-3xl self-start text-center py-20">' + worksheet['title'] + '</p>\
+    //                        </div></div></div>')
+    //        }
+    //    } else {
+    //        $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
+    //    }
+    //}
 
-                $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400  shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
-                            <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
-                            <div class="h-full mx-2 flex items-stretch justify-center">\
-                                <p class="font-bold text-3xl self-start text-center py-20">' + worksheet['title'] + '</p>\
-                            </div></div></div>')
-            }
-        } else {
-            $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
-        }
-    }
+    //function make_textbook_table() {
+    //    $('#content_wraper').show()
+    //    $('#doubts_wraper').hide()
+    //    player.pause();
+    //    $("#content_details div").remove();
+    //    if (textbooks_data.length > 0) {
+    //        for (let index = 0; index < textbooks_data.length; index++) {
+    //            const textbook = textbooks_data[index];
+    //            let url = "'" + textbook['url'] + "'"
+//
+    //            $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400  shadow-2xl bg-contain bg-center bg-no-repeat rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="window.open(' + url + ')" style="background-image: url()" > \
+    //                        <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+    //                        <div class="h-full mx-2 flex items-stretch justify-center">\
+    //                            <p class="font-bold text-3xl self-start text-center py-20">' + textbook['title'] + '</p>\
+    //                        </div></div></div>')
+    //        }
+    //    } else {
+    //        $('#content_details').append('<div class="text-center text-bold text-3xl py-42"> No Content Available </div>')
+    //    }
+    //}
 
-    function make_textbook_table() {
-        $('#content_wraper').show()
-        $('#doubts_wraper').hide()
-        player.pause();
-        $("#content_details div").remove();
-        if (textbooks_data.length > 0) {
-            for (let index = 0; index < textbooks_data.length; index++) {
-                const textbook = textbooks_data[index];
-                let url = "'" + textbook['url'] + "'"
 
-                $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400  shadow-2xl bg-contain bg-center bg-no-repeat rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="window.open(' + url + ')" style="background-image: url()" > \
-                            <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
-                            <div class="h-full mx-2 flex items-stretch justify-center">\
-                                <p class="font-bold text-3xl self-start text-center py-20">' + textbook['title'] + '</p>\
-                            </div></div></div>')
-            }
-        } else {
-            $('#content_details').append('<div class="text-center text-bold text-3xl py-42"> No Content Available </div>')
-        }
-    }
-
-    function make_doubts_list() {
-
-        $('#content_wraper').hide()
-        $('#doubts_wraper').show()
-        player.pause();
-        $("#content_details div").remove();
-        for (let index = 0; index < doubts_data.length; index++) {
-            const doubt = doubts_data[index];
-            if (doubt.parent_thread_id != null) {
-                let reply = `<details open class="comment" id="comment-${doubt.id}">
-                            <a href="#comment-${doubt.id}" class="comment-border-link">
-                                <span class="sr-only">Jump to comment-2</span>
-                            </a>
-                            <summary>
-                                <div class="comment-heading">
-                                    <div class="comment-info">
-                                        <a class="comment-author">${doubt.created_by_id}-${doubt.created_by__first_name} ${doubt.created_by__last_name}</a>
-                                        <p class="m-0">${doubt.created_on}</p>
-                                    </div>
-                                </div>
-                            </summary>
-
-                            <div class="comment-body">
-                                <p>${doubt.text}</p>
-                            </div>
-                        </details>`
-
-                $('#reply-' + doubt.parent_thread_id).append(reply);
-            } else {
-
-                let comment = `<div class="comment-thread">
-                            <!-- Comment 1 start -->
-                            <details open class="comment" id="comment-${doubt.id}">
-                                <a href="#comment-${doubt.id}" class="comment-border-link">
-                                    <span class="sr-only">Jump to comment-1</span>
-                                </a>
-                                <summary>
-                                    <div class="comment-heading">
-                                        <div class="comment-info">
-                                            <a class="comment-author">${doubt.student_id}-${doubt.student__name}</a>
-                                            <p class="m-0">${doubt.created_on}</p>
-                                        </div>
-                                    </div>
-                                </summary>
-
-                                <div class="comment-body">
-                                    <p class="py-2">${doubt.text}</p>
-                                </div>
-
-                                <div id="reply-${doubt.id}" class="replies"></div>
-                            </details>
-                        </div>`
-
-                $('#content_details').append(comment)
-            }
-        }
-    }
-
-    function make_thirdparty_content_table() {
-        $('#content_wraper').show()
-        $('#doubts_wraper').hide()
-        player.pause();
-        $("#content_details div").remove();
-        if (tpContentList.length > 0) {
-        console.log("tpContentList ",tpContentList)
-            for (let index = 0; index < tpContentList.length; index++) {
-                const worksheet = tpContentList[index];
-                let url = "'" + worksheet['url'] + "'"
-                let id = "'" + worksheet['id'] + "'"
-
-                $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400  shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
-                            <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
-                            <div class="h-full mx-2 flex items-stretch justify-center">\
-                                <p class="font-bold text-3xl self-start text-center py-20">' + worksheet['title'] + '</p>\
-                            </div></div></div>')
-            }
-        } else {
-            $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
-        }
-    }
+    //function make_thirdparty_content_table() {
+    //    $('#content_wraper').show()
+    //    $('#doubts_wraper').hide()
+    //    player.pause();
+    //    $("#content_details div").remove();
+    //    if (tpContentList.length > 0) {
+    //    console.log("tpContentList ",tpContentList)
+    //        for (let index = 0; index < tpContentList.length; index++) {
+    //            const worksheet = tpContentList[index];
+    //            let url = "'" + worksheet['url'] + "'"
+    //            let id = "'" + worksheet['id'] + "'"
+//
+    //            $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400  shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
+    //                        <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+    //                        <div class="h-full mx-2 flex items-stretch justify-center">\
+    //                            <p class="font-bold text-3xl self-start text-center py-20">' + worksheet['title'] + '</p>\
+    //                        </div></div></div>')
+    //        }
+    //    } else {
+    //        $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
+    //    }
+    //}
 
 
 </script>

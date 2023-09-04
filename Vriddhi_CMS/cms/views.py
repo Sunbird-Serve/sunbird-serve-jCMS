@@ -13,7 +13,6 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-# from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
 from datetime import timedelta
 from django.shortcuts import render as render_response
@@ -22,7 +21,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import SuspiciousOperation
 
 
-
+# User register
 def register(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -32,6 +31,7 @@ def register(request):
 
     return render(request, 'register.html')
 
+# User login
 def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -43,9 +43,11 @@ def user_login(request):
     
     return render(request, 'login.html')
 
+# Home page view
 def home(request):
     return render(request, 'home.html')
 
+# Get all courses
 def get_courses(request):
     board_id = request.GET.get("board_id")
     courses = Course.objects.filter(board_id=board_id)
@@ -53,6 +55,7 @@ def get_courses(request):
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
 
+# Get all topics
 def get_topics(request):
     course_id = request.GET.get("course_id")
     topics = Topic.objects.filter(course_id=course_id)
@@ -60,29 +63,18 @@ def get_topics(request):
     response_data = json.dumps(topic_data)
     return HttpResponse(response_data, content_type="application/json")
 
-def view_course(request):
-    get_all_board = Board.objects.all()
-    get_course_details = Course.objects.all()
-    return render(request, 'course_view.html',{'get_all_board':get_all_board,'get_course_details': get_course_details})
-
-
-
-
-
-
-
-
+# View all course data
 def view_course(request):
     get_all_board = Board.objects.all()
     # Number of items per page
-    items_per_page = 2  # You can adjust this according to your preference
+    items_per_page = 2 
 
     queryset = Course.objects.all()
     paginator = Paginator(queryset, items_per_page)
     page_number = request.GET.get('page')
 
     if page_number:
-        page_number = int(page_number)  # Convert to integer
+        page_number = int(page_number)  
     else:
         page_number = 1  # Default to first page
     
@@ -95,6 +87,7 @@ def view_course(request):
     })
 
 
+# Board wise data retrive 
 def get_filtered_courses(request):
     selected_board = request.GET.get('boardId')
     if selected_board == 'all':
@@ -106,6 +99,7 @@ def get_filtered_courses(request):
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
 
+# Search any course
 def search_courses(request):
     search_input = request.GET.get('searchInput')
 
@@ -122,13 +116,13 @@ def search_courses(request):
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
 
-
+# Get content data
 def view_content(request):
     course_id = request.GET.get('courseID')
     target_url = '/home/content_detail/?courseID={}'.format(course_id)
     return HttpResponseRedirect(target_url)
 
-
+# View content details
 def content_detail_view(request):
     course_id = request.GET.get('courseID')
     courseData = Course.objects.get(id=course_id)
@@ -140,31 +134,37 @@ def content_detail_view(request):
     firstTopic = Topic.objects.filter(course_id=course_id)[:1]
 
     if firstTopic:
-        topic_id = firstTopic[0].id
-        subtopic = SubTopics.objects.get(topic_id=topic_id)
-   
+        topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
+        response_data = json.dumps(topic_data)
+        try:
+            topic_id = firstTopic[0].id
+            subtopic = SubTopics.objects.get(topic_id=topic_id)
 
-    topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
-    response_data = json.dumps(topic_data)
+            return render(request, 'content_view.html', {
+                'topic_data_json': response_data,
+                'board_name': boardName,
+                'subject_name': subjectName,
+                'grade': courseData.grade,
+                "topic_id":subtopic.topic_id,
+                "topic_name":subtopic.topic.title,
+                "subtopic_id": subtopic.id,
+                "subtopic_name": subtopic.name,
+                "subtopic_status": subtopic.status
+            })
 
-    return render(request, 'content_view.html', {
-        'topic_data_json': response_data,
-        'board_name': boardName,
-        'subject_name': subjectName,
-        'grade': courseData.grade,
-        "topic_id":subtopic.topic_id,
-        "topic_name":subtopic.topic.title,
-        "subtopic_id": subtopic.id,
-        "subtopic_name": subtopic.name,
-        "subtopic_status": subtopic.status
-    })
-# def getSubtopic(request):
-#     topicId = request.GET.get('topicId')
-#     subTopic = SubTopics.objects.filter(topic_id = topicId)
-#     subTopicName = [{"id":subtopic.id, "name":subtopic.name, "content":subtopic.ContentDetail.url, "status":subtopic.ContentDetail.staus }for subtopic in subTopic]
-#     response_data = json.dumps(subTopicName)
-#     return HttpResponse(response_data, content_type="application/json")
+        except SubTopics.DoesNotExist:
+            return render(request, 'content_view.html', {
+                'topic_data_json': response_data,
+                'board_name': boardName,
+                'subject_name': subjectName,
+                'grade': courseData.grade,
+            })
+    else:
+        return render(request, 'error.html', {
+            'message': 'The requested Topic does not exist.'
+        })
 
+#Get sub-Topic details
 def getSubtopic(request):
     topicId = request.GET.get('topicId')
     
@@ -180,7 +180,7 @@ def getSubtopic(request):
             "name": subtopic.name,
             "status": subtopic.status,
             "topic_name": subtopic.topic.title,
-            "content_details": []  # Initialize an empty list to store content details
+            "content_details": []
         }
         
         # Fetch ContentDetail entries related to the current subtopic
@@ -203,223 +203,217 @@ def getSubtopic(request):
   
 class SubTopicDetailsView(View):
     ''''GET: rtc player'''
-    def getChildRecord(self,contentId):
-        try:
-            url = "https://api.dev.diksha.gov.in/api/content/v1/read/"+contentId
-            authDict = {"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
+    # def getChildRecord(self,contentId):
+    #     try:
+    #         url = "https://api.dev.diksha.gov.in/api/content/v1/read/"+contentId
+    #         authDict = {"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
 
-            url = str(url)
-            response = requests.get(url,headers=authDict)
-            respDict = response.json()
-            responseCode = respDict.get("responseCode")
-            contentList = []
+    #         url = str(url)
+    #         response = requests.get(url,headers=authDict)
+    #         respDict = response.json()
+    #         responseCode = respDict.get("responseCode")
+    #         contentList = []
 
-            if responseCode == "OK":
-                result = respDict.get("result")
-                contentObj = result.get("content")
-                if contentObj:
-                    name = contentObj.get("name")
-                    mimeType = contentObj.get("mimeType")
-                    artifactUrl = contentObj.get("artifactUrl")
-                    if (mimeType == "video/mp4" or mimeType == "application/pdf") and artifactUrl:
-                        mimtype = "worksheet"
-                        if mimeType == "video/mp4":
-                            mimtype = "video"
+    #         if responseCode == "OK":
+    #             result = respDict.get("result")
+    #             contentObj = result.get("content")
+    #             if contentObj:
+    #                 name = contentObj.get("name")
+    #                 mimeType = contentObj.get("mimeType")
+    #                 artifactUrl = contentObj.get("artifactUrl")
+    #                 if (mimeType == "video/mp4" or mimeType == "application/pdf") and artifactUrl:
+    #                     mimtype = "worksheet"
+    #                     if mimeType == "video/mp4":
+    #                         mimtype = "video"
 
-                        ctObj = {
-                            "id":contentId,
-                            "name":name,
-                            "url":artifactUrl,
-                            "mimeType":mimtype
+    #                     ctObj = {
+    #                         "id":contentId,
+    #                         "name":name,
+    #                         "url":artifactUrl,
+    #                         "mimeType":mimtype
 
-                        }
-                        contentList.append(ctObj)
-
-
-            #print("contentList",contentList)
-            return contentList
-        except Exception as e:
-            print("getChildRecord ",e)
-            traceback.print_exc()
-            return None
-
-    def getChildNodeDetails(self,leafNodes):
-        try:
-            childList = []
-            for contentId in leafNodes:
-                #print("contentId",contentId)
-                newList = self.getChildRecord(contentId)
-                if newList and len(newList) > 0:
-                    childList.extend(newList)
-            #print("childList",childList)
-            return childList
-        except Exception as e:
-            print("getChildNodeDetails ",e)
-            traceback.print_exc()
-            return None
-
-    def getChildRecord(self, contentId):
-        try:
-            url = "https://api.dev.diksha.gov.in/api/content/v1/read/" + contentId
-            authDict = {
-                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
-
-            url = str(url)
-            response = requests.get(url, headers=authDict)
-            respDict = response.json()
-            responseCode = respDict.get("responseCode")
-            contentList = []
-
-            if responseCode == "OK":
-                result = respDict.get("result")
-                contentObj = result.get("content")
-                if contentObj:
-                    name = contentObj.get("name")
-                    mimeType = contentObj.get("mimeType")
-                    artifactUrl = contentObj.get("artifactUrl")
-                    if (mimeType == "video/mp4" or mimeType == "application/pdf") and artifactUrl:
-                        mimtype = "worksheet"
-                        if mimeType == "video/mp4":
-                            mimtype = "video"
-
-                        ctObj = {
-                            "id": contentId,
-                            "name": name,
-                            "url": artifactUrl,
-                            "mimeType": mimtype
-
-                        }
-                        contentList.append(ctObj)
-            return contentList
-        except Exception as e:
-            traceback.print_exc()
-            return None
-
-    def getChildNodeDetails(self, leafNodes):
-        try:
-            childList = []
-            for contentId in leafNodes:
-                newList = self.getChildRecord(contentId)
-                if newList and len(newList) > 0:
-                    childList.extend(newList)
-            return childList
-        except Exception as e:
-            traceback.print_exc()
-            return None
-
-    def getContentFromThirdParty(self):
-        try:
-            url = "https://api.dev.diksha.gov.in/api/content/v1/search"
-            payloadData = {
-                "request": {
-
-                    "filters": {
-                        "primaryCategory": [
-                            "Digital Textbook"
-                        ],
-                        "se_boards": [
-                            "CBSE"
-                        ],
-                        "se_mediums": [
-                            "English"
-                        ],
-                        "se_gradeLevels": [
-                            "Class 7"
-                        ]
-                    },
-                    "limit": 1000,
-                    "fields": [
-                        "string",
-                        "name",
-                        "contentType",
-                        "leafNodes"
-
-                    ]
-                }
-            }
+    #                     }
+    #                     contentList.append(ctObj)
 
 
-            authDict = {
-                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
-            response = requests.post(url, json=payloadData, headers=authDict)
-            print(response)
-            respDict = response.json()
-            responseCode = respDict.get("responseCode")
-            contentList = []
-            videoList = []
-            if responseCode == "OK":
-                result = respDict.get("result")
-                contentObjs = result.get("content")
-                for each in contentObjs:
-                    eachId = each.get("identifier")
-                    contentType = each.get("contentType")
+    #         #print("contentList",contentList)
+    #         return contentList
+    #     except Exception as e:
+    #         print("getChildRecord ",e)
+    #         traceback.print_exc()
+    #         return None
+
+    # def getChildNodeDetails(self,leafNodes):
+    #     try:
+    #         childList = []
+    #         for contentId in leafNodes:
+    #             #print("contentId",contentId)
+    #             newList = self.getChildRecord(contentId)
+    #             if newList and len(newList) > 0:
+    #                 childList.extend(newList)
+    #         #print("childList",childList)
+    #         return childList
+    #     except Exception as e:
+    #         print("getChildNodeDetails ",e)
+    #         traceback.print_exc()
+    #         return None
+
+    # def getChildRecord(self, contentId):
+    #     try:
+    #         url = "https://api.dev.diksha.gov.in/api/content/v1/read/" + contentId
+    #         authDict = {
+    #             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
+
+    #         url = str(url)
+    #         response = requests.get(url, headers=authDict)
+    #         respDict = response.json()
+    #         responseCode = respDict.get("responseCode")
+    #         contentList = []
+
+    #         if responseCode == "OK":
+    #             result = respDict.get("result")
+    #             contentObj = result.get("content")
+    #             if contentObj:
+    #                 name = contentObj.get("name")
+    #                 mimeType = contentObj.get("mimeType")
+    #                 artifactUrl = contentObj.get("artifactUrl")
+    #                 if (mimeType == "video/mp4" or mimeType == "application/pdf") and artifactUrl:
+    #                     mimtype = "worksheet"
+    #                     if mimeType == "video/mp4":
+    #                         mimtype = "video"
+
+    #                     ctObj = {
+    #                         "id": contentId,
+    #                         "name": name,
+    #                         "url": artifactUrl,
+    #                         "mimeType": mimtype
+
+    #                     }
+    #                     contentList.append(ctObj)
+    #         return contentList
+    #     except Exception as e:
+    #         traceback.print_exc()
+    #         return None
+
+    # def getChildNodeDetails(self, leafNodes):
+    #     try:
+    #         childList = []
+    #         for contentId in leafNodes:
+    #             newList = self.getChildRecord(contentId)
+    #             if newList and len(newList) > 0:
+    #                 childList.extend(newList)
+    #         return childList
+    #     except Exception as e:
+    #         traceback.print_exc()
+    #         return None
+
+    # def getContentFromThirdParty(self):
+    #     try:
+    #         url = "https://api.dev.diksha.gov.in/api/content/v1/search"
+    #         payloadData = {
+    #             "request": {
+
+    #                 "filters": {
+    #                     "primaryCategory": [
+    #                         "Digital Textbook"
+    #                     ],
+    #                     "se_boards": [
+    #                         "CBSE"
+    #                     ],
+    #                     "se_mediums": [
+    #                         "English"
+    #                     ],
+    #                     "se_gradeLevels": [
+    #                         "Class 7"
+    #                     ]
+    #                 },
+    #                 "limit": 1000,
+    #                 "fields": [
+    #                     "string",
+    #                     "name",
+    #                     "contentType",
+    #                     "leafNodes"
+
+    #                 ]
+    #             }
+    #         }
 
 
-                    leafNodes = each.get("leafNodes")
-                    if leafNodes and len(leafNodes) > 0:
-                        pass
-                    tlist = self.getChildNodeDetails(leafNodes)
-                    if tlist and len(tlist) > 0:
-                        for newObj in tlist:
-                            cType = newObj.get("mimeType")
-                            eachDict = {
-                                "id": 3788,
-                                "did": newObj.get("id"),
-                                "title": newObj.get("name"),
-                                "contentType": newObj.get("mimeType"),
-                                "url": newObj.get("url"),
-                                "author": "Diksha",
-                                "duration": 960,
-                                "isPrimary": True,
-                                "contentHost": "s3",
-                                "description": ''
-
-                            }
-                            if cType != "video":
-                                contentList.append(eachDict)
-                            else:
-                                videoList.append(eachDict)
+    #         authDict = {
+    #             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
+    #         response = requests.post(url, json=payloadData, headers=authDict)
+    #         print(response)
+    #         respDict = response.json()
+    #         responseCode = respDict.get("responseCode")
+    #         contentList = []
+    #         videoList = []
+    #         if responseCode == "OK":
+    #             result = respDict.get("result")
+    #             contentObjs = result.get("content")
+    #             for each in contentObjs:
+    #                 eachId = each.get("identifier")
+    #                 contentType = each.get("contentType")
 
 
+    #                 leafNodes = each.get("leafNodes")
+    #                 if leafNodes and len(leafNodes) > 0:
+    #                     pass
+    #                 tlist = self.getChildNodeDetails(leafNodes)
+    #                 if tlist and len(tlist) > 0:
+    #                     for newObj in tlist:
+    #                         cType = newObj.get("mimeType")
+    #                         eachDict = {
+    #                             "id": 3788,
+    #                             "did": newObj.get("id"),
+    #                             "title": newObj.get("name"),
+    #                             "contentType": newObj.get("mimeType"),
+    #                             "url": newObj.get("url"),
+    #                             "author": "Diksha",
+    #                             "duration": 960,
+    #                             "isPrimary": True,
+    #                             "contentHost": "s3",
+    #                             "description": ''
 
-                    else:
-                        eachDict = {
-                            "id": 3788,
-                            "did": eachId,
-                            "title": each.get("name"),
-                            "contentType": contentType,
-                            "objectType": each.get("objectType"),
-                            "url": "https://dev.diksha.gov.in/play/collection/" + eachId + "?contentType=" + contentType
-                        }
-
-                        contentList.append(eachDict)
-
-
-                return (contentList, videoList)
-            else:
-                return ([], [])
-
-
-        except Exception as e:
-            traceback.print_exc()
-            return (None, None)
+    #                         }
+    #                         if cType != "video":
+    #                             contentList.append(eachDict)
+    #                         else:
+    #                             videoList.append(eachDict)
 
 
 
-    @method_decorator(login_required)
+    #                 else:
+    #                     eachDict = {
+    #                         "id": 3788,
+    #                         "did": eachId,
+    #                         "title": each.get("name"),
+    #                         "contentType": contentType,
+    #                         "objectType": each.get("objectType"),
+    #                         "url": "https://dev.diksha.gov.in/play/collection/" + eachId + "?contentType=" + contentType
+    #                     }
+
+    #                     contentList.append(eachDict)
+
+
+    #             return (contentList, videoList)
+    #         else:
+    #             return ([], [])
+
+
+    #     except Exception as e:
+    #         traceback.print_exc()
+    #         return (None, None)
+
+
+
+    # Get video content
     def get(self, request,  *args, **kwargs):
         try:
 
             subtopicId = self.request.GET.get('subtopic_id', None)
             topicId = self.request.GET.get('topic_id', None)
 
-   
-                # offeringObj = Offering.objects.get(id=offeringId)
             topicObj = Topic.objects.get(id=topicId)
-            
-
-
-
 
             try:
                 subtopicObj = SubTopics.objects.get(id=subtopicId)
@@ -467,7 +461,6 @@ class SubTopicDetailsView(View):
 
             context = contentDetailData
 
-            print(context)
 
             # videoList= []
             # videoList.append(contentRec.url)
@@ -495,7 +488,8 @@ class SubTopicDetailsView(View):
         except  Exception  as e:
             return HttpResponseNotFound("Page not found " + e.message)
 
-    @method_decorator(login_required)
+
+    # View Video and Worksheet Rating page 
     def post(self, request,  *args, **kwargs):
         requestParams = json.loads(self.request.body)
         try:
@@ -516,15 +510,14 @@ class SubTopicDetailsView(View):
             traceback.print_exc()
             return genUtility.getStandardErrorResponse(request, 'kInvalidRequest')
 
+# Save content
 def content_rating(request):
-    # {topicId: "4", subtopicId: "1", videoRating: 3, worksheetRating: 4, comment: "ss"}
     if request.method == 'POST':
         topicId = request.POST.get('topicId')
         subtopicId = request.POST.get('subtopicId')
         videoRating = request.POST.get('videoRating')
         worksheetRating = request.POST.get('worksheetRating')
         comment = request.POST.get('comment')
-
 
         contentreating = FLMContentRating( subtopic_id=subtopicId, videoRating=videoRating, worksheetRating=worksheetRating, comment=comment, status='active', reviewer_id='0')
         contentreating.save()
@@ -535,7 +528,7 @@ def content_rating(request):
         response_data = json.dumps(course_data)
         return HttpResponse(response_data, content_type="application/json")
 
-
+# logout 
 def logout_view(request):
     logout(request)
     return redirect('')  

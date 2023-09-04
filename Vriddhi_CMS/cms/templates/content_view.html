@@ -1,170 +1,9 @@
 {% extends "base.html" %}
+{% load static %} 
+{% block title %}Topic Details{% endblock %}
 {% block content %}
-<style>
-    .toggle__dot {
-        top: -.25rem;
-        left: -.25rem;
-        transition: all 0.2s ease-in-out;
-    }
-    
-    input:checked~.toggle__dot {
-        transform: translateX(100%);
-        background-color: #03fc03;
-    }
-    
-    .no_scroll_bar::-webkit-scrollbar {
-        display: none;
-    }
-    
-    .subtopic {}
-    
-    .active {
-        background-color: rgb(25, 173, 12);
-    }
-    
-    .parent:focus-within * {
-        /* rest all background when one element is focused */
-        background: none;
-    }
-    
-    .parent [tabindex]:focus {
-        /* set the background of only the focused one */
-        background-color: rgb(25, 173, 12);
-    }
-    
-    .button {
-        background-color: #a2a2a2;
-    }
-    
-    .topics_container {
-        height: 57rem;
-    }
-    
-    .subtopics_container {
-        height: 48rem;
-    }
-    
-    .mobile_hide {}
-    
-    .mobile_show {
-        display: none;
-    }
-</style>
-<style>
-    .dialog-ovelay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.50);
-        z-index: 999999
-    }
-    
-    .dialog-ovelay .dialog {
-        width: 400px;
-        margin: 500px auto 0;
-        background-color: #fff;
-        box-shadow: 0 0 20px rgba(0, 0, 0, .2);
-        border-radius: 3px;
-        overflow: hidden
-    }
-    
-    .dialog-ovelay .dialog header {
-        padding: 10px 8px;
-        background-color: #f6f7f9;
-        border-bottom: 1px solid #e5e5e5
-    }
-    
-    .dialog-ovelay .dialog header h3 {
-        font-size: 14px;
-        margin: 0;
-        color: #555;
-        display: inline-block
-    }
-    
-    .dialog-ovelay .dialog header .fa-times {
-        float: right;
-        color: #f89007;
-        cursor: pointer;
-        transition: all .5s ease;
-        padding: 0 2px;
-        border-radius: 1px
-    }
-    
-    .dialog-ovelay .dialog header .fa-times:hover {
-        color: #ff0000
-    }
-    
-    .dialog-ovelay .dialog header .fa-close:active {
-        box-shadow: 0 0 5px #673AB7;
-        color: #a2a2a2
-    }
-    
-    .dialog-ovelay .dialog .dialog-msg {
-        padding: 12px 10px
-    }
-    
-    .dialog-ovelay .dialog .dialog-msg p {
-        margin: 0;
-        font-size: 15px;
-        color: #333
-    }
-    
-    .dialog-ovelay .dialog footer {
-        border-top: 1px solid #e5e5e5;
-        padding: 8px 10px
-    }
-    
-    .dialog-ovelay .dialog footer .controls {
-        direction: rtl
-    }
-    
-    .dialog-ovelay .dialog footer .controls .button {
-        padding: 5px 15px;
-        border-radius: 3px
-    }
-    
-    .button {
-        cursor: pointer
-    }
-    
-    .button-default {
-        background-color: rgb(248, 248, 248);
-        border: 1px solid rgba(204, 204, 204, 0.5);
-        color: #5D5D5D;
-    }
-    
-    .button-danger {
-        background-color: #f44336;
-        border: 1px solid #d32f2f;
-        color: #f5f5f5
-    }
-    
-    .link {
-        padding: 5px 10px;
-        cursor: pointer
-    }
-    
-    .name_margin {
-        margin-left: 10px;
-    }
-    
-    @media only screen and (max-width: 600px) {
-        .topics_container {
-            height: 30rem
-        }
-        .mobile_hide {
-            display: none;
-        }
-        .mobile_show {
-            display: block;
-        }
-        .dialog-ovelay .dialog {
-            width: 100%;
-        }
-    }
-</style>
+
+<link href="{% static 'css/content_view.css' %}" rel="stylesheet">
 
 <!-- alert popup -->
 <div id="confirmPopup1" class="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" style="display: none;">
@@ -200,7 +39,7 @@
         <div class="flex mobile_hide">
             <div class="w-full md:w-3/5 lg:w-4/5 mt-10 text-center font-bold text-3xl p-2 justify-self-center">{{board_name}} - {{subject_name}} - {{grade}} grade</div>
             <div class="w-full md:w-2/5 mt-4 justify-self-end space-y-4">
-                <div onclick="location.href='/home/view_course/'" class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Center</div>
+                <div onclick="location.href='/home/view_course/'" class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Course</div>
             </div>
         </div>
 
@@ -345,160 +184,17 @@
     </div>
 </div>
 
-
+<script src="{% static 'js/content_view.js' %}"></script>
 <script>
-    //var topicsJSON = '{{ topic_data|safe }}';
-    //var topics = JSON.parse(topicsJSON);
-//
-    //console.log("topics:", topics);
-
-    
-
-
-    //Get topic details
-    make_topics_table(topics)
-    function make_topics_table(topics) {
-
-        var topics = {{ topic_data_json|safe }};
-        var board_name = "{{ board_name }}";
-        var topic_id = "{{ topic_id }}"
-        var subject_name = "{{ subject_name }}";
-        var grade = "{{ grade }}";
-        var subtopic_id = "{{ subtopic_id }}";
-        var subtopic_name = "{{ subtopic_name }}";
-        var subtopic_status = "{{ subtopic_status }}";
-        var topic_name = "{{ topic_name }}";
-
-        $("#topic_name").empty(); 
-        $("#topic_name").append(`<b>${topic_name}</b>`);
-
-
-
-        $("#topics div").remove();
-        for (let index = 0; index < topics.length; index++) {
-            const topic = topics[index];
-            let id = 'topicdiv_' + topic["id"];
-            let active = '';
-            if (index == 0) {
-                active = 'default_topic'
-            }
-
-            $("#topics").append('<div id="' + id + '" tabindex="' + (index + 1) + '" onclick="subtopic(' + topic["id"] + ')" class="' + active + ' flex w-full cursor-pointer border-b-2 border-l-0 hover:border-l-2 border-gray-400 hover:bg-purple-300 font-bold">\
-                                    <div class="w-1/5 text-center text-xl p-4">' + (index + 1) + '</div>\
-                                    <div class="w-4/5 text-left text-cneter p-2">\
-                                    <p id="topic_' + topic["id"] + '">' + topic["name"] + '</p>\
-                                    </div></div>')
-
-        }
-
-        $("#subtopicsDetails").empty(); 
-
-        let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic_id + "&topic_id=" + topic_id + "'"
-        let onclick = 'onclick="popup(' + subtopic_id + ')"'
-        
-        let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
-
-        var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
-            <td class="text-center text-xl p-2 mobile_hide">1</td>
-            <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic_name}</td>
-            <td class="">${button}</td>
-            <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic_status}</td>`;
-        
-        subTopicTableData += `</tr>`;
-        $("#subtopicsDetails").append(subTopicTableData);
-
-    }
-
-    //Get subtopic details
-
-    function subtopic(topicId) {
-        make_subtopics_table(topics, topicId)
-    }
-
-    function make_subtopics_table(topics, topicId) {
-
-        $("#subtopicsDetails").empty();
-        var data = {topicId: topicId}
-        $.get('/home/getSubtopic/',data,function(response,status){
-            var subtopics = response
-
-            for (let index = 0; index < subtopics.length; index++) {
-                var subtopic = subtopics[index];
-
-                let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic.id + "&topic_id=" + topicId + "'"
-                let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
-
-
-                let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
-
-                var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
-                    <td class="text-center text-xl p-2 mobile_hide">${index + 1}</td>
-                    <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.name}</td>
-                    <td class="">${button}</td>
-                    <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.status}</td>`;
-                
-                subTopicTableData += `</tr>`;
-                $("#subtopicsDetails").append(subTopicTableData);
-
-                $("#topic_name").empty(); 
-                $("#topic_name").append(`<b>${subtopic.topic_name}</b>`);
-            }
-
-
-
-        })
-
-
-
-
-        //for (let main_index = 0; main_index < topics.length; main_index++) {
-        //    const topic = topics[main_index];
-        //    if (topic["id"] == topicId) {
-        //        let subtopics = topic['subtopics']
-        //        document.getElementById('topic_name').innerHTML = topic["name"]
-        //        document.getElementById('subtopics_length').innerHTML = "(" + topic["subtopics"].length + ")"
-//
-        //        for (let index = 0; index < subtopics.length; index++) {
-        //            const subtopic = subtopics[index];
-        //            let click = "location.href='/v2/subtopic/content-details/?subtopic_id=" + subtopic["id"] + "&topic_id=" + topic["id"] + "&offering_id=" + offeringId + "&center_id=" + centerId + "&ayfy_id=" + ayId + "'"
-        //            let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
-//
-        //            let checkButton = ''
-//
-        //            if (subtopic['hasViewed'] == 1) {
-        //                onclick = ''
-        //                checkButton = '<div class="text-center text-green-400 p-2"><i class="far fa-check-circle fa-2x"></i></div>'
-        //            }
-//
-        //            let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
-//
-        //            if (subtopic["type"].includes('2')){
-        //                button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="student_confirm_pop(${topic["id"]})" >Take Quiz</button>`
-//
-        //            }
-//
-//
-        //            $("#subtopics").append(`<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
-        //                <td class="text-center text-xl p-2 mobile_hide">${index + 1}</td>
-        //                <td class="p-2 text-left">${subtopic["name"]}</td>
-        //                <td class="">${button}</td>
-        //                <td class="flex items-center justify-around pt-2 border-l">
-        //                    <div id="s${subtopic["id"]}" class="w-16 text-center text-base font-bold mobile_hide">Not Completed</div>
-        //                    <div id="checkbutton${subtopic["id"]}">${checkButton}<div>
-        //                </td>
-        //            </tr>`)
-        //            if (subtopic['hasViewed'] == 1) {
-        //                // document.getElementById('k' + subtopic["id"]).classList.remove('bg-red-600')
-        //                // document.getElementById('y' + subtopic["id"]).classList.add('translate-x-full')
-        //                // document.getElementById('k' + subtopic["id"]).classList.add('bg-green-600')
-        //                // document.getElementById('k' + subtopic["id"]).classList.add('cursor-not-allowed')
-        //                document.getElementById('s' + subtopic["id"]).innerHTML = 'Completed ' + subtopic['viewCount'] + ' times'
-        //            }
-        //        }
-        //    }
-        //}
-    }
-
+    //Make python veriable to js 
+    var topicsData = JSON.parse('{{ topic_data_json|safe }}');
+    var topic_id = "{{ topic_id }}"
+    var subject_name = "{{ subject_name }}";
+    var subtopic_id = "{{ subtopic_id }}";
+    var subtopic_name = "{{ subtopic_name }}";
+    var subtopic_status = "{{ subtopic_status }}";
+    var topic_name = "{{ topic_name }}";
+    make_topics_table(topicsData)
 </script>
 
 
