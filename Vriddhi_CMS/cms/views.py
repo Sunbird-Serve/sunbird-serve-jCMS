@@ -67,7 +67,7 @@ def get_topics(request):
 def view_course(request):
     get_all_board = Board.objects.all()
     # Number of items per page
-    items_per_page = 2 
+    items_per_page = 12 
 
     queryset = Course.objects.all()
     paginator = Paginator(queryset, items_per_page)
@@ -138,19 +138,44 @@ def content_detail_view(request):
         response_data = json.dumps(topic_data)
         try:
             topic_id = firstTopic[0].id
-            subtopic = SubTopics.objects.get(topic_id=topic_id)
 
-            return render(request, 'content_view.html', {
+            subtopics = SubTopics.objects.filter(topic_id=topic_id)
+            
+            topic_names = []
+            subtopic_ids = []
+            subtopic_names = []
+            subtopic_statuses = []
+
+            # Iterate over the queryset or handle the objects as needed
+            for subtopic in subtopics:
+                topic_names.append(subtopic.topic.title)
+                subtopic_ids.append(subtopic.id)
+                subtopic_names.append(subtopic.name)
+                subtopic_statuses.append(subtopic.status)
+
+            # Create a dictionary with all the data you want to send to the template
+            context_data = {
                 'topic_data_json': response_data,
                 'board_name': boardName,
                 'subject_name': subjectName,
                 'grade': courseData.grade,
-                "topic_id":subtopic.topic_id,
-                "topic_name":subtopic.topic.title,
-                "subtopic_id": subtopic.id,
-                "subtopic_name": subtopic.name,
-                "subtopic_status": subtopic.status
-            })
+                'topic_names': topic_names,  # Include the lists in the context data
+                'subtopic_ids': subtopic_ids,
+                'subtopic_names': subtopic_names,
+                'subtopic_statuses': subtopic_statuses,
+            }
+            return render(request, 'content_view.html', context_data)
+            # return render(request, 'content_view.html', {
+            #     'topic_data_json': response_data,
+            #     'board_name': boardName,
+            #     'subject_name': subjectName,
+            #     'grade': courseData.grade,
+            #     "topic_id":subtopic.topic_id,
+            #     "topic_name":subtopic.topic.title,
+            #     "subtopic_id": subtopic.id,
+            #     "subtopic_name": subtopic.name,
+            #     "subtopic_status": subtopic.status
+            # })
 
         except SubTopics.DoesNotExist:
             return render(request, 'content_view.html', {

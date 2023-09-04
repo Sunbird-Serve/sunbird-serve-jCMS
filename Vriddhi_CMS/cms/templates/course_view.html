@@ -8,9 +8,20 @@
 </div>
 
 <div class="container mt-4">
-    <div class="row">
+    <div class="row mx-0">
+
         <div class="col-md-3">
-            <select class="custom-select" id="filterDropdown">
+            <input type="text" id="filterData" class="form-control" placeholder="Search">
+        </div>
+        <div class="col-md-1">
+            <div class="btn-group">
+                <button class="btn btn-primary" id="searchData">Search</button>
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <select class="form-control" id="filterDropdown">
                 <option value="">Select Board</option>
                 <option value="all">All Board</option>
                 {% for board in get_all_board %}
@@ -18,15 +29,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-3"></div>
-        <div class="col-md-3">
-            <input type="text" id="filterData" class="form-control" placeholder="Search">
-        </div>
-        <div class="col-md-3">
-            <div class="btn-group">
-                <button class="btn btn-primary" id="searchData">Search</button>
-            </div>
-        </div>
+        
     </div>
 </div>
 
@@ -55,23 +58,32 @@
 
 
 
-<div class="pagination">
-    <span class="step-links">
+<nav aria-label="Page navigation ">
+    <ul class="pagination" style="float: right;margin-right: 67px;">
         {% if courses.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ courses.previous_page_number }}">previous</a>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ courses.previous_page_number }}">Previous</a>
+            </li>
         {% endif %}
-
-        <span class="current">
-            Page {{ courses.number }} of {{ courses.paginator.num_pages }}.
-        </span>
-
+        
+        {% for i in courses.paginator.page_range %}
+            <li class="page-item {% if i == courses.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+            </li>
+        {% endfor %}
+        
         {% if courses.has_next %}
-            <a href="?page={{ courses.next_page_number }}">next</a>
-            <a href="?page={{ courses.paginator.num_pages }}">last &raquo;</a>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ courses.next_page_number }}">Next</a>
+            </li>
         {% endif %}
-    </span>
-</div>
+    </ul>
+</nav>
+
+
+
+
+
 <script src="{% static 'js/course_view.js' %}"></script>
 
 
