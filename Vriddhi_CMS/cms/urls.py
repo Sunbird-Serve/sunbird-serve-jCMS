@@ -11,7 +11,6 @@ urlpatterns = [
     url(r'^home/view_content/?$', view_content, name='view_content'),
     url(r'^logout/$', logout_view, name='logout'),
     url(r'^get_filtered_courses/$', get_filtered_courses, name='get_filtered_courses'),
-    # url(r'^get_filtered_subtopic/$', get_filtered_subtopic, name='get_filtered_subtopic'),
     
 ]
 

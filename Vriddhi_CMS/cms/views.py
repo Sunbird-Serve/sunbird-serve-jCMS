@@ -103,19 +103,6 @@ def view_content(request):
     # get_content = SubTopics.ContentDetail.objects.all()
     return render(request, 'content_view.html',{'get_all_topic':get_all_topic, 'get_all_subtopic': get_all_subtopic})
 
-# def get_filtered_subtopic(request):
-#     selected_topic = request.GET.get('topicId')
-#     if selected_topic == 'all':
-#         subtopics = SubTopic.objects.all()
-#         subtopics_data = [{"id": subtopic.id, "title": subtopic.title } for subtopic in subtopics]
-#     else:
-#         subtopics = SubTopic.objects.filter(board_id=selected_topic)
-#         subtopics_data = [{"id": subtopic.id, "title": subtopic.title } for subtopic in subtopics]
-
-#     response_data = json.dumps(subtopics_data)
-#     return HttpResponse(response_data, content_type="application/json")
-
-
 
 
 

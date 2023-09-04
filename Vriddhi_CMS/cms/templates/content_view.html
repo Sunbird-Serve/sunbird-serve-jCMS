@@ -42,34 +42,5 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-//    $(document).ready(function() {
-//        $('#topicFilterDropdown').change(function() {
-//            $("#loader").show();
-//            var topicId = $(this).val();
-//            var data ={topicId:topicId};
-//            $.get("/get_filtered_subtopic/",data,function(response,status){
-//                $("#courseContainer").html(response);
-//
-//                var subtopics = response;
-//                $("#courseContainer").empty(); // Clear previous content
-//
-//                for (var i = 0; i < subtopics.length; i++) {
-//                    var subtopic = subtopics[i];
-//                    var courseCard = `
-//                        <div class="col-md-4 mb-4">
-//                            <div class="course-card">
-//                                <h5 class="course-title">${course.board}</h5>
-//                                <p class="course-detail"><strong>Subject:</strong> ${course.subject}</p>
-//                                <p class="course-detail"><strong>Grade:</strong> ${course.grade}</p>
-//                            </div>
-//                        </div>`;
-//                    $("#courseContainer").append(courseCard);
-//                }
-//                $("#loader").hide();
-//            })
-//        });
-//    });
-</script>   
+ 
 {% endblock %}
