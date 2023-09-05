@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^get_filtered_courses/$', get_filtered_courses, name='get_filtered_courses'),
     url(r'^get_filtered_subject/$', get_filtered_subject, name='get_filtered_subject'),
     url(r'^search_courses/$', search_courses, name='search_courses'),
+    url(r'^delete_board_api/$', delete_board_api, name='delete_board_api'),
     # url(r'^get_filtered_subtopic/$', get_filtered_subtopic, name='get_filtered_subtopic'),
 ]
 

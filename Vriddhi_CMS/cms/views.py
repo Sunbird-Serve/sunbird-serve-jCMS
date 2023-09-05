@@ -565,6 +565,7 @@ def content_rating(request):
         response_data = json.dumps(course_data)
         return HttpResponse(response_data, content_type="application/json")
 
+def delete_board_api(request):
 # logout 
 def logout_view(request):
     logout(request)
