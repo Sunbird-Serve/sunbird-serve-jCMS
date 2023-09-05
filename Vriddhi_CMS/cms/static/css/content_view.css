@@ -13,7 +13,15 @@ input:checked~.toggle__dot {
     display: none;
 }
 
-.subtopic {}
+#confirmPopup1{
+    display: none;
+}
+#studentPopup{
+    display: none;
+}
+#att_pop{
+    display: none; 
+}
 
 .active {
     background-color: rgb(25, 173, 12);
