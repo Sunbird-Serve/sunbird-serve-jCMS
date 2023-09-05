@@ -25,6 +25,8 @@ urlpatterns = [
     # url(r'^get_filtered_subtopic/$', get_filtered_subtopic, name='get_filtered_subtopic'),
 ]
 
+(r'^static/admin/(?P<path>.*)$', 'django.views.static.serve',
+               {'document_root': settings.ADMIN_MEDIA_PREFIX})
 
-
-
+(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
+       'document_root': settings.STATIC_ROOT})
