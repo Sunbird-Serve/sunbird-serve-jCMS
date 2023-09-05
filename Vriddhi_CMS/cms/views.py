@@ -565,7 +565,98 @@ def content_rating(request):
         response_data = json.dumps(course_data)
         return HttpResponse(response_data, content_type="application/json")
 
-def delete_board_api(request):
+
+@csrf_exempt
+def delete_board(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        board_id = data.get('board_id')
+
+        if board_id:
+            board = Board(id=board_id)
+            board.delete()
+            response_data = {
+                "message": 'Board deleted successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            response_data = {'message': 'Board Id is required'}
+            return HttpResponse(json.dumps(response_data), status=400, content_type='application/json')
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+
+@csrf_exempt
+def delete_course(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        course_id = data.get('course_id')
+
+        if course_id:
+            course = Course(id=course_id)
+            course.delete()
+            response_data = {
+                "message": 'Course deleted successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            response_data = {'message': 'Course Id is required'}
+            return HttpResponse(json.dumps(response_data), status=400, content_type='application/json')
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+
+@csrf_exempt
+def delete_topic(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        topic_id = data.get('topic_id')
+
+        if topic_id:
+            topic = Topic(id=topic_id)
+            topic.delete()
+            response_data = {
+                "message": 'Topic deleted successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            response_data = {'message': 'Topic Id is required'}
+            return HttpResponse(json.dumps(response_data), status=400, content_type='application/json')
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+# {
+#     "subTopic_id":"28"
+# }
+
+@csrf_exempt
+def delete_subTopic(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        subTopic_id = data.get('subTopic_id')
+
+        if subTopic_id:
+            subtopic = SubTopics(id=subTopic_id)
+            subtopic.delete()
+            response_data = {
+                "message": 'Sub-Topic deleted successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            response_data = {'message': 'Sub-Topic Id is required'}
+            return HttpResponse(json.dumps(response_data), status=400, content_type='application/json')
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+
 # logout 
 def logout_view(request):
     logout(request)
