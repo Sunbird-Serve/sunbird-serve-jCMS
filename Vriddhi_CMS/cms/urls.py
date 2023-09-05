@@ -1,6 +1,7 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
 from .views import *
+
 urlpatterns = [
     url(r'^$', user_login, name='login'),
     url(r'^register/$', register, name='register'),
@@ -19,9 +20,11 @@ urlpatterns = [
     # url(r'^home/topics/?$', TopicDetailsView.as_view(), name='topic_details_by_center'),
     url(r'^logout/$', logout_view, name='logout'),
     url(r'^get_filtered_courses/$', get_filtered_courses, name='get_filtered_courses'),
+    url(r'^get_filtered_subject/$', get_filtered_subject, name='get_filtered_subject'),
     url(r'^search_courses/$', search_courses, name='search_courses'),
     # url(r'^get_filtered_subtopic/$', get_filtered_subtopic, name='get_filtered_subtopic'),
-    
 ]
+
+
 
 

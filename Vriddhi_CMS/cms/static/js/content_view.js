@@ -18,13 +18,14 @@ function make_topics_table(topics) {
                                 </div></div>')
 
     }
+    $('#subtopics_length').append("(" + topic["subtopics"].length + ")")
 
     $("#subtopicsDetails").empty(); 
 
     let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic_id + "&topic_id=" + topic_id + "'"
     let onclick = 'onclick="popup(' + subtopic_id + ')"'
     
-    let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
+    let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >view content</button>`
 
     var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
         <td class="text-center text-xl p-2 mobile_hide">1</td>
@@ -49,6 +50,9 @@ function make_subtopics_table(topics, topicId) {
     $.get('/home/getSubtopic/',data,function(response,status){
         var subtopics = response
 
+        $('#subtopics_length').empty();
+        $('#subtopics_length').append("(" + subtopics.length + ")");
+
         for (let index = 0; index < subtopics.length; index++) {
             var subtopic = subtopics[index];
 
@@ -56,7 +60,9 @@ function make_subtopics_table(topics, topicId) {
             let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
 
 
-            let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-2 md:px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button" onclick="${click}" >view content</button>`
+            let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >view content</button>`
+
+
 
             var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
                 <td class="text-center text-xl p-2 mobile_hide">${index + 1}</td>
@@ -66,6 +72,8 @@ function make_subtopics_table(topics, topicId) {
             
             subTopicTableData += `</tr>`;
             $("#subtopicsDetails").append(subTopicTableData);
+            // $('#subtopics_length').append("(" + subtopic["subtopics"].length + ")")
+            // document.getElementById('subtopics_length').innerHTML = "(" + subtopic["subtopics"].length + ")"
 
             $("#topic_name").empty(); 
             $("#topic_name").append(`<b>${subtopic.topic_name}</b>`);

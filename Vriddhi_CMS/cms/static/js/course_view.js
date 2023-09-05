@@ -1,11 +1,41 @@
 
-//Board-wise Data Retrieval
     $(document).ready(function() {
-        $('#filterDropdown').change(function() {
+
+        //Board-wise Data Retrieval
+        $('#boardFilterDropdown').change(function() {
             $("#loader").show();
             var boardId = $(this).val();
             var data ={boardId:boardId};
             $.get("/get_filtered_courses/",data,function(response,status){
+                $("#courseContainer").html(response);
+
+                var courses = response;
+                $("#courseContainer").empty(); // Clear previous content
+
+                for (var i = 0; i < courses.length; i++) {
+                    var course = courses[i];
+                    var courseCard = `
+                        <div class="col-md-4 mb-4">
+                            <div class="course-card course_details">
+                                <input type="hidden" class="course_id" value="${course.id}">
+                                <h5 class="course-title">${course.board}</h5>
+                                <p class="course-detail"><strong>Subject:</strong> ${course.subject}</p>
+                                <p class="course-detail"><strong>Grade:</strong> ${course.grade}</p>
+                            </div>
+                        </div>`;
+                    $("#courseContainer").append(courseCard);
+                }
+                $("#loader").hide();
+            })
+        });
+
+
+        //Subject-wise Data Retrieval
+        $('#subjectFilterDropdown').change(function() {
+            $("#loader").show();
+            var subjectId = $(this).val();
+            var data ={subjectId:subjectId};
+            $.get("/get_filtered_subject/",data,function(response,status){
                 $("#courseContainer").html(response);
 
                 var courses = response;

@@ -41,7 +41,10 @@ input:checked~.toggle__dot {
     height: 48rem;
 }
 
-.mobile_hide {}
+.content-view-button{
+    font-size: 9px;
+    margin: 5px;
+}
 
 .mobile_show {
     display: none;

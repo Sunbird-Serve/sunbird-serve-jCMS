@@ -15,7 +15,7 @@
         <div class="col-sm-3 col-12">
             <div class="d-flex">
                 <input type="text" id="filterData" class="form-control" placeholder="Search">
-                <div class="btn-group">
+                <div class="btn-group ml-2">
                     <button class="btn btn-primary" id="searchData">Search</button>
                 </div>
             </div>
@@ -23,12 +23,23 @@
 
 
 
-        <div class="col-sm-3 offset-sm-6 col-12">
-            <select class="form-control" id="filterDropdown">
+        <div class="col-sm-2 offset-sm-4 col-12">
+            <select class="form-control" id="boardFilterDropdown">
                 <option value="">Select Board</option>
                 <option value="all">All Board</option>
                 {% for board in get_all_board %}
                     <option value="{{ board.id }}">{{ board.board_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+        <div class="col-sm-2 col-12">
+            <select class="form-control" id="subjectFilterDropdown">
+                <option value="">Select Subject</option>
+                <option value="all">All Subject</option>
+                {% for subject in get_all_subject %}
+                    <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
                 {% endfor %}
             </select>
         </div>

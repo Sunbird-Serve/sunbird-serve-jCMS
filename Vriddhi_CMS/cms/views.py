@@ -20,7 +20,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import SuspiciousOperation
 
-
 # User register
 def register(request):
     if request.method == 'POST':
@@ -63,6 +62,7 @@ def get_topics(request):
 # View all course data
 def view_course(request):
     get_all_board = Board.objects.all()
+    get_all_subject = Subject.objects.all()
     # Number of items per page
     items_per_page = 12 
 
@@ -80,6 +80,7 @@ def view_course(request):
 
     return render(request, 'course_view.html', {
         'get_all_board': get_all_board,
+        'get_all_subject': get_all_subject,
         'courses': courses,
     })
 
@@ -95,6 +96,20 @@ def get_filtered_courses(request):
         course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
+
+
+# Subject wise data retrive 
+def get_filtered_subject(request): 
+    selected_subject = request.GET.get('subjectId')
+    if selected_subject == 'all':
+        courses = Course.objects.all()
+        course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
+    else:
+        courses = Course.objects.filter(subject_id=selected_subject)
+        course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
+    response_data = json.dumps(course_data)
+    return HttpResponse(response_data, content_type="application/json")
+
 
 # Search any course
 def search_courses(request):
@@ -136,7 +151,7 @@ def content_detail_view(request):
         try:
             topic_id = firstTopic[0].id
 
-            subtopics = SubTopics.objects.filter(topic_id=topic_id)
+            subtopics = SubTopics.objects.filter(topic_id=topic_id, status='Not Started')
             
             topic_names = []
             subtopic_ids = []
@@ -191,7 +206,7 @@ def getSubtopic(request):
     topicId = request.GET.get('topicId')
     
     # Fetch SubTopics based on the given topicId
-    subtopics = SubTopics.objects.filter(topic_id=topicId)
+    subtopics = SubTopics.objects.filter(topic_id=topicId).exclude(status='Inactive')
     
     subTopicData = []
     
@@ -556,6 +571,6 @@ def logout_view(request):
     return redirect('')  
 
 
-# @login_required
-# def protected_view(request):
-#     return render(request, 'protected_template.html')
+
+
+
