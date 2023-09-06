@@ -1,0 +1,470 @@
+    .no_scroll_bar::-webkit-scrollbar {
+        display: none;
+    }
+
+     ::-webkit-scrollbar-button {
+        height: 5px;
+    }
+
+     ::-webkit-scrollbar {
+        width: 5px;
+    }
+    /* Track */
+
+     ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        border-radius: 5px;
+    }
+    /* Handle */
+
+     ::-webkit-scrollbar-thumb {
+        background: rgb(99, 98, 98);
+        border-radius: 5px;
+    }
+
+    #menu .selected {
+        color: rgb(0, 0, 0);
+        background-color: #C1DCFE;
+        border-color: red;
+        pointer-events: none;
+        cursor: default;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .my_video_player-dimensions {
+            width: 370px;
+        }
+        #menu {
+            height: 0;
+            padding-bottom: 40px;
+        }
+    }
+
+    @media only screen and (max-width: 1024px) and (min-width: 767px) {
+        .my_video_player-dimensions {
+            width: 100%;
+        }
+    }
+
+    button {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        font-size: 1px;
+        padding: 4px 8px;
+        color: rgba(0, 0, 0, 0.85);
+        background-color: rgb(255, 255, 255);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
+
+    button:hover,
+    button:focus,
+    button:active {
+        cursor: pointer;
+        background-color: #ecf0f1;
+    }
+
+    .comment-thread {
+        width: 75%;
+        max-width: 100%;
+        margin: auto;
+        padding: 0 30px;
+        background-color: rgb(255, 255, 255);
+        border: 1px solid transparent;
+        /* Removes margin collapse */
+    }
+
+    .m-0 {
+        margin: 0;
+    }
+
+    .sr-only {
+        position: absolute;
+        left: -10000px;
+        top: auto;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+    }
+    /* Comment */
+
+    .comment {
+        position: relative;
+        margin: 20px auto;
+    }
+
+    .comment-heading {
+        display: flex;
+        align-items: center;
+        height: 50px;
+        font-size: 14px;
+    }
+
+    .comment-voting {
+        width: 20px;
+        height: 32px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
+
+    .comment-voting button {
+        display: block;
+        width: 100%;
+        height: 50%;
+        padding: 0;
+        border: 0;
+        font-size: 10px;
+    }
+
+    .comment-info {
+        color: rgba(0, 0, 0, 0.5);
+        margin-left: 10px;
+    }
+
+    .comment-author {
+        color: rgba(0, 0, 0, 0.85);
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .comment-author:hover {
+        text-decoration: underline;
+    }
+
+    .replies {
+        margin-left: 20px;
+    }
+    /* Adjustments for the comment border links */
+
+    .comment-border-link {
+        display: block;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 12px;
+        height: calc(100% - 50px);
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        background-color: rgba(0, 0, 0, 0.1);
+        background-clip: padding-box;
+    }
+
+    .comment-border-link:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .comment-body {
+        padding: 0 20px;
+        padding-left: 28px;
+    }
+
+    .replies {
+        margin-left: 28px;
+    }
+    /* Adjustments for toggleable comments */
+
+    details.comment summary {
+        position: relative;
+        list-style: none;
+        cursor: pointer;
+    }
+
+    details.comment summary::-webkit-details-marker {
+        display: none;
+    }
+
+    details.comment:not([open]) .comment-heading {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+
+    .comment-heading::after {
+        display: inline-block;
+        position: absolute;
+        right: 5px;
+        align-self: center;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.55);
+    }
+
+    details.comment[open] .comment-heading::after {
+        content: "Click to hide";
+    }
+
+    details.comment:not([open]) .comment-heading::after {
+        content: "Click to show";
+    }
+    /* Adjustment for Internet Explorer */
+
+    @media screen and (-ms-high-contrast: active),
+    (-ms-high-contrast: none) {
+        /* Resets cursor, and removes prompt text on Internet Explorer */
+        .comment-heading {
+            cursor: default;
+        }
+        details.comment[open] .comment-heading::after,
+        details.comment:not([open]) .comment-heading::after {
+            content: " ";
+        }
+    }
+    /* Styling the reply to comment form */
+
+    .reply-form textarea {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-size: 16px;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    /* custom css for radio button */
+
+    .dataTables_wrapper .dataTables_paginate {
+        float: right;
+        text-align: right;
+        margin-top: -30px;
+        margin-right: 20px;
+    }
+
+    .paginate_button {
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 5px 10px;
+        background-color: #C1DCFE;
+        cursor: pointer;
+    }
+
+    .radio_margin {
+        display: block;
+        position: relative;
+        padding-left: 24px;
+        margin-bottom: -14px;
+        cursor: pointer;
+        font-size: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        left: 12px;
+    }
+    /* Hide the browser's default radio button */
+
+    .radio_margin input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .paginate_button {
+        font-family: sans-serif !important;
+    }
+    /* Create a custom radio button */
+
+    .checkmark {
+        position: absolute;
+        top: -19;
+        left: 79;
+        height: 27px;
+        width: 27px;
+        background-color: #eee;
+        border-radius: 50%;
+    }
+    /* On mouse-over, add a grey background color */
+
+    .radio_margin:hover input~.checkmark {
+        background-color: #ccc;
+    }
+    /* When the radio button is checked, add a blue background */
+
+    .radio_margin input:checked~.checkmark {
+        background-color: #2196F3;
+    }
+    /* Create the indicator (the dot/circle - hidden when not checked) */
+
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    /* Show the indicator (dot/circle) when checked */
+
+    .radio_margin input:checked~.checkmark:after {
+        display: block;
+    }
+    /* Style the indicator (dot/circle) */
+
+    .radio_margin .checkmark:after {
+        top: 10px;
+        left: 9px;
+        width: 9px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+    }
+
+    thead {
+        background-color: #27a3e2 !important;
+        color: white;
+        /*display: block;*/
+    }
+
+    .btn-submit {
+        color: white!important;
+        background: #47b3e1!important;
+        border-radius: 1!important;
+    }
+
+    .btn-sm {
+        background: #ee9c39;
+        color: white!important;
+        border-radius: 1!important;
+    }
+
+    tfoot {
+        display: table-header-group !important;
+    }
+
+    .tableCaption {
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        color: #27a3e2;
+    }
+
+    .step-progress {
+        counter-reset: step;
+    }
+
+    .step-progress li {
+        list-style-type: none;
+        width: 25%;
+        float: left;
+        font-size: 12px;
+        position: relative;
+        text-align: center;
+        text-transform: uppercase;
+        color: #7d7d7d;
+    }
+    /* .row a{
+          line-height: 0px !important;
+        } */
+
+    #test {
+        padding-top: 9%;
+        font-family: sans-serif;
+    }
+
+    .step-progress li:before {
+        width: 43px;
+        height: 41px;
+        content: counter(step);
+        counter-increment: step;
+        line-height: 35px;
+        border: 2px solid #7d7d7d;
+        display: block;
+        text-align: center;
+        margin: 0 auto 10px auto;
+        border-radius: 50%;
+        background: #e0e0e0;
+        border: 2px solid white;
+        box-shadow: 0px 0px 5px #ccc;
+    }
+
+    .step-progress li:after {
+        width: 84%;
+        height: 2px;
+        content: '';
+        position: absolute;
+        background-color: #7d7d7d;
+        top: 19px;
+        left: -42%;
+        z-index: 1;
+    }
+
+    .step-progress li:first-child:after {
+        content: none;
+    }
+
+    .step-progress li.active {
+        color: black;
+    }
+
+    .step-progress li.step2 {
+        color: black;
+    }
+
+    .step-progress li.step3 {
+        color: black;
+    }
+
+    .step-progress li.step4 {
+        color: black;
+    }
+
+    .step-progress li.active:before {
+        background: #59dfe6;
+        box-shadow: 0px 0px 5px #327bb9;
+    }
+
+    .step-progress li.step2:before {
+        background: #f19934;
+        box-shadow: 0px 0px 5px #d8580d;
+    }
+
+    .step-progress li.step3:before {
+        background: #ea6398;
+        box-shadow: 0px 0px 5px #c451d2;
+    }
+
+    .step-progress li.step4:before {
+        background: #65cd66;
+        box-shadow: 0px 0px 5px #5fdb6a;
+    }
+
+    .step-progress li.active+li:after {
+        background-color: #5ccdfc;
+        width: 84%;
+    }
+
+    .step-progress li.step2+li:after {
+        background-color: #f19934;
+        width: 84%;
+    }
+
+    .step-progress li.step3+li:after {
+        background-color: #ea6398;
+        width: 84%;
+    }
+
+    .search_margin {
+        font-size: 12px;
+        display: block;
+        width: 80%;
+        height: 100%;
+        padding: 5px 0px;
+        background: none;
+        background-image: none;
+        border: 1px solid #a0b3b0;
+        color: #ffffff;
+        border-radius: 5px;
+        -webkit-transition: border-color .25s ease, box-shadow .25s ease;
+        transition: border-color .25s ease, box-shadow .25s ease;
+    }
+
+    .dataTables_filter {
+        margin-bottom: -38pt !important;
+        display: none !important;
+    }
+
+    #myTable_length {
+        display: none !important;
+    }
+
+    input {
+        font-weight: normal;
+    }

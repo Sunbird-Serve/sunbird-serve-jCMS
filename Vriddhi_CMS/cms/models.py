@@ -133,7 +133,7 @@ class SubTopics(models.Model):
     updated_date = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=50,default="Not Started")
     type = models.CharField(max_length=50, choices=(('1', 'Subchapter'), ('2', 'quiz')),default=1)
-    author_id = models.ForeignKey(User, null=True, related_name="subtopics_author_id", blank=True)
+    author = models.ForeignKey(User, null=True, related_name="subtopics_author_id", blank=True)
     created_by = models.ForeignKey(User, null=True, related_name="subtopics_created_by", blank=True)
     updated_by = models.ForeignKey(User, null=True, related_name="subtopics_updated_by", blank=True)
     reviewer = models.ForeignKey(User, null=True, related_name="subtopics_reviewer_id", blank=True)
@@ -263,6 +263,42 @@ class ContentMetaAttribute(models.Model):
         verbose_name = ('Content Meta Attribute')
 
     def __unicode__(self):
+        return self.key
+
+class BaseModel(models.Model):
+    # Define common fields and methods for your base model here
+    # For example:
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        abstract = True
+
+# class FLTeacher_Content_View_Status(BaseModel):
+#     content_detail = models.ForeignKey(ContentDetail, null=True, blank=True, related_name='fsvs_content_id')
+#     status = models.CharField(max_length=50, choices=(('1', 'Viewed'), ('2', 'Pending'), ('3', 'Inprogress')),default="1")
+#     progress = models.IntegerField(default=0)
+#     number_of_times_viewed = models.IntegerField(default=1)
+#     user = models.ForeignKey(User, null=True, related_name='fsvs_auth_user', blank=True)
+#     topic = models.ForeignKey(Topic, null=True, blank=True, related_name="fsvs_topic")
+#     subtopic = models.ForeignKey(SubTopics, null=True, blank=True, related_name="fsvs_sub_topic")
+
+class FLMContentRating(models.Model):
+    id = models.AutoField(primary_key=True)
+    videoRating = models.FloatField(default=None)
+    worksheetRating = models.FloatField(default=None)
+    comment = models.TextField(blank=True, null=True)
+    reviewer_id = models.IntegerField(default=None)
+    subtopic = models.ForeignKey(SubTopics,db_index=True,blank=True, null=True)
+    status = models.CharField(max_length=50,default=0)
+    created_by_id = models.IntegerField(blank=True, null=True)
+    created_on = models.DateTimeField(blank=True, null=True)
+    updated_by_id = models.IntegerField(blank=True, null=True)
+    updated_on = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+            db_table = 'cms_flm_content_rating'
+    def __str__(self):
         return self.key
 
 

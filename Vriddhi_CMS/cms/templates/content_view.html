@@ -1,46 +1,206 @@
-{% extends 'base.html' %}
-{% block title %}Content Details{% endblock %}
+{% extends "base.html" %}
+{% load static %} 
+{% block title %}Topic Details{% endblock %}
 {% block content %}
 
+<link href="{% static 'css/content_view.css' %}" rel="stylesheet">
 
-
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-6">
-            <select class="custom-select" id="topicFilterDropdown">
-                <option value="" >Select Topic</option>
-                <option value="all" >All Topic</option>
-                {% for topic in get_all_topic %}
-                    <option value="{{ topic.id }}">{{ topic.title }}</option>
-                {% endfor %}
-            </select>
+<!-- alert popup -->
+<div id="confirmPopup1" class="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover">
+    <div class="absolute bg-black opacity-80 inset-0 z-0"></div>
+    <div class="w-full  max-w-lg p-5 relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
+        <!--content-->
+        <div class="">
+            <!--body-->
+            <div class="text-center p-5 flex-auto justify-center">
+                <div class="text-yellow-500"><i class="fas fa-exclamation-triangle fa-2x"></i></div>
+                <h2 class="text-xl font-bold py-4 ">Are you sure?</h3>
+                    <p class="text-xl text-gray-500 px-6">Do you really want to mark as completed ? This process cannot be undone.</p>
+            </div>
+            <!--footer-->
+            <div class="p-3  mt-2 text-center space-x-4 md:block">
+                <button class="cancelAction mb-2 md:mb-0 bg-white px-6 py-2 text-2xl shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100">No</button>
+                <button class="doAction mb-2 md:mb-0 bg-blue-500 border border-2blue-500 px-6 py-2 text-2xl shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-blue-600">Yes</button>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="col-md-9">
-    <div class="container mt-5">
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Sr.No.</th>
-                    <th scope="col">SUBTOPICS</th>
-                    <th scope="col">STATUS</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for subtopic in get_all_subtopic %}
-                    <tr>
-                        <td>{{subtopic.id}}</td>
-                        <td>{{subtopic.name}}</td>
-                        <td>{{subtopic.status}}</td>
-                    </tr>
-                {% endfor %}
+<div class="w-full h-screen md:h-4/6 flex flex-col md:flex-row">
 
-            </tbody>
-        </table>
+    <div class="w-full md:w-1/5 md:h-full bg-gray-600 border-r-2 border-gray-400 ">
+        <div class="font-bold text-3xl pt-4 px-2 text-center text-white">Topics</div>
+        <div id="topics" class="mt-8 bg-white overflow-y-auto no_scroll_bar rounded-lg parent topics_container" tabindex="0"></div>
+    </div>
+
+    <div class="w-full md:w-4/5 h-full bg-gray-50 justify-center shadow-inner shadow-2xl">
+
+
+        <div class="flex mobile_hide">
+            <div class="w-full md:w-3/5 lg:w-4/5 mt-10 text-center font-bold text-3xl p-2 justify-self-center">{{board_name}} - {{subject_name}} - {{grade}} grade</div>
+            <div class="w-full md:w-2/5 mt-4 justify-self-end space-y-4">
+                <div onclick="location.href='/home/view_course/'" class="mx-12 p-2 bg-blue-300 hover:bg-blue-400 cursor-pointer rounded-lg text-center font-bold flex items-center justify-around"> <i class="fas fa-long-arrow-alt-left fa-2x"></i> Back to Course</div>
+            </div>
+        </div>
+
+
+
+        {% comment %} <div class="w-full md:w-2/4 text-center md:text-justify md:pl-38 text-blue-600 font-bold text-3xl p-2 justify-self-center uppercase">{{board_name}} - {{subject_name}} - {{grade}} grade</div> {% endcomment %}
+
+
+
+        <h5 id="topic_name" class="text-left mx-24 p-4 font-bold text-xl mx-4 text-blue-600"></h5>
+        <div class="px-32 overflow-y-auto border-t-2 border-blue-400 rounded-lg subtopics_container">
+            <table class="w-full table-fixed ">
+                <thead class="table-fixed">
+                    <tr class="w-full border-b-2 border-gray-400 bg-gray-200 rounded-lg">
+                        <th id="subtopics_length" class="w-1/12 font-bold text-lg text-center p-2 mobile_hide text-black" ></th>
+                        <th class="w-8/12 font-bold text-lg p-2 text-center text-black">SUBTOPICS</th>
+                        <th class="w-1/12"></th>
+                        <th class="w-2/12 font-bold text-lg text-center text-black">STATUS</th>
+                    </tr>
+                </thead>
+
+                <tbody id="subtopicsDetails">
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
- 
+<div class="py-12 backdrop-filter backdrop-blur transition duration-150 ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0" id="att_pop">
+    <div class="container relative w-full md:w-3/4 w-full md:h-3/5 md:mt-96 bg-white rounded border-4 border-green-700">
+        <div class="py-8 md:px-5">
+            <div class="flex justify-between">
+                <div class="w-11/12 text-2xl font-bold uppercase text-center">Mark Attendance - {{centerName}}</div>
+                <div class="w-1/12 text-2xl font-bold cursor-pointer flex justify-end hover:text-red-500" onclick="modalHandler(false)">
+                    <i class="fas fa-times fa-2x"></i>
+                </div>
+            </div>
+            <div id="att_pop_data" class="flex">
+                <div class="w-1/2 flex flex-col items-cener justify-between pt-4 font-bold text-xl">
+                    <div class="space-y-4">
+                        <div class="flex">
+                            <div>Teacher :</div>
+                            <div id="teacher_name" class="px-2 text-green-500"></div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <div>Course :</div>
+                            <div class="px-2 text-green-500">{{grade}}th - {{subject}} </div>
+                        </div>
+                    </div>
+                    <div class="w-full flex justify-end md:pr-20">
+                        <div id="present_count">0</div>/
+                        <div id="total_students_count"></div>
+                        <div class="mx-2">Present</div>
+                    </div>
+                    <table class="w-full">
+                        <thead class="border-b border-t border-gray-500 bg-gray-100">
+                            <tr class="flex items-center justify-center space-y-2 w-full">
+                                <th class="w-1/4 text-xl py-2 pl-2 font-bold">Student Id</th>
+                                <th class="w-2/4 text-xl py-2 text-center md:pr-20 font-bold">Student Name</th>
+                                <th class="w-1/4 text-xl font-bold flex space-x-1">
+                                    <div class="text-sm md:text-xl">All Present</div>
+                                    <div id="ktx" onclick="toggle_all()" class="border rounded-full border-grey-200 flex items-center cursor-pointer w-16 justify-start bg-red-600 ">
+                                        <div id="ytx" class="rounded-full border w-8 h-8 border-grey shadow-inner bg-white text-center shadow transform duration-300 text-sm font-bold"></div>
+                                        <input id="xtx" class="hidden" type="number" value="0">
+                                        <input id="ptx" class="hidden" type="number" value="0">
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="students" class="text-center w-full bg-grey-light flex flex-col overflow-y-scroll no_scroll_bar border-b-2 h-[58vh]">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="w-1/2 flex flex-col justify-center ml-10 space-y-4">
+                    <div class="items-center space-y-4">
+                        <div class="w-full flex items-center text-xl font-bold space-x-4">
+                            <div class="mr-4">Date:</div>
+                            <input onchange="get_students()" type="date" id="class_from_date" class="px-3 py-3 placeholder-blue-300 relative bg-white bg-white rounded text-xl border border-blueGray-300 outline-none focus:outline-none focus:ring w-full" />
+                        </div>
+                        <div class="w-full flex text-xl font-bold space-x-4 items-center">
+                            <div class="pr-4">From:</div>
+                            <input type="time" id="class_from_time" class="px-3 py-3 placeholder-blue-300 relative bg-white bg-white rounded text-xl border border-blueGray-300 outline-none focus:outline-none focus:ring w-full" />
+                            <div class="pr-4">To:</div>
+                            <input type="time" name="to_time" id="class_to_time" class="px-3 py-3 placeholder-blue-300 relative bg-white bg-white rounded text-xl border border-blueGray-300 outline-none focus:outline-none focus:ring w-full">
+                        </div>
+                        <div class="w-full flex items-center text-xl font-bold space-x-4">
+                            <div class="mr-4">Topic:</div>
+                            <select id="selectTopics"  class="px-3 py-3 placeholder-blue-300 relative bg-white bg-white rounded text-xl border border-blueGray-300 outline-none focus:outline-none focus:ring w-full">
+                                
+                            </select>
+                        </div>
+                        <div  class="w-full flex items-center text-xl font-bold space-x-4">
+                            <div class="mr-4">Subtopic:</div>
+                            <select id="selectSubtopics"  multiple="multiple" class="w-full  border-2 border-blueGray-300 focus:outline-none focus:ring">
+                                
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <div class="w-full flex flex-col justify-around items-center space-y-4">
+                        <div id="err_msg" class="w-full text-center text-red-400 "></div>
+                        <div class="h-48 w-full flex justify-around items-center"><textarea class="p-2" id="flm_attendance_comment" name="flm_attendance_comment" maxlength="120" id="" cols="30" rows="10" placeholder="How is the class..." onkeyup="this.value = this.value.replace(/[$@_~|{*^}]/g, '')"></textarea></div>
+                        <div class="w-full flex items-center justify-around">
+                            <div class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400 bg-red-500 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-red-600 border text-white rounded-full px-8 py-4 text-xl font-bold" onclick="modalHandler()">Cancel</div>
+                            <div id="updateButton" class="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400 bg-indigo-500 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-indigo-600 border text-white rounded-full px-8 py-4 text-xl font-bold" onclick="submit_attendance()">Submit</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- student select popup -->
+<div id="studentPopup" class="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" >
+    <div class="absolute bg-black opacity-80 inset-0 z-0"></div>
+    <div class="w-full  max-w-lg p-5 relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
+        <!--content-->
+        <div class="">
+            <!--body-->
+            <div role="button" x-data onclick="$('#studentPopup').hide();" class="absolute top-4 right-4 focus:outline-none hover:text-red-500 rounded-md cursor-pointer text-lg">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="text-center p-5 flex-auto justify-center">
+                <h2 class="text-2xl font-bold py-4 ">Select student</h3>
+                    <select id="selectStudent" placeholder="select student">
+                        <option>--select student--</option>
+                        {% for e in enrolledStudents %}
+                        <option value="{{ e.id }}">{{ e.name }}</option>
+                        {% endfor %}
+                    </select>
+            </div>
+            <!--footer-->
+            <div class="p-3  mt-2 text-center space-x-4 md:block">
+                <button class="mb-2 md:mb-0 bg-white px-6 py-2 text-2xl shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100" onclick="$('#studentPopup').hide();">Close</button>
+                <button class="mb-2 md:mb-0 bg-blue-500 border border-2blue-500 px-6 py-2 text-2xl shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-blue-600" onclick="startQuiz()">Start Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/content_view.js' %}"></script>
+<script>
+    //Make python veriable to js 
+    var topicsData = JSON.parse('{{ topic_data_json|safe }}');
+    var topic_id = "{{ topic_id }}"
+    var subject_name = "{{ subject_name }}";
+    var subtopic_id = "{{ subtopic_id }}";
+    var subtopic_name = "{{ subtopic_name }}";
+    var subtopic_status = "{{ subtopic_status }}";
+    var topic_name = "{{ topic_name }}";
+    make_topics_table(topicsData)
+</script>
+
+
+
+
+
+
+
 {% endblock %}

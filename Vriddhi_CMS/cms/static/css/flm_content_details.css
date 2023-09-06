@@ -1,0 +1,23 @@
+#no_video{
+    display: none; 
+    width: 800px; 
+    height: 320px;
+}
+#content_wraper{
+    display: none;
+}
+
+#doubt_post_loader{
+    display: none;
+}
+
+#doubtdetailmodal{
+    display: none;
+}
+#rating_pop{
+    display: none;
+}
+
+.formstrt{
+    font-family: 'Roboto', sans-serif;
+}

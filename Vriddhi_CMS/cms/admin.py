@@ -65,9 +65,9 @@ class TopicDetailsAdmin(admin.ModelAdmin):
 
 class SubTopicsAdmin(admin.ModelAdmin):
     form = CombinedForm
-    list_display = ['id','name', 'topic', 'created_date', 'updated_date','author_id','created_by','updated_by','status']
+    list_display = ['id','name', 'topic', 'created_date', 'updated_date','author','created_by','updated_by','status']
     fields = [
-        'board', 'course', 'topic', 'name', 'created_date', 'updated_date', 'author_id', 'created_by', 'updated_by', 'status'
+        'board', 'course', 'topic', 'name', 'created_date', 'updated_date', 'author', 'created_by', 'updated_by', 'status'
     ]
     class Media:
         js = ('js/dynamic_course_dropdown.js',)
@@ -107,6 +107,7 @@ class MetaAttributeTypeAdmin(admin.ModelAdmin):
     search_fields = ["name","code"]
     list_display = ["name",'code','status',"workstream_type","created_by","created_on"]
     
+        
 admin.site.register(Board, BoardAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Course, CourseAdmin)
