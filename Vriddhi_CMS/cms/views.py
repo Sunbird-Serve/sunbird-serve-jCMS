@@ -20,6 +20,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import SuspiciousOperation
 from django.utils import timezone
+import random
+import string
 
 # User register
 def register(request):
@@ -568,6 +570,7 @@ def content_rating(request):
 
 
 
+
 @csrf_exempt
 def create_board(request):
     if request.method == 'POST':
@@ -946,6 +949,11 @@ def delete_subTopic(request):
     else:
         response_data = {'message': 'Invalid request method'}
         return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+
+
+
 
 
 

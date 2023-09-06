@@ -42,6 +42,9 @@ urlpatterns = [
     url(r'^api/delete_topic/$', delete_topic, name='delete_topic'),
     url(r'^api/delete_subTopic/$', delete_subTopic, name='delete_subTopic'),
 
+
+    # url(r'^api/set_key/$', set_key),
+
 ]
 
 (r'^static/admin/(?P<path>.*)$', 'django.views.static.serve',

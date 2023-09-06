@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+import random
+import string
 
 class Board(models.Model):
     id = models.AutoField(primary_key=True)
@@ -308,4 +310,11 @@ class APIKey(models.Model):
 
     def __str__(self):
         return self.key
+
+    def save(self, *args, **kwargs):
+        characters = string.ascii_letters + string.digits
+        api_key = ''.join(random.choice(characters) for _ in range(40))
+        self.key = api_key
+        super(APIKey, self).save(*args, **kwargs)
+
 

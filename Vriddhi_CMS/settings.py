@@ -90,7 +90,9 @@ TEMPLATE_LOADERS = (
 )
 
 # Middleware
-MIDDLEWARE = [
+
+
+MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -98,8 +100,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'corsheaders.middleware.CorsMiddleware', # CORS middleware
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'cms.api_key_middleware.APIKeyMiddleware',
-]
+    'cms.api_key_middleware.APIKeyMiddleware', 
+)
 
 ROOT_URLCONF = 'urls'
 

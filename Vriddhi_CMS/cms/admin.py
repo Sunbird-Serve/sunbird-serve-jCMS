@@ -1,6 +1,9 @@
 from django.contrib import admin
 from cms.models import *
 from django import forms
+import random
+import string
+from django.http import HttpResponse
 
 class BoardAdmin(admin.ModelAdmin):
     list_filter = ('id', 'board_name')
@@ -106,7 +109,11 @@ class ContentMetaAttributeAdmin(admin.ModelAdmin):
 class MetaAttributeTypeAdmin(admin.ModelAdmin):
     search_fields = ["name","code"]
     list_display = ["name",'code','status',"workstream_type","created_by","created_on"]
-    
+
+class APIKeyAdmin(admin.ModelAdmin):
+    search_fields = ["user"]
+    list_display = ["id", "user", "created_at","key"]
+    exclude = ('key',) 
         
 admin.site.register(Board, BoardAdmin)
 admin.site.register(Subject, SubjectAdmin)
@@ -124,3 +131,4 @@ admin.site.register(WorkStreamType, WorkStreamTypeAdmin)
 admin.site.register(ContentAuthor, ContentAuthorAdmin)
 admin.site.register(ContentMetaAttribute, ContentMetaAttributeAdmin)
 admin.site.register(ContentMetaAttributeType, MetaAttributeTypeAdmin)
+admin.site.register(APIKey, APIKeyAdmin)
