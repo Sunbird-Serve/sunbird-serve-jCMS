@@ -24,12 +24,24 @@ urlpatterns = [
     url(r'^get_filtered_subject/$', get_filtered_subject, name='get_filtered_subject'),
     url(r'^search_courses/$', search_courses, name='search_courses'),
 
+    # Create Board Course Topic Sub-Topic through API
+    url(r'^api/create_course/$', create_course),
+    url(r'^api/create_board/$', create_board),
+    url(r'^api/create_topic/$', create_topic),
+    url(r'^api/create_subtopic/$', create_subtopic),
+
+    # Create Board Course Topic Sub-Topic through API
+    url(r'^api/get_course/$', get_course),
+    url(r'^api/get_board/$', get_board),
+    url(r'^api/get_topic/$', get_topic),
+    url(r'^api/get_subtopic/$', get_subtopic),
+
     # Delete Board Course Topic Sub-Topic through API
     url(r'^api/delete_board/$', delete_board, name='delete_board'),
     url(r'^api/delete_course/$', delete_course, name='delete_course'),
     url(r'^api/delete_topic/$', delete_topic, name='delete_topic'),
     url(r'^api/delete_subTopic/$', delete_subTopic, name='delete_subTopic'),
-    # url(r'^get_filtered_subtopic/$', get_filtered_subtopic, name='get_filtered_subtopic'),
+
 ]
 
 (r'^static/admin/(?P<path>.*)$', 'django.views.static.serve',

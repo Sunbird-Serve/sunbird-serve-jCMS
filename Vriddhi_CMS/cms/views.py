@@ -19,6 +19,7 @@ from django.shortcuts import render as render_response
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import SuspiciousOperation
+from django.utils import timezone
 
 # User register
 def register(request):
@@ -564,6 +565,297 @@ def content_rating(request):
         }
         response_data = json.dumps(course_data)
         return HttpResponse(response_data, content_type="application/json")
+
+
+
+@csrf_exempt
+def create_board(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        name = data.get('board_name')
+        board_id = data.get('board_id')
+
+        if name:
+            if board_id:
+                # Update an existing board if both board_id and board_name are provided
+                try:
+                    board = Board.objects.get(id=board_id)
+                    board.board_name = name
+                    board.save()
+                    response_data = {
+                        "message": 'Board Name updated successfully',
+                        "board_id": board.id,
+                        "board_name": board.board_name
+                    }
+                    return HttpResponse(json.dumps(response_data), content_type='application/json')
+                except Board.DoesNotExist:
+                    return HttpResponse(json.dumps({'message': 'Board not found'}), status=404)
+            else:
+                # Create a new board if only board_name is provided
+                board = Board(board_name=name)
+                board.save()
+                return HttpResponse(json.dumps({"message": 'Board created successfully'}), content_type='application/json')
+        else:
+            return HttpResponse(json.dumps({'message': 'Board Name is required'}), status=400)
+
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+
+# {
+#     "board_id" : "17",
+#     "subject_id" : "4",
+#     "grade" : "9",
+#     "type" : "S",
+#     "description" : "Science",
+#     "picture" : "static/uploads/images/1200px-Sahaj_Path_First_Part_Cover.svg.png",
+#     "status" : "active",
+#     "language_id" : "1",
+#     "availabilityType" : "3"
+# }
+
+
+@csrf_exempt
+def create_course(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        board_id= data.get('board_id')
+        subject_id = data.get('subject_id')
+        grade = data.get('grade')
+        type = data.get('type')
+        description = data.get('description')
+        picture = data.get('picture')
+        status = data.get('status')
+        language_id = data.get('language_id')
+        availabilityType = data.get('availabilityType')
+        course_id = data.get('course_id')
+
+        if board_id and subject_id and grade:
+            # Create a new board if only board_name is provided
+            course = Course(board_id=board_id,subject_id=subject_id,grade=grade,type=type,description=description,picture=picture,status=status,language_id=language_id,availabilityType=availabilityType)  
+            course.save()
+            response_data = {
+                "message": 'Course created successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+        if course_id:
+            # Update an existing board if both board_id and board_name are provided
+            try:
+                course = Course.objects.get(id=course_id)
+                fields_to_update = {
+                    'board_id': board_id,
+                    'subject_id': subject_id,
+                    'grade': grade,
+                    'type': type,
+                    'description': description,
+                    'picture': picture,
+                    'status': status,
+                    'language_id': language_id,
+                    'availabilityType': availabilityType,
+                }
+
+                # Update the fields with non-empty values
+                for field_name, field_value in fields_to_update.items():
+                    if field_value is not None:
+                        setattr(course, field_name, field_value)
+
+                course.save()
+
+                return HttpResponse(json.dumps({"message": 'Course updated successfully'}), content_type='application/json')
+            except Board.DoesNotExist:
+                return HttpResponse(json.dumps({'message': 'Course not found'}), status=404)
+
+
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+
+
+# {
+#     "course_id":"5",	
+#     "title": "Gadha",	
+#     "url": "https://www.youtube.com/watch?v=dzyuVGIFR8I",		
+#     "num_sessions":"1",
+#     "status": "In Progress",	
+#     "priority": "0"
+# }
+
+
+@csrf_exempt
+def create_topic(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        course_id = data.get('course_id')
+        title = data.get('title')
+        url = data.get('url')
+        num_sessions = data.get('num_sessions')
+        status = data.get('status')
+        priority = data.get('priority')
+        topic_id = data.get('topic_id')
+
+        if course_id and title:
+            topic = Topic(course_id=course_id,title=title,url=url,num_sessions=num_sessions,status=status,priority=priority ) 
+            topic.save()
+            response_data = {
+                "message": 'Topic created successfully!',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+        if topic_id:
+            # Update an existing board if both board_id and board_name are provided
+            try:
+                topic = Topic.objects.get(id=topic_id)
+                fields_to_update = {
+                    'course_id': course_id,
+                    'title': title,
+                    'url': url,
+                    'num_sessions': num_sessions,
+                    'status': status,
+                    'priority': priority,
+                }
+
+                # Update the fields with non-empty values
+                for field_name, field_value in fields_to_update.items():
+                    if field_value is not None:
+                        setattr(topic, field_name, field_value)
+
+                topic.save()
+
+                return HttpResponse(json.dumps({"message": 'Topic updated successfully'}), content_type='application/json')
+            except Board.DoesNotExist:
+                return HttpResponse(json.dumps({'message': 'Topic not found'}), status=404)
+
+
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+# {
+#     "name":" Google",	
+#     "topic_id":"136",	
+#     "status":"Not Started",	
+#     "type":"1",	
+#     "author_id_id":"1",	
+#     "created_by_id":"1",	
+#     "updated_by_id":"1"
+# }
+
+
+@csrf_exempt
+def create_subtopic(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        name = data.get('name')
+        topic_id = data.get('topic_id')
+        status = data.get('status')
+        type = data.get('type')
+        author_id = data.get('author_id')
+        created_by_id = data.get('created_by_id')
+        updated_by_id = data.get('updated_by_id')
+        subTopic_id = data.get('subTopic_id')
+
+        if name and topic_id :
+            subtopic = SubTopics(name=name,topic_id=topic_id,status=status,type=type,author_id=author_id_id,created_by_id=created_by_id,updated_by_id=updated_by_id ) 
+            subtopic.save()
+
+            response_data = {
+                "message": 'Sub-Topic created successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+        if subTopic_id:
+            # Update an existing board if both board_id and board_name are provided
+            try:
+                subtopic = SubTopics.objects.get(id=subTopic_id)
+                fields_to_update = {
+                    'name': name,
+                    'topic_id': topic_id,
+                    'status': status,
+                    'type': type,
+                    'status': status,
+                    'author_id': author_id,
+                    'created_by_id': created_by_id,
+                    'updated_by_id': updated_by_id,
+                    'subTopic_id': subTopic_id,
+                }
+
+                # Update the fields with non-empty values
+                for field_name, field_value in fields_to_update.items():
+                    if field_value is not None:
+                        setattr(subtopic, field_name, field_value)
+
+                subtopic.save()
+
+                return HttpResponse(json.dumps({"message": 'Sub-Topic updated successfully'}), content_type='application/json')
+            except Board.DoesNotExist:
+                return HttpResponse(json.dumps({'message': 'Sub-Topic not found'}), status=404)
+
+
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+@csrf_exempt
+def get_board(request):
+    if request.method == 'POST':
+        boards = Board.objects.values('id', 'board_name')
+        board_data = list(boards)
+        response_data = {
+            'board_details': board_data,
+        }
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+@csrf_exempt
+def get_course(request):
+    if request.method == 'POST':
+        courses = Course.objects.all()
+        course_data = serializers.serialize('json', courses)
+        course_data = json.loads(course_data)
+        for course_entry in course_data:
+            course_obj = course_entry['fields']
+            if 'picture' in course_obj:
+                course_obj['picture'] = str(course_obj['picture']) 
+
+        response_data = {
+            'course_details': course_data
+        }
+        
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+@csrf_exempt
+def get_topic(request):
+    if request.method == 'POST':
+
+        topics = Topic.objects.values("id", "course_id", "title", "url", "num_sessions", "status", "priority")
+        topic_data = list(topics)
+
+        response_data = {
+            'board_details': topic_data,
+        }
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+@csrf_exempt
+def get_subtopic(request):
+    if request.method == 'POST':
+        subtopics = SubTopics.objects.all()
+
+        # Serialize the queryset to JSON
+        subtopic_data = serializers.serialize('json', subtopics)
+
+        # Deserialize the JSON data to a list of dictionaries
+        subtopic_data = json.loads(subtopic_data)
+
+        response_data = {
+            'subtopic_details': subtopic_data,
+        }
+
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
 
 
 @csrf_exempt

@@ -301,4 +301,11 @@ class FLMContentRating(models.Model):
     def __str__(self):
         return self.key
 
+class APIKey(models.Model):
+    key = models.CharField(max_length=40, unique=True)
+    user = models.ForeignKey('auth.User', related_name='api_keys', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.key
 

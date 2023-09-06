@@ -98,6 +98,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'corsheaders.middleware.CorsMiddleware', # CORS middleware
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cms.api_key_middleware.APIKeyMiddleware',
 ]
 
 ROOT_URLCONF = 'urls'
