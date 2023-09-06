@@ -9,16 +9,11 @@ urlpatterns = [
     url(r'^get_courses/$', get_courses, name='get_courses'),
     url(r'^get_topics/?$', get_topics, name='get_topics'),
     url(r'^home/view_course/?$', view_course, name='view_course'),
-    # url(r'^home/view_content/?$', view_content, name='view_content'),
     url(r'^home/view_content/$', view_content, name='view_content'),
     url(r'^home/content_detail/$', content_detail_view, name='content_detail'),
     url(r'^home/getSubtopic/?$', getSubtopic, name='getSubtopic'),
     url(r'^subtopic/content-details/?$', SubTopicDetailsView.as_view(), name="SubTopicDetailsView"),
     url(r'^subtopic/content_rating/$', content_rating, name='content_rating'),
-
-
-
-    # url(r'^home/topics/?$', TopicDetailsView.as_view(), name='topic_details_by_center'),
     url(r'^logout/$', logout_view, name='logout'),
     url(r'^get_filtered_courses/$', get_filtered_courses, name='get_filtered_courses'),
     url(r'^get_filtered_subject/$', get_filtered_subject, name='get_filtered_subject'),
@@ -41,9 +36,6 @@ urlpatterns = [
     url(r'^api/delete_course/$', delete_course, name='delete_course'),
     url(r'^api/delete_topic/$', delete_topic, name='delete_topic'),
     url(r'^api/delete_subTopic/$', delete_subTopic, name='delete_subTopic'),
-
-
-    # url(r'^api/set_key/$', set_key),
 
 ]
 
