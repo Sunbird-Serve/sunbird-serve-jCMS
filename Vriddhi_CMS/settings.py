@@ -148,7 +148,7 @@ LOGGING = {
     }
 }
 
-SECRET_KEY = 'evidyaloka'
+SECRET_KEY = 'x5G#8pWv2@R!nD$zQ9YtM6aX1E*oZcFh'
 
 
 

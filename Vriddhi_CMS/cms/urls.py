@@ -27,7 +27,7 @@ urlpatterns = [
 
     # Subject API
     url(r'^api/subject/create$', create_or_edit_subject),
-    url(r'^api/subject/create$', create_or_edit_subject),
+    url(r'^api/subject/update$', create_or_edit_subject),
     url(r'^api/subject/list?$', get_subject),
     url(r'^api/subject/delete$', delete_subject, name='delete_subject'),
 
@@ -45,7 +45,7 @@ urlpatterns = [
 
     # Sub-Topic API
     url(r'^api/subtopic/create$', create_or_edit_subtopic),
-    url(r'^api/subtopic/upfate$', create_or_edit_subtopic),
+    url(r'^api/subtopic/update$', create_or_edit_subtopic),
     url(r'^api/subtopic/list?$', get_subtopic),
     url(r'^api/subtopic/delete$', delete_subTopic, name='delete_subTopic'),
 
