@@ -5,6 +5,7 @@ import random
 import string
 from django.http import HttpResponse
 import hashlib
+from django.conf import settings
 
 class BoardAdmin(admin.ModelAdmin):
     list_filter = ('id', 'board_name')
@@ -130,7 +131,7 @@ class CmsAPIKeyForm(forms.ModelForm):
         user_id = instance.user_id
 
         random_component = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
-        secret_key = 'x5G#8pWv2@R!nD$zQ9YtM6aX1E*oZcFh'
+        secret_key = settings.SECRET_KEY
         key_to_hash = '{}{}{}'.format(user_id, random_component, secret_key).encode('utf-8')
         api_key_value = hashlib.sha256(key_to_hash).hexdigest()
 

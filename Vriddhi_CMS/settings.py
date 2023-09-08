@@ -148,7 +148,7 @@ LOGGING = {
     }
 }
 
-# settings.py
+SECRET_KEY = 'evidyaloka'
 
 
 
