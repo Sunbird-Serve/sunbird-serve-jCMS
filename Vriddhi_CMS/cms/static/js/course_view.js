@@ -3,7 +3,7 @@
 
         //Board-wise Data Retrieval
         $('#boardFilterDropdown').change(function() {
-            $("#loader").show();
+            $("#loader").removeClass("d-none");
             var boardId = $(this).val();
             var data ={boardId:boardId};
             $.get("/get_filtered_courses/",data,function(response,status){
@@ -25,14 +25,14 @@
                         </div>`;
                     $("#courseContainer").append(courseCard);
                 }
-                $("#loader").hide();
+                $("#loader").addClass("d-none");
             })
         });
 
 
         //Subject-wise Data Retrieval
         $('#subjectFilterDropdown').change(function() {
-            $("#loader").show();
+            $("#loader").removeClass("d-none");
             var subjectId = $(this).val();
             var data ={subjectId:subjectId};
             $.get("/get_filtered_subject/",data,function(response,status){
@@ -54,7 +54,7 @@
                         </div>`;
                     $("#courseContainer").append(courseCard);
                 }
-                $("#loader").hide();
+                $("#loader").addClass("d-none");
             })
         });
 
@@ -69,7 +69,7 @@
 
         //Search Courses
         $(document).on('click','#searchData', function(){
-            $("#loader").show();
+            $("#loader").removeClass("d-none");
             var searchInput = $("#filterData").val();
             var data ={searchInput:searchInput};
             $.get("/search_courses/", data, function(response,status){
@@ -89,7 +89,7 @@
                         </div>`;
                     $("#courseContainer").append(courseCard);
                 }
-                $("#loader").hide();
+                $("#loader").addClass("d-none");
             })
         })
     });

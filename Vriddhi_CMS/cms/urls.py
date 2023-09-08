@@ -19,23 +19,25 @@ urlpatterns = [
     url(r'^get_filtered_subject/$', get_filtered_subject, name='get_filtered_subject'),
     url(r'^search_courses/$', search_courses, name='search_courses'),
 
-    # Create Board Course Topic Sub-Topic through API
-    url(r'^api/create_course/$', create_course),
-    url(r'^api/create_board/$', create_board),
-    url(r'^api/create_topic/$', create_topic),
-    url(r'^api/create_subtopic/$', create_subtopic),
+    # Board API
+    url(r'^api/board/create_or_edit$', create_or_edit_board),
+    url(r'^api/board/list?$', get_board),
+    url(r'^api/board/delete$', delete_board, name='delete_board'),
 
-    # Create Board Course Topic Sub-Topic through API
-    url(r'^api/get_course/$', get_course),
-    url(r'^api/get_board/$', get_board),
-    url(r'^api/get_topic/$', get_topic),
-    url(r'^api/get_subtopic/$', get_subtopic),
+    # Course API
+    url(r'^api/course/create_or_edit$', create_or_edit_course),
+    url(r'^api/course/list?$', get_course),
+    url(r'^api/course/delete$', delete_course, name='delete_course'),
 
-    # Delete Board Course Topic Sub-Topic through API
-    url(r'^api/delete_board/$', delete_board, name='delete_board'),
-    url(r'^api/delete_course/$', delete_course, name='delete_course'),
-    url(r'^api/delete_topic/$', delete_topic, name='delete_topic'),
-    url(r'^api/delete_subTopic/$', delete_subTopic, name='delete_subTopic'),
+    # Topic API
+    url(r'^api/topic/create_or_edit$', create_or_edit_topic),
+    url(r'^api/topic/get?$', get_topic),
+    url(r'^api/topic/delete$', delete_topic, name='delete_topic'),
+
+    # Sub-Topic API
+    url(r'^api/subtopic/create_or_edit$', create_or_edit_subtopic),
+    url(r'^api/subtopic/list?$', get_subtopic),
+    url(r'^api/subtopic/delete$', delete_subTopic, name='delete_subTopic'),
 
 ]
 

@@ -4,6 +4,7 @@ from django import forms
 import random
 import string
 from django.http import HttpResponse
+import hashlib
 
 class BoardAdmin(admin.ModelAdmin):
     list_filter = ('id', 'board_name')
@@ -110,10 +111,44 @@ class MetaAttributeTypeAdmin(admin.ModelAdmin):
     search_fields = ["name","code"]
     list_display = ["name",'code','status',"workstream_type","created_by","created_on"]
 
+
+
+class CmsAPIKeyForm(forms.ModelForm):
+    userName = forms.ModelChoiceField(
+        # queryset=User.objects.filter(is_staff=True), 
+        queryset=User.objects.all(), 
+        empty_label="Select User"
+    )
+    class Meta:
+        model = APIKey
+        fields = ['userName'] 
+
+    def save(self, commit=True, *args, **kwargs):
+        instance = super(CmsAPIKeyForm, self).save(commit=False, *args, **kwargs)
+        instance.user = self.cleaned_data['userName']
+        instance.user_id = instance.user.id
+        user_id = instance.user_id
+
+        random_component = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(16))
+        secret_key = 'x5G#8pWv2@R!nD$zQ9YtM6aX1E*oZcFh'
+        key_to_hash = '{}{}{}'.format(user_id, random_component, secret_key).encode('utf-8')
+        api_key_value = hashlib.sha256(key_to_hash).hexdigest()
+
+
+        # APIKey.objects.create(user=request.user, key=api_key_value)
+        # return HttpResponse(f'API Key: {api_key_value}')
+
+        # characters = string.ascii_letters + string.digits
+        # api_key = ''.join(random.choice(characters) for _ in range(40))
+        instance.key = api_key_value
+
+        if commit:
+            instance.save()
+        return instance
+
 class APIKeyAdmin(admin.ModelAdmin):
-    search_fields = ["user"]
     list_display = ["id", "user", "created_at","key"]
-    exclude = ('key',) 
+    form = CmsAPIKeyForm
         
 admin.site.register(Board, BoardAdmin)
 admin.site.register(Subject, SubjectAdmin)
