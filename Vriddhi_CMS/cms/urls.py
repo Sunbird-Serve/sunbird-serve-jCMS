@@ -24,6 +24,11 @@ urlpatterns = [
     url(r'^api/board/list?$', get_board),
     url(r'^api/board/delete$', delete_board, name='delete_board'),
 
+    # Subject API
+    url(r'^api/subject/create_or_edit$', create_or_edit_subject),
+    url(r'^api/subject/list?$', get_subject),
+    url(r'^api/subject/delete$', delete_subject, name='delete_subject'),
+
     # Course API
     url(r'^api/course/create_or_edit$', create_or_edit_course),
     url(r'^api/course/list?$', get_course),
@@ -31,13 +36,18 @@ urlpatterns = [
 
     # Topic API
     url(r'^api/topic/create_or_edit$', create_or_edit_topic),
-    url(r'^api/topic/get?$', get_topic),
+    url(r'^api/topic/list?$', get_topic),
     url(r'^api/topic/delete$', delete_topic, name='delete_topic'),
 
     # Sub-Topic API
     url(r'^api/subtopic/create_or_edit$', create_or_edit_subtopic),
     url(r'^api/subtopic/list?$', get_subtopic),
     url(r'^api/subtopic/delete$', delete_subTopic, name='delete_subTopic'),
+
+    # Content API
+    url(r'^api/content/create_or_edit$', create_or_edit_content),
+    url(r'^api/content/list?$', get_content),
+    url(r'^api/content/delete$', delete_content, name='delete_content'),
 
 ]
 

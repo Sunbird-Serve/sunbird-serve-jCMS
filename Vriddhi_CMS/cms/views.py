@@ -23,6 +23,8 @@ from django.utils import timezone
 import random
 import string
 from django.core.serializers import serialize
+from django.core.serializers.json import DjangoJSONEncoder 
+from datetime import datetime
 
 # User register
 def register(request):
@@ -603,6 +605,35 @@ def create_or_edit_board(request):
 
 
 
+
+@csrf_exempt
+def create_or_edit_subject(request):
+
+        data = json.loads(request.body)
+        name = data.get('subject_name')
+        subject_id = data.get('id')
+
+        if name:
+            if subject_id:
+                if request.method == 'PUT':
+                    try:
+                        subject = Subject.objects.get(id=subject_id)
+                        subject.subject_name = name
+                        subject.save()
+                        return HttpResponse(json.dumps({"message": 'Subject Name updated successfully'}), status=200)
+                    except Subject.DoesNotExist:
+                        return HttpResponse(json.dumps({'message': 'Subject not found'}), status=404)
+                else :
+                    return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
+            else:
+                if request.method == 'POST':
+                    subject = Subject(subject_name=name)
+                    subject.save()
+                    return HttpResponse(json.dumps({"message": 'Subject created successfully'}), status=200)
+                else :
+                    return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
+        else:
+            return HttpResponse(json.dumps({'message': 'Subject Name is required'}), status=400)
         
 
 
@@ -633,7 +664,7 @@ def create_or_edit_course(request):
     status = data.get('status')
     language_id = data.get('language_id')
     availabilityType = data.get('availabilityType')
-    course_id = data.get('course_id')
+    course_id = data.get('id')
 
     if board_id and subject_id and grade:
         if request.method == 'POST':
@@ -697,7 +728,7 @@ def create_or_edit_topic(request):
     num_sessions = data.get('num_sessions')
     status = data.get('status')
     priority = data.get('priority')
-    topic_id = data.get('topic_id')
+    topic_id = data.get('id')
 
     if course_id and title:
         if request.method == 'POST':
@@ -751,56 +782,128 @@ def create_or_edit_topic(request):
 
 @csrf_exempt
 def create_or_edit_subtopic(request):
+    data = json.loads(request.body)
+    name = data.get('name')
+    topic_id = data.get('topic_id')
+    status = data.get('status')
+    type = data.get('type')
+    author_id = data.get('author_id')
+    created_by_id = data.get('created_by_id')
+    updated_by_id = data.get('updated_by_id')
+    subTopic_id = data.get('id')
 
-        data = json.loads(request.body)
-        name = data.get('name')
-        topic_id = data.get('topic_id')
-        status = data.get('status')
-        type = data.get('type')
-        author_id = data.get('author_id')
-        created_by_id = data.get('created_by_id')
-        updated_by_id = data.get('updated_by_id')
-        subTopic_id = data.get('subTopic_id')
+    if name and topic_id :
+        if request.method == 'POST':
+            subtopic = SubTopics(name=name,topic_id=topic_id,status=status,type=type,author_id=author_id,created_by_id=created_by_id,updated_by_id=updated_by_id ) 
+            subtopic.save()
 
-        if name and topic_id :
-            if request.method == 'POST':
-                subtopic = SubTopics(name=name,topic_id=topic_id,status=status,type=type,author_id=author_id_id,created_by_id=created_by_id,updated_by_id=updated_by_id ) 
+            response_data = {
+                "message": 'Sub-Topic created successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
+    if subTopic_id:
+        if request.method == 'PUT':
+            try:
+                subtopic = SubTopics.objects.get(id=subTopic_id)
+                fields_to_update = {
+                    'name': name,
+                    'topic_id': topic_id,
+                    'status': status,
+                    'type': type,
+                    'status': status,
+                    'author_id': author_id,
+                    'created_by_id': created_by_id,
+                    'updated_by_id': updated_by_id,
+                    'subTopic_id': subTopic_id,
+                }
+
+                # Update the fields with non-empty values
+                for field_name, field_value in fields_to_update.items():
+                    if field_value is not None:
+                        setattr(subtopic, field_name, field_value)
+
                 subtopic.save()
 
-                response_data = {
-                    "message": 'Sub-Topic created successfully',
+                return HttpResponse(json.dumps({"message": 'Sub-Topic updated successfully'}), content_type='application/json')
+            except Board.DoesNotExist:
+                return HttpResponse(json.dumps({'message': 'Sub-Topic not found'}), status=404)
+        else:
+            return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
+
+
+
+@csrf_exempt
+def create_or_edit_content(request):
+    data = json.loads(request.body)
+    name = data.get('name')
+    topic_id = data.get('topic_id')
+    subTopic_id = data.get('subTopic_id')
+    description = data.get('description')
+    url = data.get('url')
+    url_host_id = data.get('url_host_id')
+    content_type_id = data.get('content_type_id')
+    workstream_type_id = data.get('workstream_type_id')
+    author_id = data.get('author_id')
+    status = data.get('status')
+    version = data.get('version')
+    duration = data.get('duration')
+    is_primary = data.get('is_primary')
+    created_by_id = data.get('created_by_id')
+    created_on = data.get('created_on')
+    updated_by_id = data.get('updated_by_id')
+    updated_on = data.get('updated_on')
+    contentDetails_id = data.get('id')
+
+
+    if name and topic_id and subTopic_id:
+        if request.method == 'POST':
+            contentDetail = ContentDetail(name=name,topic_id=topic_id,subtopic_id=subTopic_id,description=description,url=url,url_host_id=url_host_id,content_type_id=content_type_id,workstream_type_id=workstream_type_id,author_id=author_id,status=status,version=version,duration=duration,is_primary=is_primary,created_by_id=created_by_id,created_on=created_on,updated_by_id=updated_by_id,updated_on=updated_on) 
+            contentDetail.save()
+
+            response_data = {
+                "message": 'Content Detail added successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
+    if contentDetails_id:
+        if request.method == 'PUT':
+            try:
+                contentDetail = ContentDetail.objects.get(id=contentDetails_id)
+                fields_to_update = {
+                    'name': name,
+                    'topic_id': topic_id,
+                    'subTopic_id': subTopic_id,
+                    'description': description,
+                    'url': url,
+                    'url_host_id': url_host_id,
+                    'content_type_id': content_type_id,
+                    'workstream_type_id': workstream_type_id,
+                    'author_id': author_id,
+                    'status': status,
+                    'version': version,
+                    'duration': duration,
+                    'is_primary': is_primary,
+                    'created_by_id': created_by_id,
+                    'created_on': created_on,
+                    'updated_by_id': updated_by_id,
+                    'updated_on': updated_on
                 }
-                return HttpResponse(json.dumps(response_data), content_type='application/json')
-            else:
-                return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
-        if subTopic_id:
-            if request.method == 'PUT':
-                try:
-                    subtopic = SubTopics.objects.get(id=subTopic_id)
-                    fields_to_update = {
-                        'name': name,
-                        'topic_id': topic_id,
-                        'status': status,
-                        'type': type,
-                        'status': status,
-                        'author_id': author_id,
-                        'created_by_id': created_by_id,
-                        'updated_by_id': updated_by_id,
-                        'subTopic_id': subTopic_id,
-                    }
 
-                    # Update the fields with non-empty values
-                    for field_name, field_value in fields_to_update.items():
-                        if field_value is not None:
-                            setattr(subtopic, field_name, field_value)
+                # Update the fields with non-empty values
+                for field_name, field_value in fields_to_update.items():
+                    if field_value is not None:
+                        setattr(contentDetail, field_name, field_value)
 
-                    subtopic.save()
+                contentDetail.save()
 
-                    return HttpResponse(json.dumps({"message": 'Sub-Topic updated successfully'}), content_type='application/json')
-                except Board.DoesNotExist:
-                    return HttpResponse(json.dumps({'message': 'Sub-Topic not found'}), status=404)
-            else:
-                return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
+                return HttpResponse(json.dumps({"message": 'Content Detail updated successfully'}), content_type='application/json')
+            except Board.DoesNotExist:
+                return HttpResponse(json.dumps({'message': 'Content Detail not found'}), status=404)
+        else:
+            return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
 
 
 
@@ -831,42 +934,68 @@ def get_board(request):
         return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
 
 
+
+@csrf_exempt
+def get_subject(request):
+    if request.method == 'GET':
+        if request.body :
+            data = json.loads(request.body)
+            subject_id = data.get('id')
+            subject_name = data.get('subject_name')
+
+            if subject_id:
+                subjects = Subject.objects.filter(id=subject_id)
+                
+            if subject_name:
+                subjects = Subject.objects.filter(subject_name=subject_name)
+
+        else :
+            subjects = Subject.objects.values('id', 'subject_name')
+
+        subject_data = list(subjects.values('id', 'subject_name'))
+
+        response_data = {
+            'subject_details': subject_data,
+        }
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
+
+
 @csrf_exempt
 def get_course(request):
     if request.method == 'GET':
         if request.body :
             data = json.loads(request.body)
+            filters = {}
             course_id = data.get('id')
             board_id = data.get('board_id')
             subject_id = data.get('subject_id')
             grade = data.get('grade')
+            status = data.get('status')
 
 
             if course_id:
-                course = Course.objects.filter(id=course_id)
-            if grade:
-                course = Course.objects.filter(grade=grade)
+                filters['id'] = course_id
+
             if board_id:
-                course = Course.objects.filter(board_id=board_id)
+                filters['board_id'] = board_id
+
             if subject_id:
-                course = Course.objects.filter(subject_id=subject_id)
+                filters['subject_id'] = subject_id
 
-            if grade and board_id:
-                course = Course.objects.filter(grade=grade,board_id=board_id)
+            if grade:
+                filters['grade'] = grade
 
-            if grade and subject_id:
-                course = Course.objects.filter(grade=grade, subject_id=subject_id)
-            
-            if board_id and subject_id:
-                course = Course.objects.filter(board_id=board_id, subject_id=subject_id)
+            if status:
+                filters['status'] = status
 
-            if grade and board_id and subject_id:
-                course = Course.objects.filter(grade=grade,board_id=board_id,subject_id=subject_id)
+            course_list = Course.objects.filter(**filters) 
 
         else:
-            course = Course.objects.all()
+            course_list = Course.objects.all()
 
-        course_data = list(course.values('id', 'board_id', 'subject_id', 'grade', 'type', 'description', 'picture', 'status', 'language_id', 'availabilityType'))
+        course_data = list(course_list.values('id', 'board_id', 'subject_id', 'grade', 'type', 'description', 'picture', 'status', 'language_id', 'availabilityType'))
 
         response_data = {
             'course_details': course_data,
@@ -876,43 +1005,32 @@ def get_course(request):
         return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)        
 
 
-
-
-    # courses = Course.objects.all()
-    # course_data = serializers.serialize('json', courses)
-    # course_data = json.loads(course_data)
-    # for course_entry in course_data:
-    #     course_obj = course_entry['fields']
-    #     if 'picture' in course_obj:
-    #         course_obj['picture'] = str(course_obj['picture']) 
-
-    # response_data = {
-    #     'course_details': course_data
-    # }
-    
-    # return HttpResponse(json.dumps(response_data), content_type='application/json')
-
 @csrf_exempt
 def get_topic(request):
     if request.method == 'GET':
         if request.body :
             data = json.loads(request.body)
+            filters = {}
             topic_id = data.get('id')
             course_id = data.get('course_id')
             title = data.get('title')
+            status = data.get('status')
 
             if topic_id:
-                topic = Topic.objects.filter(id=topic_id)
+                filters['id'] = topic_id
             if course_id:
-                topic = Topic.objects.filter(course_id=course_id)
+                filters['course_id'] = course_id
             if title:
-                topic = Topic.objects.filter(title=title)
-            if course_id and title:
-                topic = Topic.objects.filter(title=title, course_id=course_id)
-        else:
-            topic = Topic.objects.all()
+                filters['title'] = title
+            if status:
+                filters['status'] = status
 
-        topic_data = list(topic.values('id', 'course_id', 'title', 'url', 'num_sessions', 'status', 'priority'))
+            topic_list = Topic.objects.filter(**filters)  
+
+        else:
+            topic_list = Topic.objects.all()
+
+        topic_data = list(topic_list.values('id', 'course_id', 'title', 'url', 'num_sessions', 'status', 'priority'))
 
         response_data = {
             'topic_details': topic_data,
@@ -926,47 +1044,73 @@ def get_subtopic(request):
     if request.method == 'GET':
         if request.body :
             data = json.loads(request.body)
+            filters = {}
             subtopic_id = data.get('id')
             topic_id = data.get('topic_id')
             name = data.get('name')
+            status = data.get('status')
 
             if subtopic_id:
-                subtopic = SubTopics.objects.filter(id=subtopic_id)
-            if topic_id:
-                subtopic = SubTopics.objects.filter(topic_id=topic_id)
+                filters['id'] = subtopic_id
             if name:
-                subtopic = SubTopics.objects.filter(name=name)
-            if topic_id and name:
-                subtopic = SubTopics.objects.filter(name=name, topic_id=topic_id)
+                filters['name'] = name
+            if topic_id:
+                filters['topic_id'] = topic_id
+            if status:
+                filters['status'] = status
+
+            contentDetails_list = ContentDetail.objects.filter(**filters)
         else:
-            subtopic = SubTopics.objects.all()
+            subTopic_list = SubTopics.objects.all()
 
+        subtopic_data = json.dumps(list(contentDetails_list.values('id','name','topic_id','created_date','updated_date','status','type','author_id','created_by_id','updated_by_id','reviewer_id')), cls=DjangoJSONEncoder)
+        
+        response_data = {
+            'topic_details': subtopic_data,
+        }
 
-        subtopic_data = serialize('json', subtopic, fields=('id', 'name', 'topic_id', 'created_date', 'updated_date', 'status', 'type', 'author_id', 'created_by_id', 'updated_by_id', 'reviewer_id'))
-
-        return HttpResponse(subtopic_data, content_type='application/json')
+        return HttpResponse(json.dumps(response_data), content_type='application/json')
     else:
         return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
 
 
 
-# @csrf_exempt
-# def get_subtopic(request):
-#     if request.body :
-#         data = json.loads(request.body)
-#         topic_id = data.get('id')
-#         course_id = data.get('course_id')
-#         title = data.get('title')
+@csrf_exempt
+def get_content(request):
+    if request.method == 'GET':
+        if request.body :
+            data = json.loads(request.body)
+            filters = {}
+            
+            contentDetails_id=data.get('id')
+            name=data.get('name')
+            topic_id=data.get('topic_id')
+            subTopic_id=data.get('subtopic_id')
+            status=data.get('status')
 
-#     subtopics = SubTopics.objects.all()
-#     subtopic_data = serializers.serialize('json', subtopics)
-#     subtopic_data = json.loads(subtopic_data)
+            if contentDetails_id:
+                filters['id'] = contentDetails_id
+            if name:
+                filters['name'] = name
+            if topic_id:
+                filters['topic_id'] = topic_id
+            if subTopic_id:
+                filters['subtopic_id'] = subTopic_id
+            if status:
+                filters['status'] = status
 
-#     response_data = {
-#         'subtopic_details': subtopic_data,
-#     }
+            contentDetails_list = ContentDetail.objects.filter(**filters)
+        else:
+            contentDetails_list = ContentDetail.objects.all()
 
-#     return HttpResponse(json.dumps(response_data), content_type='application/json')
+        content_details = json.dumps(list(contentDetails_list.values('id', 'topic_id', 'subtopic_id', 'name', 'description', 'url', 'url_host_id', 'content_type_id', 'workstream_type_id', 'author_id', 'status', 'priority', 'version', 'duration', 'is_primary', 'created_by_id', 'created_on', 'updated_by_id', 'updated_on')), cls=DjangoJSONEncoder)
+
+        response_data = {
+            'content_details': content_details,
+        }
+        return HttpResponse(content_details, content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
 
 
 @csrf_exempt
@@ -992,10 +1136,31 @@ def delete_board(request):
 
 
 @csrf_exempt
+def delete_subject(request):
+    if request.method == 'DELETE':
+        data = json.loads(request.body)
+        subject_id = data.get('id')
+
+        if subject_id:
+            subject = Subject(id=subject_id)
+            subject.delete()
+            response_data = {
+                "message": 'Subject deleted successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            response_data = {'message': 'Subject Id is required'}
+            return HttpResponse(json.dumps(response_data), status=400, content_type='application/json')
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
+
+
+@csrf_exempt
 def delete_course(request):
     if request.method == 'DELETE':
         data = json.loads(request.body)
-        course_id = data.get('course_id')
+        course_id = data.get('id')
 
         if course_id:
             course = Course(id=course_id)
@@ -1017,7 +1182,7 @@ def delete_course(request):
 def delete_topic(request):
     if request.method == 'DELETE':
         data = json.loads(request.body)
-        topic_id = data.get('topic_id')
+        topic_id = data.get('id')
 
         if topic_id:
             topic = Topic(id=topic_id)
@@ -1042,7 +1207,7 @@ def delete_topic(request):
 def delete_subTopic(request):
     if request.method == 'DELETE':
         data = json.loads(request.body)
-        subTopic_id = data.get('subTopic_id')
+        subTopic_id = data.get('id')
 
         if subTopic_id:
             subtopic = SubTopics(id=subTopic_id)
@@ -1058,6 +1223,26 @@ def delete_subTopic(request):
         response_data = {'message': 'Invalid request method'}
         return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
 
+
+@csrf_exempt
+def delete_content(request):
+    if request.method == 'DELETE':
+        data = json.loads(request.body)
+        contentDetails_id = data.get('id')
+
+        if contentDetails_id:
+            contentDetails = ContentDetail(id=contentDetails_id)
+            contentDetails.delete()
+            response_data = {
+                "message": 'Content Details deleted successfully',
+            }
+            return HttpResponse(json.dumps(response_data), content_type='application/json')
+        else:
+            response_data = {'message': 'Content Details Id is required'}
+            return HttpResponse(json.dumps(response_data), status=400, content_type='application/json')
+    else:
+        response_data = {'message': 'Invalid request method'}
+        return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
 
 # logout 
 def logout_view(request):
