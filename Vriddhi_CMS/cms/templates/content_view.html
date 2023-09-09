@@ -188,13 +188,13 @@
 <script>
     //Make python veriable to js 
     var topicsData = JSON.parse('{{ topic_data_json|safe }}');
-    var topic_id = "{{ topic_id }}"
-    var subject_name = "{{ subject_name }}";
-    var subtopic_id = "{{ subtopic_id }}";
-    var subtopic_name = "{{ subtopic_name }}";
-    var subtopic_status = "{{ subtopic_status }}";
-    var topic_name = "{{ topic_name }}";
-    make_topics_table(topicsData)
+    var subtopic_data = JSON.parse('{{ subtopic_all_data|safe }}');
+
+    //var subtopicStatuses = {{ subtopic_statuses|safe }};
+    //console.log(subtopicStatuses)
+
+
+    make_topics_table(topicsData,subtopic_data)
 </script>
 
 

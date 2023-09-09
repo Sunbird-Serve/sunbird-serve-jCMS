@@ -1,8 +1,9 @@
 //Show topic details
-function make_topics_table(topics) {
+function make_topics_table(topics,subtopics) {
     $("#topic_name").empty(); 
     $("#topic_name").append(`<b>${topic_name}</b>`);
     $("#topics div").remove();
+
     for (let index = 0; index < topics.length; index++) {
         const topic = topics[index];
         let id = 'topicdiv_' + topic["id"];
@@ -18,23 +19,33 @@ function make_topics_table(topics) {
                                 </div></div>')
 
     }
-    $('#subtopics_length').append("(" + topic["subtopics"].length + ")")
+
 
     $("#subtopicsDetails").empty(); 
 
-    let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic_id + "&topic_id=" + topic_id + "'"
-    let onclick = 'onclick="popup(' + subtopic_id + ')"'
-    
-    let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >view content</button>`
+    for(let index = 0; index < subtopics.length; index++){
+        const subtopic = subtopics[index];
 
-    var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
-        <td class="text-center text-xl p-2 mobile_hide">1</td>
-        <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic_name}</td>
-        <td class="">${button}</td>
-        <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic_status}</td>`;
-    
-    subTopicTableData += `</tr>`;
-    $("#subtopicsDetails").append(subTopicTableData);
+        let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic["subtopic_ids"] + "&topic_id=" + subtopic["topic_id"] + "'"
+        let onclick = 'onclick="popup(' + subtopic["subtopic_ids"] + ')"'
+        
+        let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >view content</button>`
+
+        var subTopicTableData = '<tr class="border-b-2 subtopic hover:bg-gray-100">\
+            <td class="text-center text-xl p-2 mobile_hide">1</td>\
+            <td class="p-2 text-left subtopic-cell" rowspan="1">'+subtopic["subtopic_names"]+'</td>\
+            <td class="">'+`${button}`+'</td>\
+            <td class="p-2 text-left subtopic-cell" rowspan="1">'+subtopic["subtopic_statuses"]+'</td>';
+        
+        subTopicTableData += `</tr>`;
+        $("#subtopicsDetails").append(subTopicTableData);
+
+        $("#topic_name").empty(); 
+        $("#topic_name").append(`<b>${subtopic.topic_names}</b>`);
+    }
+    $('#subtopics_length').empty();
+    $('#subtopics_length').append("(" + subtopics.length + ")")
+
 
 }
 
