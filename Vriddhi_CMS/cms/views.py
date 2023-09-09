@@ -1229,10 +1229,7 @@ def delete_content(request):
         response_data = {'message': 'Invalid request method'}
         return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
 
-# logout 
-def logout_view(request):
-    logout(request)
-    return redirect('')  
+
 
 
 
