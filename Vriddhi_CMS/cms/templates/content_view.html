@@ -190,9 +190,6 @@
     var topicsData = JSON.parse('{{ topic_data_json|safe }}');
     var subtopic_data = JSON.parse('{{ subtopic_all_data|safe }}');
 
-    //var subtopicStatuses = {{ subtopic_statuses|safe }};
-    //console.log(subtopicStatuses)
-
 
     make_topics_table(topicsData,subtopic_data)
 </script>
