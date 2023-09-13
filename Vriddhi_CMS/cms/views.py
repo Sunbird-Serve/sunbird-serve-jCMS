@@ -25,6 +25,7 @@ import string
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder 
 from datetime import datetime
+from django.contrib.auth import logout as auth_logout
 
 # User register
 def register(request):
@@ -65,7 +66,16 @@ def get_topics(request):
     response_data = json.dumps(topic_data)
     return HttpResponse(response_data, content_type="application/json")
 
+# Get all topics
+def get_subTopics(request):
+    topic_id = request.GET.get("topic_id")
+    subTopics = SubTopics.objects.filter(topic_id=topic_id)
+    subTopic_data = [{"id": subTopic.id, "name": subTopic.name} for subTopic in subTopics]
+    response_data = json.dumps(subTopic_data)
+    return HttpResponse(response_data, content_type="application/json")
+
 # View all course data
+@login_required
 def view_course(request):
     get_all_board = Board.objects.all()
     get_all_subject = Subject.objects.all()
@@ -129,7 +139,6 @@ def search_courses(request):
         filtered_courses = Course.objects.filter(
             Q(grade__icontains=search_input) | Q(subject__subject_name__icontains=search_input) | Q(board__board_name__icontains=search_input)
         )
-    print(filtered_courses)
     course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in filtered_courses]
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
@@ -546,13 +555,45 @@ def content_rating(request):
         videoRating = request.POST.get('videoRating')
         worksheetRating = request.POST.get('worksheetRating')
         comment = request.POST.get('comment')
+        current_time = timezone.now()
 
-        contentreating = FLMContentRating( subtopic_id=subtopicId, videoRating=videoRating, worksheetRating=worksheetRating, comment=comment, status='active', reviewer_id='0')
-        contentreating.save()
-        course_data={
-            "status" : "success",
-            "message": "Rating saved successfully",
-        }
+        ratingExist = FLMContentRating.objects.filter(subtopic_id=subtopicId)
+        # Get the row count
+        row_count = ratingExist.count()
+
+        if row_count == 0:
+            # If no matching records found, create a new record
+            content_rating = FLMContentRating(
+                subtopic_id=subtopicId,
+                videoRating=videoRating,
+                worksheetRating=worksheetRating,
+                comment=comment,
+                status='active',
+                reviewer_id='0',
+                created_by_id = request.user.id,
+                created_on = current_time
+            )
+            content_rating.save()
+            course_data = {
+                "status": "success",
+                "message": "Rating saved successfully",
+            }
+        else:
+            # If matching records found, update the first one (you might want to specify the update logic)
+
+            existing_rating = ratingExist[0]
+            existing_rating.videoRating = videoRating
+            existing_rating.worksheetRating = worksheetRating
+            existing_rating.comment = comment
+            existing_rating.updated_by_id = request.user.id
+            existing_rating.updated_on=current_time
+            existing_rating.save()
+            course_data = {
+                "status": "success",
+                "message": "Rating updated successfully",
+            }
+
+        # Return 'course_data' as needed for your application response
         response_data = json.dumps(course_data)
         return HttpResponse(response_data, content_type="application/json")
 
@@ -619,21 +660,6 @@ def create_or_edit_subject(request):
                     return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
         else:
             return HttpResponse(json.dumps({'message': 'Subject Name is required'}), status=400)
-        
-
-
-
-# {
-#     "board_id" : "17",
-#     "subject_id" : "4",
-#     "grade" : "9",
-#     "type" : "S",
-#     "description" : "Science",
-#     "picture" : "static/uploads/images/1200px-Sahaj_Path_First_Part_Cover.svg.png",
-#     "status" : "active",
-#     "language_id" : "1",
-#     "availabilityType" : "3"
-# }
 
 
 @csrf_exempt
@@ -688,21 +714,6 @@ def create_or_edit_course(request):
         else:
             return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
 
-
-
-
-
-
-# {
-#     "course_id":"5",	
-#     "title": "Gadha",	
-#     "url": "https://www.youtube.com/watch?v=dzyuVGIFR8I",		
-#     "num_sessions":"1",
-#     "status": "In Progress",	
-#     "priority": "0"
-# }
-
-
 @csrf_exempt
 def create_or_edit_topic(request):
 
@@ -751,19 +762,6 @@ def create_or_edit_topic(request):
                 return HttpResponse(json.dumps({'message': 'Topic not found'}), status=404)
         else:
             return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405, content_type='application/json')
-
-
-
-# {
-#     "name":" Google",	
-#     "topic_id":"136",	
-#     "status":"Not Started",	
-#     "type":"1",	
-#     "author_id_id":"1",	
-#     "created_by_id":"1",	
-#     "updated_by_id":"1"
-# }
-
 
 @csrf_exempt
 def create_or_edit_subtopic(request):
@@ -816,8 +814,6 @@ def create_or_edit_subtopic(request):
                 return HttpResponse(json.dumps({'message': 'Sub-Topic not found'}), status=404)
         else:
             return HttpResponse(json.dumps({'message': 'Invalid request method'}), status=405)
-
-
 
 @csrf_exempt
 def create_or_edit_content(request):
@@ -1184,10 +1180,6 @@ def delete_topic(request):
         return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
 
 
-# {
-#     "subTopic_id":"28"
-# }
-
 @csrf_exempt
 def delete_subTopic(request):
     if request.method == 'DELETE':
@@ -1229,6 +1221,9 @@ def delete_content(request):
         response_data = {'message': 'Invalid request method'}
         return HttpResponse(json.dumps(response_data), status=405, content_type='application/json')
 
+def custom_logout(request):
+    auth_logout(request)
+    return HttpResponseRedirect(reverse('login'))
 
 
 

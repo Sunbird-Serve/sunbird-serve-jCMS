@@ -1,12 +1,22 @@
 (function($) {
     $(document).ready(function() {
         // Reference to the dropdowns
+        var currentURL = window.location.href;
+
         var boardDropdown = $("#id_board"); 
-        var courseDropdown = $("#id_course"); 
+        var courseDropdown = $("#id_course");
         var topicDropdown = $("#id_topic"); 
+        var subTopicDropdown = $("#id_subtopic")
 
         courseDropdown.attr("disabled", "disabled");
         topicDropdown.attr("disabled", "disabled");
+        subTopicDropdown.attr("disabled", "disabled");
+
+        if (currentURL.indexOf("/admin/cms/contentdetail/add/") !== -1) {
+            topicDropdown.attr("disabled", false);
+        }else{
+            topicDropdown.attr("disabled", true);
+        }
 
         boardDropdown.change(function() {
 
@@ -49,6 +59,29 @@
                         topicDropdown.append($("<option></option>").attr("value", "").text("Select Topic"));
                         $.each(data, function(index, topic) {
                             topicDropdown.append($("<option></option>").attr("value", topic.id).text(topic.name));
+                        });
+                    },
+                });
+                
+            } 
+        });
+
+        topicDropdown.change(function() {
+
+            var selectedTopicId = $(this).val();
+            if (selectedTopicId) {
+                subTopicDropdown.removeAttr("disabled");
+
+                $.ajax({
+                    url: "/get_subTopics/",  // URL to fetch courses
+                    data: { topic_id: selectedTopicId },
+                    dataType: 'json',  // Specify the data type explicitly
+                    success: function(data) {
+                        // Clear and populate course dropdown
+                        subTopicDropdown.empty();
+                        subTopicDropdown.append($("<option></option>").attr("value", "").text("Select Topic"));
+                        $.each(data, function(index, subTopic) {
+                            subTopicDropdown.append($("<option></option>").attr("value", subTopic.id).text(subTopic.name));
                         });
                     },
                 });

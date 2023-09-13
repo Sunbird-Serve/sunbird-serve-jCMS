@@ -16,7 +16,7 @@
             <div class="d-flex">
                 <input type="text" id="filterData" class="form-control" placeholder="Search">
                 <div class="btn-group ml-2">
-                    <button class="btn btn-primary" id="searchData">Search</button>
+                    <button class="btn btn-primary" id="searchData"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
                 </div>
             </div>
         </div>
@@ -43,11 +43,22 @@
                 {% endfor %}
             </select>
         </div>
+
+        <div>
+            {% if user.is_authenticated %}
+                <form action='/logout/' method="post">
+                    {% csrf_token %}
+                    {% comment %} <input type="submit" class="btn btn-primary text-black" value="Logout"> {% endcomment %}
+                    <a href="/logout/" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </form>
+            {% endif %}
+        </div>
         
     </div>
 </div>
 
   
+
 
 
 
