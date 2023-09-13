@@ -79,15 +79,9 @@ class SubTopicsAdmin(admin.ModelAdmin):
         
 class ContentDetailAdmin(admin.ModelAdmin):
     search_fields = ["topic__title","subtopic__name","name","url"]
-    list_display = ["get_topicId","get_subtopicId","topic",'subtopic','url','name','description','status',"workstream_type",'url_host',"content_type","author","priority","version","duration","is_primary","created_by","created_on","updated_by","updated_on"]
-
-    def get_topicId(self, obj):
-        return obj.topic.id
-    get_topicId.short_description = 'Topic Id'
-
-    def get_subtopicId(self, obj):
-        return obj.subtopic.id
-    get_subtopicId.short_description = 'Subtopic Id'
+    list_display = ["topic",'subtopic','url','name','description','status',"workstream_type",'url_host',"content_type","author","priority","version","duration","is_primary","created_by","created_on","updated_by","updated_on"]
+    class Media:
+        js = ('js/dynamic_course_dropdown.js',)
 
 class ContentHostMasterAdmin(admin.ModelAdmin):
     search_fields = ["name","code"]

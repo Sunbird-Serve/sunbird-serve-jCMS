@@ -1,6 +1,5 @@
 
     $(document).ready(function() {
-
         //Board-wise Data Retrieval
         $('#boardFilterDropdown').change(function() {
             $("#loader").removeClass("d-none");

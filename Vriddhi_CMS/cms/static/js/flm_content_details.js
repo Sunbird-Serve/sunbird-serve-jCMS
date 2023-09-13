@@ -237,8 +237,8 @@ var player = videojs('my_video_player');
 
     function submit_rating() {
         let data = {
-            "topicId": '{{topicId}}',
-            "subtopicId": '{{subtopic_id}}',
+            "topicId": topicId,
+            "subtopicId": subtopic_id,
             "videoRating": video_rating,
             "worksheetRating": worksheet_rating,
             "comment": $('#comment').val()

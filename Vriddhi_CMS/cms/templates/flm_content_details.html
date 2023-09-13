@@ -222,7 +222,7 @@
             <div id="att_pop_data" class="flex flex-col space-y-20">
                 <div class="flex flex-col items-center justify-center space-y-20">
                     <div class="flex w-full space-x-6">
-                        <div class="font-bold">How was the video</div>
+                        <div class="font-bold">How was the video<span class="text-danger"> *</span></div>
                         <div class="flex video_rating space-x-4">
                             <div class="video__rating__star cursor-pointer"><i class="far fa-star"></i></div>
                             <div class="video__rating__star cursor-pointer"><i class="far fa-star"></i></div>
@@ -232,7 +232,7 @@
                         </div>
                     </div>
                     <div class="flex w-full space-x-6">
-                        <div class="font-bold">How was the worksheet</div>
+                        <div class="font-bold">How was the worksheet<span class="text-danger"> *</span></div>
                         <div class="flex workbook_rating space-x-4">
                             <div class="workbook__rating__star cursor-pointer"><i class="far fa-star"></i></div>
                             <div class="workbook__rating__star cursor-pointer"><i class="far fa-star"></i></div>
@@ -267,6 +267,8 @@
     var subtopic_id = '{{subtopic_id}}'
     var subtopic_name = '{{subtopic_name}}'
     var thumbnailUrl = '{{ video.thumbnailUrl }}'
+    var topicId = '{{topicId}}'
+    var subtopicId = '{{subtopic_id}}'
     
 </script>
 
