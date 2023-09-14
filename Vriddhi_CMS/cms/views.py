@@ -53,7 +53,7 @@ def user_login(request):
 # Get all courses
 def get_courses(request):
     board_id = request.GET.get("board_id")
-    courses = Course.objects.filter(board_id=board_id)
+    courses = Course.objects.filter(board_id=board_id, status='active' )
     course_data = [{"id": course.id, "name": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
@@ -61,7 +61,7 @@ def get_courses(request):
 # Get all topics
 def get_topics(request):
     course_id = request.GET.get("course_id")
-    topics = Topic.objects.filter(course_id=course_id)
+    topics = Topic.objects.filter(course_id=course_id).exclude(status='Inactive')
     topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
     response_data = json.dumps(topic_data)
     return HttpResponse(response_data, content_type="application/json")
@@ -69,7 +69,7 @@ def get_topics(request):
 # Get all topics
 def get_subTopics(request):
     topic_id = request.GET.get("topic_id")
-    subTopics = SubTopics.objects.filter(topic_id=topic_id)
+    subTopics = SubTopics.objects.filter(topic_id=topic_id).exclude(status='Inactive')
     subTopic_data = [{"id": subTopic.id, "name": subTopic.name} for subTopic in subTopics]
     response_data = json.dumps(subTopic_data)
     return HttpResponse(response_data, content_type="application/json")
@@ -82,7 +82,7 @@ def view_course(request):
     # Number of items per page
     items_per_page = 12 
 
-    queryset = Course.objects.all()
+    queryset = Course.objects.filter(status='active')
     paginator = Paginator(queryset, items_per_page)
     page_number = request.GET.get('page')
 
@@ -105,10 +105,10 @@ def view_course(request):
 def get_filtered_courses(request):
     selected_board = request.GET.get('boardId')
     if selected_board == 'all':
-        courses = Course.objects.all()
+        courses = Course.objects.filter(status='active')
         course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
     else:
-        courses = Course.objects.filter(board_id=selected_board)
+        courses = Course.objects.filter(board_id=selected_board, status='active')
         course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
@@ -118,10 +118,10 @@ def get_filtered_courses(request):
 def get_filtered_subject(request): 
     selected_subject = request.GET.get('subjectId')
     if selected_subject == 'all':
-        courses = Course.objects.all()
+        courses = Course.objects.filter(status='active')
         course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
     else:
-        courses = Course.objects.filter(subject_id=selected_subject)
+        courses = Course.objects.filter(subject_id=selected_subject,status='active')
         course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
@@ -156,9 +156,9 @@ def content_detail_view(request):
     boardName = Board.objects.get(id=courseData.board_id)
     subjectName = Subject.objects.get(id=courseData.subject_id)
 
-    topics = Topic.objects.filter(course_id=course_id)
+    topics = Topic.objects.filter(course_id=course_id).exclude(status='Inactive')
 
-    firstTopic = Topic.objects.filter(course_id=course_id)[:1]
+    firstTopic = Topic.objects.filter(course_id=course_id).exclude(status='Inactive')[:1]
 
     if firstTopic:
         topic_data = [{"id": topic.id, "name": topic.title} for topic in topics]
@@ -221,7 +221,7 @@ def getSubtopic(request):
         }
         
         # Fetch ContentDetail entries related to the current subtopic
-        content_details = ContentDetail.objects.filter(subtopic_id=subtopic.id)
+        content_details = ContentDetail.objects.filter(subtopic_id=subtopic.id).exclude(status='Inactive')
         
         # Iterate through each content detail related to the current subtopic
         for content_detail in content_details:
@@ -458,7 +458,7 @@ class SubTopicDetailsView(View):
             except:
                 return HttpResponseNotFound("SubTopics Not found")
 
-            contentRecords = ContentDetail.objects.filter(status="approved", subtopic=subtopicObj).select_related(
+            contentRecords = ContentDetail.objects.filter(status="approved", subtopic=subtopicObj).exclude(status='Inactive').select_related(
                 'workstream_type', 'content_type', 'url_host').order_by('priority')
 
 
