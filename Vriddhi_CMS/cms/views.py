@@ -74,65 +74,7 @@ def get_subTopics(request):
     response_data = json.dumps(subTopic_data)
     return HttpResponse(response_data, content_type="application/json")
 
-# View all course data
-@login_required
-def view_course(request):
-    get_all_board = Board.objects.all()
-    get_all_subject = Subject.objects.all()
-    # Number of items per page
-    items_per_page = 12 
 
-    queryset = Course.objects.filter(status='active')
-    paginator = Paginator(queryset, items_per_page)
-    page_number = request.GET.get('page')
-
-    if page_number:
-        page_number = int(page_number)  
-    else:
-        page_number = 1  # Default to first page
-    
-
-    courses = paginator.page(page_number)
-
-    return render(request, 'course_view.html', {
-        'get_all_board': get_all_board,
-        'get_all_subject': get_all_subject,
-        'courses': courses,
-    })
-
-
-# Board wise data retrive 
-def get_filtered_courses(request):
-    selected_board = request.GET.get('boardId')
-    if selected_board == 'all':
-        courses = Course.objects.filter(status='active')
-        course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
-    else:
-        courses = Course.objects.filter(board_id=selected_board, status='active')
-        course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
-    response_data = json.dumps(course_data)
-    return HttpResponse(response_data, content_type="application/json")
-
-
-# Subject wise data retrive 
-def get_filtered_subject(request): 
-    selected_subject = request.GET.get('subjectId')
-    if selected_subject == 'all':
-        courses = Course.objects.filter(status='active')
-        course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
-    else:
-        courses = Course.objects.filter(subject_id=selected_subject,status='active')
-        course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in courses]
-    response_data = json.dumps(course_data)
-    return HttpResponse(response_data, content_type="application/json")
-
-
-# Search any course
-def search_courses(request):
-    search_input = request.GET.get('searchInput')
-
-    # Initialize an empty list to store the filtered courses
-    filtered_courses = []
 
     if search_input:
         # Filter courses based on both subject name and grade
@@ -142,6 +84,60 @@ def search_courses(request):
     course_data = [{"id": course.id, "subject": course.subject.subject_name, "board": course.board.board_name, "grade": course.grade} for course in filtered_courses]
     response_data = json.dumps(course_data)
     return HttpResponse(response_data, content_type="application/json")
+
+
+
+# View all course data
+@login_required
+def view_course(request):
+    selected_board = request.GET.get('boardId')
+    selected_subjectId = request.GET.get('subjectId')
+    search_input = request.GET.get('searchInput')
+
+    get_all_board = Board.objects.all()
+    get_all_subject = Subject.objects.all()
+    # Number of items per page
+    items_per_page = 6
+
+    set_filters = Q(status='active')
+
+    if selected_board:
+        if selected_board == 'all':
+            set_filters &= Q(status='active')
+        else:
+            set_filters &= Q(board_id=selected_board)
+
+    if selected_subjectId:
+        if selected_subjectId == 'all':
+            set_filters &= Q(status='active')
+        else:
+            set_filters &= Q(subject_id=selected_subjectId)
+
+    if search_input:
+        # Filter courses based on both subject name and grade
+        set_filters = (
+            Q(grade__icontains=search_input) | Q(subject__subject_name__icontains=search_input) | Q(board__board_name__icontains=search_input)
+        )
+    queryset = Course.objects.filter(set_filters)
+
+    paginator = Paginator(queryset, items_per_page)
+    page_number = request.GET.get('page')
+
+    if page_number:
+        page_number = int(page_number)  
+    else:
+        page_number = 1  # Default to first page
+    
+    courses = paginator.page(page_number)
+
+    return render(request, 'course_view.html', {
+        'get_all_board': get_all_board,
+        'get_all_subject': get_all_subject,
+        'courses': courses,
+        'selected_board': selected_board,  # Pass selected_board to the template
+        'selected_subjectId': selected_subjectId,  # Pass selected_subjectId to the template
+        'search_input':search_input,
+    })
 
 # Get content data
 def view_content(request):

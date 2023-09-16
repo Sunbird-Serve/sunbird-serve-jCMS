@@ -81,35 +81,38 @@
 </div>
 
 
-
-
 <nav aria-label="Page navigation " class="text-center">
     <ul class="pagination ">
         {% if courses.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ courses.previous_page_number }}">Previous</a>
+                <a href="?page=1{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">first</a>
+                <a href="?page={{ courses.previous_page_number }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">previous</a>
             </li>
         {% endif %}
         
         {% for i in courses.paginator.page_range %}
             <li class="page-item {% if i == courses.number %}active{% endif %}">
-                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                <a href="?page={{ i }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">{{ i }}</a>
             </li>
-        {% endfor %}
+        {% endfor %} 
         
         {% if courses.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ courses.next_page_number }}">Next</a>
+                <a href="?page={{ courses.next_page_number }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">next</a>
+                <a href="?page={{ courses.paginator.num_pages }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">last</a>
             </li>
         {% endif %}
     </ul>
-</nav>
+</nav> 
 
 
 
 
 
 <script src="{% static 'js/course_view.js' %}"></script>
+<script>
+    var selected_board = {{selected_board}}
+</script>
 
 
 {% endblock %}

@@ -17,9 +17,6 @@ urlpatterns = [
     url(r'^home/getSubtopic/?$', getSubtopic, name='getSubtopic'),
     url(r'^subtopic/content-details/?$', SubTopicDetailsView.as_view(), name="SubTopicDetailsView"),
     url(r'^subtopic/content_rating/$', content_rating, name='content_rating'),
-    url(r'^get_filtered_courses/$', get_filtered_courses, name='get_filtered_courses'),
-    url(r'^get_filtered_subject/$', get_filtered_subject, name='get_filtered_subject'),
-    url(r'^search_courses/$', search_courses, name='search_courses'),
 
     # Board API
     url(r'^api/board/create$', create_or_edit_board),

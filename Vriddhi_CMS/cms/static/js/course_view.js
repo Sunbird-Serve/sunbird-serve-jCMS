@@ -1,62 +1,34 @@
-
 $(document).ready(function() {
     //Board-wise Data Retrieval
     $(document).on('change','#boardFilterDropdown',function() {
-        $("#loader").removeClass("d-none");
+        // $("#loader").removeClass("d-none");
         var boardId = $(this).val();
+        var url = "/home/view_course/";
         var data ={boardId:boardId};
-        $.get("/get_filtered_courses/",data,function(response,status){
-            $("#courseContainer").html(response);
-
-            var courses = response;
-            $("#courseContainer").empty(); // Clear previous content
-
-            for (var i = 0; i < courses.length; i++) {
-                var course = courses[i];
-                var courseCard = `
-                    <div class="col-md-4 mb-4">
-                        <div class="course-card course_details">
-                            <input type="hidden" class="course_id" value="${course.id}">
-                            <h5 class="course-title">${course.board}</h5>
-                            <p class="course-detail"><strong>Subject:</strong> ${course.subject}</p>
-                            <p class="course-detail"><strong>Grade:</strong> ${course.grade}</p>
-                        </div>
-                    </div>`;
-                $("#courseContainer").append(courseCard);
-            }
-            $("#loader").addClass("d-none");
-        })
+        var queryString = $.param(data);
+        window.location.href = url + '?' + queryString;
     });
 
 
     //Subject-wise Data Retrieval
     $(document).on('change','#subjectFilterDropdown',function() {
-        $("#loader").removeClass("d-none");
+        // $("#loader").removeClass("d-none");
         var subjectId = $(this).val();
-        var data ={subjectId:subjectId};
-        $.get("/get_filtered_subject/",data,function(response,status){
-            $("#courseContainer").html(response);
-
-            var courses = response;
-            $("#courseContainer").empty(); // Clear previous content
-
-            for (var i = 0; i < courses.length; i++) {
-                var course = courses[i];
-                var courseCard = `
-                    <div class="col-md-4 mb-4">
-                        <div class="course-card course_details">
-                            <input type="hidden" class="course_id" value="${course.id}">
-                            <h5 class="course-title">${course.board}</h5>
-                            <p class="course-detail"><strong>Subject:</strong> ${course.subject}</p>
-                            <p class="course-detail"><strong>Grade:</strong> ${course.grade}</p>
-                        </div>
-                    </div>`;
-                $("#courseContainer").append(courseCard);
-            }
-            $("#loader").addClass("d-none");
-        })
+        var url = "/home/view_course/";
+        var data ={subjectId:subjectId,boardId:selected_board};
+        var queryString = $.param(data);
+        window.location.href = url + '?' + queryString;
     });
 
+    //Search Courses
+    $(document).on('click','#searchData', function(){
+        // $("#loader").removeClass("d-none");
+        var searchInput = $("#filterData").val();
+        var data ={searchInput:searchInput};
+        var url = "/home/view_course/";
+        var queryString = $.param(data);
+        window.location.href = url + '?' + queryString;
+    })
 
     //Content Details
     $(document).ready(function() {
@@ -66,29 +38,5 @@ $(document).ready(function() {
         });
     });
 
-    //Search Courses
-    $(document).on('click','#searchData', function(){
-        $("#loader").removeClass("d-none");
-        var searchInput = $("#filterData").val();
-        var data ={searchInput:searchInput};
-        $.get("/search_courses/", data, function(response,status){
-            var courses = response;
-            $("#courseContainer").empty(); // Clear previous content
 
-            for (var i = 0; i < courses.length; i++) {
-                var course = courses[i];
-                var courseCard = `
-                    <div class="col-md-4 mb-4">
-                        <div class="course-card course_details">
-                            <input type="hidden" class="course_id" value="${course.id}">
-                            <h5 class="course-title">${course.board}</h5>
-                            <p class="course-detail"><strong>Subject:</strong> ${course.subject}</p>
-                            <p class="course-detail"><strong>Grade:</strong> ${course.grade}</p>
-                        </div>
-                    </div>`;
-                $("#courseContainer").append(courseCard);
-            }
-            $("#loader").addClass("d-none");
-        })
-    })
 });
