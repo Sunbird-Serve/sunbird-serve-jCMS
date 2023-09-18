@@ -97,7 +97,7 @@ def view_course(request):
     get_all_board = Board.objects.all()
     get_all_subject = Subject.objects.all()
     # Number of items per page
-    items_per_page = 6
+    items_per_page = 12
 
     set_filters = Q(status='active')
 
