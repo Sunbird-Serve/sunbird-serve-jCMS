@@ -23,22 +23,12 @@ $(document).ready(function() {
     //Search Courses
     $(document).on('click','#searchData', function(){
         // $("#loader").removeClass("d-none");
-        if($("#filterData").val() != undefined){
-            var searchInput = $("#filterData").val();
-            var data ={searchInput:searchInput};
-            var url = "/home/view_course/";
-            var queryString = $.param(data);
-            window.location.href = url + '?' + queryString;
-        }else{
-            var searchInput = $("#filterDataAdmin").val();
-            var data ={searchInput:searchInput};
-            var url = "/all_course/";
-            var queryString = $.param(data);
-            window.location.href = url + '?' + queryString;
-        }
+        var searchInput = $("#filterData").val();
+        var data ={searchInput:searchInput};
+        var url = "/home/view_course/";
+        var queryString = $.param(data);
+        window.location.href = url + '?' + queryString;
     })
-
-
 
     //Content Details
     $(document).ready(function() {
