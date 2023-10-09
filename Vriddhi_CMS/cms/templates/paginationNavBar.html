@@ -1,0 +1,29 @@
+<nav aria-label="Page navigation" class="text-center">
+    <ul class="pagination justify-content-center">
+
+        {% if courses.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ courses.previous_page_number }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">Previous</a>
+            </li>
+        {% endif %}
+
+        {% for i in courses.paginator.page_range %}
+            <li class="page-item {% if i == courses.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ i }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">{{ i }}</a>
+            </li>
+        {% endfor %}
+
+        {% if courses.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ courses.next_page_number }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ courses.paginator.num_pages }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">Last</a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>

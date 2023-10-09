@@ -1,0 +1,45 @@
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #333;
+    overflow-x: hidden;
+    padding-top: 60px;
+    color: #fff;
+}
+
+.sidebar h2 {
+    padding: 15px 25px;
+    font-size:30px;
+}
+
+.sidebar a {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #fff;
+    display: block;
+    transition: 0.2s;
+}
+
+.sidebar a:hover {
+    background-color: #555;
+}
+
+/* Page Content Styles */
+.page-content {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+/* Add a line underneath the "Jcms" text */
+.sidebar h2::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: #fff;
+    margin-top: 10px; /* Adjust as needed */
+}

@@ -17,6 +17,12 @@ urlpatterns = [
     url(r'^home/getSubtopic/?$', getSubtopic, name='getSubtopic'),
     url(r'^subtopic/content-details/?$', SubTopicDetailsView.as_view(), name="SubTopicDetailsView"),
     url(r'^subtopic/content_rating/$', content_rating, name='content_rating'),
+    url(r'^dashboard/$', dashboard, name='dashboard'),
+    url(r'^all_course/?$', all_course, name='all_course'),
+    url(r'^all_topic/?$', all_topic, name='all_topic'),
+    url(r'^all_subtopic/?$', all_subtopic, name='all_subtopic'),
+    url(r'^all_content/?$', all_content, name='all_content'),
+    
 
     # Board API
     url(r'^api/board/create$', create_or_edit_board),
