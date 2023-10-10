@@ -1386,7 +1386,60 @@ def all_subtopic(request):
 
 
 def all_content(request):
-    return render(request, 'content_view_admin.html')
+    selected_board = request.GET.get('boardId')
+    selected_subjectId = request.GET.get('subjectId')
+    selected_topicId = request.GET.get('topicId')
+    search_input = request.GET.get('searchInput')
+
+    get_all_board = Board.objects.all()
+    get_all_subject = Subject.objects.all()
+    get_all_topic = Topic.objects.all()
+    # Number of items per page
+    items_per_page = 12
+
+    queryset = ContentDetail.objects.all()
+
+    if selected_board:
+        queryset = queryset.filter(Q(topic__course__board_id=selected_board))
+
+    if selected_subjectId:
+        queryset = queryset.filter(Q(topic__course__subject_id=selected_subjectId))
+
+    if selected_topicId:
+        queryset = queryset.filter(Q(topic_id=selected_topicId))
+
+    if search_input:
+        # Filter courses based on both subject name and grade
+        queryset = queryset.filter(
+            Q(topic__title__icontains=search_input) | Q(topic__course__subject__subject_name__icontains=search_input) | Q(topic__course__board__board_name__icontains=search_input) | Q (name__icontains=search_input) | Q(subtopic__name__icontains=search_input)
+        )
+
+    # Exclude courses with a status of 'Inactive' from the final queryset
+    queryset = queryset.exclude(status='Inactive')
+        
+
+    paginator = Paginator(queryset, items_per_page)
+
+    page_number = request.GET.get('page')
+   
+
+    if page_number:
+        page_number = int(page_number)  
+    else:
+        page_number = 1  # Default to first page
+    print(page_number)
+    contentDetails = paginator.page(page_number)
+
+    return render(request, 'content_view_admin.html', {
+        'get_all_board': get_all_board,
+        'get_all_subject': get_all_subject,
+        'contentDetails': contentDetails,
+        'selected_board': selected_board,  
+        'selected_subjectId': selected_subjectId,  
+        'search_input':search_input,
+        'get_all_topic':get_all_topic,
+    })
+
 
 
 
