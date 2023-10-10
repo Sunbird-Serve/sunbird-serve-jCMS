@@ -3,7 +3,7 @@
 {% block title %}Topic Details{% endblock %}
 {% block content %}
 
-<link href="{% static 'css/content_view.css' %}" rel="stylesheet">
+<link href="{% static 'cms/css/content_view.css' %}" rel="stylesheet">
 
 
 <div class="w-full h-screen md:h-4/6 flex flex-col md:flex-row">
@@ -45,7 +45,7 @@
 </div>
 
 
-<script src="{% static 'js/content_view.js' %}"></script>
+<script src="{% static 'cms/js/content_view.js' %}"></script>
 <script>
     //Make python veriable to js 
     var topicsData = JSON.parse('{{ topic_data_json|safe }}');

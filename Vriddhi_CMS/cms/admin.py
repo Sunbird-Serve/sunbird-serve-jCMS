@@ -62,7 +62,7 @@ class TopicAdmin(admin.ModelAdmin):
     fields = ['board', 'course', 'title', 'url', 'num_sessions', 'status', 'priority']
 
     class Media:
-        js = ('js/dynamic_course_dropdown.js',)
+        js = ('cms/js/dynamic_course_dropdown.js',)
 
 class TopicDetailsAdmin(admin.ModelAdmin):
     list_display = ['topic','attribute','url','drafturl','types','status','author','last_updated_date','updated_by']
@@ -75,13 +75,13 @@ class SubTopicsAdmin(admin.ModelAdmin):
         'board', 'course', 'topic', 'name', 'created_date', 'updated_date', 'author', 'created_by', 'updated_by', 'status'
     ]
     class Media:
-        js = ('js/dynamic_course_dropdown.js',)
+        js = ('cms/js/dynamic_course_dropdown.js',)
         
 class ContentDetailAdmin(admin.ModelAdmin):
     search_fields = ["topic__title","subtopic__name","name","url"]
     list_display = ["topic",'subtopic','url','name','description','status',"workstream_type",'url_host',"content_type","author","priority","version","duration","is_primary","created_by","created_on","updated_by","updated_on"]
     class Media:
-        js = ('js/dynamic_course_dropdown.js',)
+        js = ('cms/js/dynamic_course_dropdown.js',)
 
 class ContentHostMasterAdmin(admin.ModelAdmin):
     search_fields = ["name","code"]
