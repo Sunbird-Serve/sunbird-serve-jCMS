@@ -1,0 +1,192 @@
+{% extends 'adminbase.html' %}
+{% load static %} 
+{% block title %}Topic Details{% endblock %}
+{% block content %}
+
+    <div class="tab-pane fade show active">
+        <div id="loader" class="d-none" >
+            <div class="loader"></div>
+        </div>
+
+
+        <div class="container-fluid"> 
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-9 col-12 text-right mt-2 mt-sm-0">
+                            <h5 class="box-title">Filter Sub-topics</h5>
+                        </div>
+                
+                        <div class="col-sm-2 col-12 text-right mt-2 mt-sm-0" style="text-align: right;">
+                            {% if user.is_authenticated %}
+                                <form action='/logout/' method="post" class="d-inline float-right">
+                                    {% csrf_token %}
+                                    <a href="/logout/" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </form>
+                            {% endif %}
+                        </div>
+            
+                        <!-- Update the onclick attribute to target the card-body -->
+                        <div class="col-sm-1 col-12 text-right mt-2 mt-sm-0" onclick="toggleCard('myCardBody')">
+                            <i class="fas fa-list"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="myCardBody" class="card-body" style = "display:block;">
+                    <div class="row">
+                        <div class="col-sm-10 col-12 mt-2 mt-sm-0">
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <select class="form-control" id="boardFilterDropdownAdmin">
+                                        <option value="">Select Board</option>
+                                        <option value="all">All Board</option>
+                                        {% for board in get_all_board %}
+                                            <option value="{{ board.id }}">{{ board.board_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <select class="form-control" id="subjectFilterDropdownAdmin">
+                                        <option value="">Select Subject</option>
+                                        <option value="all">All Subject</option>
+                                        {% for subject in get_all_subject %}
+                                            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <select class="form-control" id="topicFilterDropdownAdmin">
+                                        <option value="">Select Topic</option>
+                                        <option value="all">All Topic</option>
+                                        {% for topic in get_all_topic %}
+                                            <option value="{{ topic.id }}">{{ topic.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="container-fluid"> 
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="box-title">Sub-topics Details</h5>
+                </div>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-sm-10 col-12 mt-2 mt-sm-0">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" id="filterDataAdmin" class="form-control" placeholder="Search">
+                                    <div class="input-group-append" style = "margin-left:5px">
+                                        <button class="btn btn-primary " id="searchData">
+                                            <i class="fa fa-search" aria-hidden="true"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 col-12 text-right mt-2 mt-sm-0" style="
+                        text-align: right;">
+                            {% if user.is_authenticated %}
+                                <a href="/admin/cms/subtopics/add/" class="btn btn-success btn-sm">
+                                    <i class="fa fa-plus" aria-hidden="true"></i> Add Sub-topics
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+
+                    <table class="table table-striped mt-4">
+                        <thead>
+                            <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Board Name</th>
+                            <th scope="col">Subject Name</th>
+                            <th scope="col">Topic Name</th>
+                            <th scope="col">Sub-topic Name</th>
+                            <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subtopic in subtopics %}
+                            <tr>
+                                <td> {{ subtopics.start_index|default:0|add:forloop.counter0 }}</td>
+                                <td> {{ subtopic.topic.course.board.board_name }} </td>
+                                <td> {{ subtopic.topic.course.subject.subject_name }} </td>
+                                <td> {{ subtopic.topic.title }}</td>
+                                <td> {{ subtopic.name }}</td>
+                                <td> {{ subtopic.status }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <nav aria-label="Page navigation" class="text-center">
+                        <ul class="pagination justify-content-center">
+                    
+                            {% if subtopics.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">First</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ subtopics.previous_page_number }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">Previous</a>
+                                </li>
+                            {% endif %}
+                    
+                            {% for i in subtopics.paginator.page_range %}
+                                <li class="page-item {% if i == subtopics.number %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ i }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+                    
+                            {% if subtopics.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ subtopics.next_page_number }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">Next</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ subtopics.paginator.num_pages }}{% if selected_board %}&boardId={{ selected_board }}{% endif %}{% if selected_subjectId %}&subjectId={{ selected_subjectId }}{% endif %}{% if search_input %}&searchInput={{ search_input }}{% endif %}">Last</a>
+                                </li>
+                            {% endif %}
+                    
+                        </ul>
+                    </nav>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        var selected_board = {{selected_board}}
+        var selected_subjectId = {{selected_subjectId}}
+        
+        function toggleCard(cardBodyId) {
+            var cardBody = document.getElementById(cardBodyId);
+            if (cardBody.style.display === "none" || cardBody.style.display === "") {
+                cardBody.style.display = "block";
+            } else {
+                cardBody.style.display = "none";
+            }
+        }
+    </script>
+
+    <script src="{% static 'cms/admin/js/subtopic_view_admin.js' %}"></script>
+    
+{% endblock %}
