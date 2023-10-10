@@ -116,12 +116,13 @@
                     <table class="table table-striped mt-4">
                         <thead>
                             <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Board Name</th>
-                            <th scope="col">Subject Name</th>
-                            <th scope="col">Topic Name</th>
-                            <th scope="col">Sub-topic Name</th>
-                            <th scope="col">Status</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Board Name</th>
+                                <th scope="col">Subject Name</th>
+                                <th scope="col">Topic Name</th>
+                                <th scope="col">Sub-topic Name</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -133,6 +134,10 @@
                                 <td> {{ subtopic.topic.title }}</td>
                                 <td> {{ subtopic.name }}</td>
                                 <td> {{ subtopic.status }}</td>
+                                <td>
+                                    <a href="/admin/cms/subtopics/{{subtopic.id}}/" class="btn btn-success btn-sm">Edit</a>
+                                    <a href="/admin/cms/subtopics/{{subtopic.id}}/delete" class="btn btn-danger btn-sm" style="margin-top:4px">Delete</a>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
