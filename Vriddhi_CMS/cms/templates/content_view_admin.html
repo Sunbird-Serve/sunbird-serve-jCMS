@@ -28,9 +28,8 @@
                                 </form>
                             {% endif %}
                         </div>
-            
-                        <!-- Update the onclick attribute to target the card-body -->
-                        <div class="col-sm-1 col-12 text-right mt-2 mt-sm-0" onclick="toggleCard('myCardBody')">
+
+                        <div class="col-sm-1 col-12 text-right mt-2 mt-sm-0" id="toggleCard">
                             <i class="fas fa-list"></i>
                         </div>
                     </div>
@@ -88,7 +87,7 @@
                 <div class="card-body">
 
                     <div class="row">
-                        <div class="col-sm-10 col-12 mt-2 mt-sm-0">
+                        <div class="col-sm-8">
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <input type="text" id="filterDataAdmin" class="form-control" placeholder="Search">
@@ -101,8 +100,13 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-2 col-12 text-right mt-2 mt-sm-0" style="
+                        <div class="col-sm-4 text-right" style="
                         text-align: right;">
+
+                            <button type="button" id="openModalBtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">
+                                <i class="fas fa-file-excel" aria-hidden="true"></i> Bulk Data Upload
+                            </button>
+                
                             {% if user.is_authenticated %}
                                 <a href="/admin/cms/contentdetail/add/" class="btn btn-success btn-sm">
                                     <i class="fa fa-plus" aria-hidden="true"></i> Add Content
@@ -111,41 +115,68 @@
                         </div>
                     </div>
 
+                    <div class="row mt-3">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-5 text-right" style="
+                        text-align: right;">
+                            <a href="/exportToExcel/" class="btn btn-primary btn-sm" id="exportExcel">
+                                <i class="fas fa-file-excel"></i>
+                                Export to Excel
+                            </a>
 
-
-                    <div class="table-responsive">
-                        <table class="table table-striped mt-4">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Board Name</th>
-                                    <th scope="col">Subject Name</th>
-                                    <th scope="col">Topic Name</th>
-                                    <th scope="col">Sub-topic Name</th>
-                                    <th scope="col">Content Name</th>
-                                    <th scope="col">Content</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for contentDetail in contentDetails %}
-                                <tr>
-                                    <td> {{ contentDetails.start_index|default:0|add:forloop.counter0 }}</td>
-                                    <td> {{ contentDetail.topic.course.board.board_name }} </td>
-                                    <td> {{ contentDetail.topic.course.subject.subject_name }} </td>
-                                    <td> {{ contentDetail.topic.title }}</td>
-                                    <td> {{ contentDetail.subtopic.name }}</td>
-                                    <td> {{ contentDetail.name }}</td>
-                                    <td> {{ contentDetail.url }}</td>
-                                    <td>
-                                        <a href="/admin/cms/contentdetail/{{contentDetail.id}}/" class="btn btn-success btn-sm">Edit</a>
-                                        <a href="/admin/cms/contentdetail/{{contentDetail.id}}/delete" class="btn btn-danger btn-sm" style="margin-top:4px">Delete</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                            <button class="btn btn-danger btn-sm" id="deleteAll">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                Delete selected content details
+                            </button>
+                        </div>
                     </div>
+                    
+
+                    
+
+
+
+                        <div class="table-responsive">
+                            <table class="table table-striped mt-4">
+                                <thead>
+                                    <tr>checkAll
+                                        <th scope="col">#</th>
+                                        <th scope="col">
+                                            Check All 
+                                            <input type="checkbox" class="action-select" id="checkAll" name="_selected_action">
+                                        </th>
+                                        <th scope="col">Board Name</th>
+                                        <th scope="col">Subject Name</th>
+                                        <th scope="col">Topic Name</th>
+                                        <th scope="col">Sub-topic Name</th>
+                                        <th scope="col">Content Name</th>
+                                        <th scope="col">Content</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contentDetail in contentDetails %}
+                                    <tr>
+                                        <td> {{ contentDetails.start_index|default:0|add:forloop.counter0 }}</td>
+                                        <td><input type="checkbox" class="singleCheckBox" value="{{contentDetail.id}}" name="_selected_action"></td>
+                                        
+                                        <td> {{ contentDetail.topic.course.board.board_name }} </td>
+                                        <td> {{ contentDetail.topic.course.subject.subject_name }} </td>
+                                        <td> {{ contentDetail.topic.title }}</td>
+                                        <td> {{ contentDetail.subtopic.name }}</td>
+                                        <td> {{ contentDetail.name }}</td>
+                                        <td> {{ contentDetail.url }}</td>
+                                        <td>
+                                            <a href="/admin/cms/contentdetail/{{contentDetail.id}}/" class="btn btn-success btn-sm">Edit</a>
+                                            <a href="/admin/cms/contentdetail/{{contentDetail.id}}/delete" class="btn btn-danger btn-sm" style="margin-top:4px">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
 
                     <nav aria-label="Page navigation" class="text-center">
                         <ul class="pagination justify-content-center">
@@ -181,19 +212,48 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal Title</h5>
+                    <button type="button" id="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-right mb-3">
+                        <a href="/export/" class="btn btn-primary btn-sm">
+                            <i class="fa fa-download" aria-hidden="true"></i> Download Template
+                        </a>
+                    </div>
+                    
+                    <form action="/file_upload/" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <input type="file" class="form-control" name="excel_file">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-upload" aria-hidden="true"></i> Upload Excel
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     
     <script>
         var selected_board = {{selected_board}}
         var selected_subjectId = {{selected_subjectId}}
-        
-        function toggleCard(cardBodyId) {
-            var cardBody = document.getElementById(cardBodyId);
-            if (cardBody.style.display === "none" || cardBody.style.display === "") {
-                cardBody.style.display = "block";
-            } else {
-                cardBody.style.display = "none";
-            }
-        }
     </script>
 
     <script src="{% static 'cms/admin/js/content_view_admin.js' %}"></script>
