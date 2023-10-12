@@ -22,8 +22,10 @@ urlpatterns = [
     url(r'^all_topic/?$', all_topic, name='all_topic'),
     url(r'^all_subtopic/?$', all_subtopic, name='all_subtopic'),
     url(r'^all_content/?$', all_content, name='all_content'),
-    
-
+    url(r'^file_upload/$', file_upload, name='file_upload'),
+    url(r'^export/$', export_to_excel, name='export_to_excel'),
+    url(r'^deleteBulkData/$', deleteBulkData, name='deleteBulkData'),
+    url(r'^exportToExcel/$', exportToExcel, name='exportToExcel'),
     # Board API
     url(r'^api/board/create$', create_or_edit_board),
     url(r'^api/board/update$', create_or_edit_board),

@@ -26,6 +26,8 @@ from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder 
 from datetime import datetime
 from django.contrib.auth import logout as auth_logout
+import xlrd
+import xlwt
 
 # User register
 def register(request):
@@ -1440,7 +1442,98 @@ def all_content(request):
         'get_all_topic':get_all_topic,
     })
 
+# Excel export
+def export_to_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
 
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Data Sheet')
+
+    # Define the headings
+    headings = ['topic_id','subtopic_id','name','description','url','url_host_id','content_type_id','workstream_type_id','author_id','status','priority','version','duration']
+
+    # Write the headings to the Excel sheet
+    for col_num, heading in enumerate(headings):
+        ws.write(0, col_num, heading)
+
+    wb.save(response)
+    return response
+
+
+# Excel import
+def file_upload(request):
+    if request.method == 'POST':
+        excel_file = request.FILES['excel_file']
+
+        if excel_file.name.endswith('.xls'):
+            excel_data = xlrd.open_workbook(file_contents=excel_file.read())
+
+            # Assuming you want to work with the first sheet in the Excel file
+            sheet = excel_data.sheet_by_index(0)
+
+            # Extract the headers from the first row
+            headers = [str(cell.value) for cell in sheet.row(0)]
+
+            try:
+                for row_num in range(1, sheet.nrows):
+                    row = sheet.row_values(row_num)
+
+                    # Create a dictionary to map headers to row data
+                    row_data = {}
+                    for col_num, header in enumerate(headers):
+                        row_data[header] = row[col_num]
+
+                    # Create a new ContentDetail instance and save it to the database
+                    content_detail = ContentDetail(**row_data)
+                    content_detail.save()
+                
+                return HttpResponse('Import Successful.')
+
+            except Exception as e:
+                return HttpResponse('Error: Incorrect data.')
+        else:
+            return HttpResponse('Error: File is not in .xls format.')
+
+
+def deleteBulkData(request):
+    if request.method == 'POST':
+        # Use request.POST to access POST data
+        contentIds = request.POST.getlist('numberIdsArray[]')
+        ContentDetail.objects.filter(id__in=contentIds).delete()
+        # Your processing logic here
+        return HttpResponse('success')
+        
+    
+def exportToExcel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Data Sheet')
+
+    # Define the headings
+    headings = ['Board Name', 'Subject Name', 'Topic Name', 'Sub-topic Name', 'Content Name', 'Content']
+
+    # Write the headings to the Excel sheet
+    for col_num, heading in enumerate(headings):
+        ws.write(0, col_num, heading)
+
+    data = ContentDetail.objects.all()
+
+    # Write the data to the Excel sheet
+    row_num = 1  # Start from the second row to avoid overwriting headings
+    for item in data:
+        ws.write(row_num, 0, item.topic.course.board.board_name)
+        ws.write(row_num, 1, item.topic.course.subject.subject_name)
+        ws.write(row_num, 2, item.topic.title)
+        ws.write(row_num, 3, item.subtopic.name)
+        ws.write(row_num, 4, item.name)
+        ws.write(row_num, 5, item.url)
+        row_num += 1
+
+    wb.save(response)
+    return response
 
 
 
