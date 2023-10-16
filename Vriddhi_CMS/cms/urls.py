@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^all_subtopic/?$', all_subtopic, name='all_subtopic'),
     url(r'^all_content/?$', all_content, name='all_content'),
     url(r'^file_upload/$', file_upload, name='file_upload'),
-    url(r'^export/$', export_to_excel, name='export_to_excel'),
+    url(r'^download_excel_template/$', download_excel_template, name='download_excel_template'),
     url(r'^deleteBulkData/$', deleteBulkData, name='deleteBulkData'),
     url(r'^exportToExcel/$', exportToExcel, name='exportToExcel'),
     # Board API

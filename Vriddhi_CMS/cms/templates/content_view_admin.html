@@ -116,18 +116,17 @@
                     </div>
 
                     <div class="row mt-3">
-                        <div class="col-sm-4"></div>
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-5 text-right" style="
-                        text-align: right;">
-                            <a href="/exportToExcel/" class="btn btn-primary btn-sm" id="exportExcel">
-                                <i class="fas fa-file-excel"></i>
-                                Export to Excel
-                            </a>
-
-                            <button class="btn btn-danger btn-sm" id="deleteAll">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                                Delete selected content details
+                        <div class="col-sm-12 text-right" style="text-align: right;">
+                            <form method="post" action="/exportToExcel/" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="exportexl" id="exportexl" value="tusk4">
+                                <button type="submit" class="btn btn-primary btn-sm"> 
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </form>
+                    
+                            <button class="btn btn-danger btn-sm" id="deleteAll" style="display: inline;">
+                                <i class="fa fa-trash" aria-hidden="true"></i> Delete selected content details
                             </button>
                         </div>
                     </div>
@@ -212,43 +211,9 @@
             </div>
         </div>
     </div>
+    {% include 'modal.html' %}
 
 
-    <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal Title</h5>
-                    <button type="button" id="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-right mb-3">
-                        <a href="/export/" class="btn btn-primary btn-sm">
-                            <i class="fa fa-download" aria-hidden="true"></i> Download Template
-                        </a>
-                    </div>
-                    
-                    <form action="/file_upload/" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <div class="form-group">
-                                    <input type="file" class="form-control" name="excel_file">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fa fa-upload" aria-hidden="true"></i> Upload Excel
-                                </button>
-                            </div>
-
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     
     <script>
