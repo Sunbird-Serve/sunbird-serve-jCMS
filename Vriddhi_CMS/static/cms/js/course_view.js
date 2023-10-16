@@ -37,6 +37,7 @@ $(document).ready(function() {
             window.location.href = '/home/view_content/?courseID=' + courseID;
         });
     });
+    
 
 
 });

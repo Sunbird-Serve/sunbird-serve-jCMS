@@ -1,12 +1,49 @@
 {% extends 'adminbase.html' %}
 {% load static %} 
-{% block title %}Course Details{% endblock %}
+{% block title %}Dashboard{% endblock %}
 {% block content %}
+
+    <link href="{% static 'cms/admin/css/dashboard.css' %}" rel="stylesheet">
 
     <div id="loader" class="d-none" >
         <div class="loader"></div>
     </div>
 
-    {% comment %} {% include 'menu.html' %} {% endcomment %}
+    <div class="col-12">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card course-card">
+                    <h2><i class="fas fa-book"></i> Course</h2>
+                    <p><i class="fa fa-calculator"></i> {{active_course_count}}</p>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="card topic-card">
+                    <h2><i class="fas fa-list"></i> Topic</h2>
+                    <p><i class="fa fa-calculator"></i> {{active_topics_count}}</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card subtopic-card">
+                    <h2><i class="fas fa-file-alt"></i> Sub-Topic</h2>
+                    <p><i class="fa fa-calculator"></i> {{active_subTopics_count}}</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card content-card">
+                    <h2><i class="fas fa-info-circle"></i> Content</h2>
+                    <p><i class="fa fa-calculator"></i> {{active_content_count}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p><h2>Viewers: 1+</h2> </p>
+    </div>
+
 
 {% endblock %}

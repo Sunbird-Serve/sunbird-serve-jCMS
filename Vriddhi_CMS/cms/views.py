@@ -28,6 +28,8 @@ from datetime import datetime
 from django.contrib.auth import logout as auth_logout
 import xlrd
 import xlwt
+from django.contrib.auth.models import User
+
 
 # User register
 def register(request):
@@ -95,6 +97,13 @@ def view_course(request):
     selected_board = request.GET.get('boardId')
     selected_subjectId = request.GET.get('subjectId')
     search_input = request.GET.get('searchInput')
+    register_admin_status = request.GET.get('status')
+    
+    if register_admin_status:
+        if (register_admin_status == 'success'):
+            success_message = "success"
+    else:
+        success_message = ''
 
     get_all_board = Board.objects.all()
     get_all_subject = Subject.objects.all()
@@ -139,6 +148,7 @@ def view_course(request):
         'selected_board': selected_board,  # Pass selected_board to the template
         'selected_subjectId': selected_subjectId,  # Pass selected_subjectId to the template
         'search_input':search_input,
+        'success_message': success_message,
     })
 
 # Get content data
@@ -1224,7 +1234,18 @@ def custom_logout(request):
     return HttpResponseRedirect(reverse('login'))
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    active_course_count = Course.objects.filter(status='active').count()
+    active_topics_count = Topic.objects.exclude(status='Inactive').count()
+    active_subTopics_count = SubTopics.objects.exclude(status='Inactive').count()
+    active_content_count = ContentDetail.objects.exclude(status='Inactive').count()
+
+    return render(request, 'dashboard.html', {
+        'active_course_count': active_course_count,
+        'active_topics_count': active_topics_count,
+        'active_subTopics_count': active_subTopics_count,
+        'active_content_count': active_content_count,
+    })
+
 
 def all_course(request):
     selected_board = request.GET.get('boardId')
@@ -1587,7 +1608,19 @@ def exportToExcel(request):
         wb.save(response)
         return response
 
+def adminRegister(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = User.objects.create_user(username=username, password=password)
 
+        # Set the is_staff attribute to True
+        user.is_staff = True
+        user.save()   
 
+        status = 'success'
+        return redirect('/home/view_course/?status=' + status)
+
+    return render(request, 'register.html')
 
 
