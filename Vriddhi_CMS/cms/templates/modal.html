@@ -1,0 +1,41 @@
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" id="closeModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="text-right mb-3">
+                    <form method="post" action="/download_excel_template/">
+                        {% csrf_token %}
+                        <input type="hidden" name="downloadTemplate" id="downloadTemplate">
+                        <button type="submit" class="btn btn-primary btn-sm"> 
+                            <i class="fa fa-download" aria-hidden="true"></i> Download Template
+                        </button>
+                    </form>
+                </div>
+                
+                <form action="/file_upload/" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="fileUpload" id="fileUpload">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group">
+                                <input type="file" class="form-control" name="excel_file">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa fa-upload" aria-hidden="true"></i> Upload Excel
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

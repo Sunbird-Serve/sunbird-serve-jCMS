@@ -40,6 +40,9 @@ $(document).ready(function() {
     })
 
     $('#openModalBtn').on('click', function () {
+        $('#modalTitle').html('Bulk Upload Content');
+        $('#downloadTemplate').val('content');
+        $('#fileUpload').val('content')
         $('#myModal').modal('show');
     });
     $('#closeModal').on('click', function () {
@@ -74,8 +77,8 @@ $(document).ready(function() {
             )
             return false;
         }
-        data = {'numberIdsArray' : numberIdsArray};
-        console.log(data)
+        data = {'delete':'content','numberIdsArray' : numberIdsArray};
+
         if (confirm("Are you sure, do you want to Detete?")) {
             // Get the CSRF token
             var csrftoken = $("[name=csrfmiddlewaretoken]").val();
@@ -91,9 +94,11 @@ $(document).ready(function() {
                             'Success',
                             'Content deleted successfully!',
                             'success',
-                        );
+                        )
+                        // window.location.reload();
+                    }setTimeout(() => {
                         window.location.reload();
-                    } 
+                     }, 1000);
                 }
             })
         }
