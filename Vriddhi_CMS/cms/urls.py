@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^logout/$', custom_logout, name='logout'),
 
     url(r'^register/$', register, name='register'),
+    url(r'^register/admin/$', adminRegister, name='adminRegister'),
     url(r'^get_courses/$', get_courses, name='get_courses'),
     url(r'^get_topics/?$', get_topics, name='get_topics'),
     url(r'^get_subTopics/?$', get_subTopics, name='get_subTopics'),
