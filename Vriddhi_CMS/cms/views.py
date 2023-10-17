@@ -1474,8 +1474,8 @@ def download_excel_template(request):
     if(template == 'tusk1'):
         headings = ['id','board_id','subject_id','grade','type','description','picture','status','language_id','availabilityType']
 
-    if(template == 'tusk2'):
-        headings = ['id','course_id','title','url','num_sessions','status','priority']
+    if(template == 'topic'):
+        headings = ['course_id','title','url','num_sessions','status','priority']
 
     if(template == 'subtopic'):
         headings = ['name','topic_id','status','type','author_id','created_by_id','updated_by_id','reviewer_id']
@@ -1523,6 +1523,10 @@ def file_upload(request):
                     if(fileUpload == 'subtopic'):
                         sub_topic = SubTopics(**row_data)
                         sub_topic.save()
+
+                    if(fileUpload == 'topic'):
+                        topics = Topic(**row_data)
+                        topics.save()
                 
                 return HttpResponse('Import Successful.')
             except Exception as e:
@@ -1542,6 +1546,10 @@ def deleteBulkData(request):
     
     if(deletetable == 'subtopic'):
         SubTopics.objects.filter(id__in=contentIds).delete()
+        return HttpResponse('success')
+    
+    if(deletetable == 'topic'):
+        Topic.objects.filter(id__in=contentIds).delete()
         return HttpResponse('success')
 
     
@@ -1607,6 +1615,35 @@ def exportToExcel(request):
 
         wb.save(response)
         return response
+
+    if(tusk == 'topic'):
+        response = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
+
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Data Sheet')
+
+        # Define the headings
+        headings = ['Board Name', 'Course Name', 'Name', 'Status']
+
+        # Write the headings to the Excel sheet
+        for col_num, heading in enumerate(headings):
+            ws.write(0, col_num, heading)
+
+        data = Topic.objects.exclude(status='Inactive')
+
+        # Write the data to the Excel sheet
+        row_num = 1  # Start from the second row to avoid overwriting headings
+        for item in data:
+            ws.write(row_num, 0, item.course.board.board_name)
+            ws.write(row_num, 1, item.course.subject.subject_name)
+            ws.write(row_num, 2, item.title)
+            ws.write(row_num, 3, item.status)
+            row_num += 1
+
+        wb.save(response)
+        return response
+
 
 def adminRegister(request):
     if request.method == 'POST':
