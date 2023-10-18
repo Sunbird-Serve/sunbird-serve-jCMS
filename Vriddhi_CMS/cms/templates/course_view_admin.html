@@ -3,86 +3,171 @@
 {% block title %}Course Details{% endblock %}
 {% block content %}
 
-    <div id="loader" class="d-none" >
-        <div class="loader"></div>
-    </div>
-    <div style="background-color: black;">
-        <h3 style="color: white;padding: 13px;">Course Details</h3>
-    </div>
+    <div class="tab-pane fade show active">
+        <div id="loader" class="d-none" >
+            <div class="loader"></div>
+        </div>
 
-    <div class="row">
-        <div class="col-sm-4 col-12 mt-2 mt-sm-0">
-            <div class="input-group">
-                <input type="text" id="filterDataAdmin" class="form-control" placeholder="Search">
-                <div class="input-group-append" style = "margin-left:5px">
-                    <button class="btn btn-primary" id="searchData">
-                        <i class="fa fa-search" aria-hidden="true"></i> Search
-                    </button>
+
+        <div class="container-fluid"> 
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-9 col-12 text-right mt-2 mt-sm-0">
+                            <h5 class="box-title">Filter Course</h5>
+                        </div>
+                
+                        <div class="col-sm-2 col-12 text-right mt-2 mt-sm-0" style="text-align: right;">
+                            {% if user.is_authenticated %}
+                                <form action='/logout/' method="post" class="d-inline float-right">
+                                    {% csrf_token %}
+                                    <a href="/logout/" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </form>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-sm-1 col-12 text-right mt-2 mt-sm-0" id="toggleCard">
+                            <i class="fas fa-list"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="myCardBody" class="card-body" style = "display:block;">
+                    <div class="row">
+                        <div class="col-sm-10 col-12 mt-2 mt-sm-0">
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <select class="form-control" id="boardFilterDropdownAdmin">
+                                        <option value="">Select Board</option>
+                                        <option value="all">All Board</option>
+                                        {% for board in get_all_board %}
+                                            <option value="{{ board.id }}">{{ board.board_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <select class="form-control" id="subjectFilterDropdownAdmin">
+                                        <option value="">Select Subject</option>
+                                        <option value="all">All Subject</option>
+                                        {% for subject in get_all_subject %}
+                                            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-sm-5 col-12 mt-2 mt-sm-0">
-            <div class="row">
-                <div class="col-md-6">
-                    <select class="form-control" id="boardFilterDropdownAdmin">
-                        <option value="">Select Board</option>
-                        <option value="all">All Board</option>
-                        {% for board in get_all_board %}
-                            <option value="{{ board.id }}">{{ board.board_name }}</option>
-                        {% endfor %}
-                    </select>
+
+        <div class="container-fluid"> 
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="box-title">Course Details</h5>
                 </div>
-                <div class="col-md-6">
-                    <select class="form-control" id="subjectFilterDropdownAdmin">
-                        <option value="">Select Subject</option>
-                        <option value="all">All Subject</option>
-                        {% for subject in get_all_subject %}
-                            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" id="filterDataAdmin" class="form-control" placeholder="Search">
+                                    <div class="input-group-append" style = "margin-left:5px">
+                                        <button class="btn btn-primary " id="searchData">
+                                            <i class="fa fa-search" aria-hidden="true"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4 text-right" style="
+                        text-align: right;">
+
+                            <button type="button" id="openModalBtn" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">
+                                <i class="fas fa-file-excel" aria-hidden="true"></i> Bulk Data Upload
+                            </button>
+                
+                            {% if user.is_authenticated %}
+                                <a href="/admin/cms/course/add/" class="btn btn-success btn-sm">
+                                    <i class="fa fa-plus" aria-hidden="true"></i> Add Course
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-sm-12 text-right" style="text-align: right;">
+                            <form method="post" action="/exportToExcel/" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="exportexl" id="exportexl" value="course">
+                                <button type="submit" class="btn btn-primary btn-sm"> 
+                                    <i class="fas fa-file-excel"></i> Export to Excel
+                                </button>
+                            </form>
+                    
+                            <button class="btn btn-danger btn-sm" id="deleteAll" style="display: inline;">
+                                <i class="fa fa-trash" aria-hidden="true"></i> Delete selected course details
+                            </button>
+                        </div>
+                    </div>
+                    
+
+                    <div class="table-responsive">
+                        <table class="table table-striped mt-4">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">
+                                        Check All 
+                                        <input type="checkbox" class="action-select" id="checkAll" name="_selected_action">
+                                    </th>
+                                    <th scope="col">Board</th>
+                                    <th scope="col">Subject</th>
+                                    <th scope="col">Gread</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in courses %}
+                                <tr>
+                                    <td> {{ courses.start_index|default:0|add:forloop.counter0 }}</td>
+                                    <td><input type="checkbox" class="singleCheckBox" value="{{course.id}}" name="_selected_action"></td>
+                                    <td> {{ course.board.board_name }}</td>
+                                    <td> {{ course.subject.subject_name }}</td>
+                                    <td> {{ course.grade }}</td>
+                                    <td>
+                                        <a href="/admin/cms/course/{{course.id}}/" class="btn btn-success btn-sm">Edit</a>
+                                        <a href="/admin/cms/course/{{course.id}}/delete" class="btn btn-danger btn-sm" style="margin-top:4px">Delete</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% include 'paginationNavBar.html' %}
                 </div>
+                
             </div>
         </div>
-        
-        <div class="col-sm-3 col-12 text-right mt-2 mt-sm-0">
-            {% if user.is_authenticated %}
-                <a href="/admin/cms/course/add/" class="btn btn-success">
-                    <i class="fa fa-plus" aria-hidden="true"></i> Add Course
-                </a>
-                <form action='/logout/' method="post" class="d-inline float-right">
-                    {% csrf_token %}
-                    <a href="/logout/" class="btn btn-danger">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </form>
-            {% endif %}
-        </div>
     </div>
+{% include 'modal.html' %}
 
 
-    <table class="table table-striped mt-4">
-        <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Board</th>
-              <th scope="col">Subject</th>
-              <th scope="col">Gread</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td> {{ courses.start_index|default:0|add:forloop.counter0 }}</td>
-                <td> {{ course.board.board_name }}</td>
-                <td> {{ course.subject.subject_name }}</td>
-                <td> {{ course.grade }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
-    {% include 'paginationNavBar.html' %}
+
+
+
+    
     <script>
         var selected_board = {{selected_board}}
     </script>

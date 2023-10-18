@@ -6,7 +6,6 @@ from .views import *
 urlpatterns = [
     url(r'^$', user_login, name='login'),
     url(r'^logout/$', custom_logout, name='logout'),
-
     url(r'^register/$', register, name='register'),
     url(r'^register/admin/$', adminRegister, name='adminRegister'),
     url(r'^get_courses/$', get_courses, name='get_courses'),
