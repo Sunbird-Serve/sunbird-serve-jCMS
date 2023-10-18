@@ -1463,7 +1463,6 @@ def all_content(request):
 # Excel export
 def download_excel_template(request):
     template = request.POST.get('downloadTemplate')
-    print(template)
 
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
@@ -1542,10 +1541,9 @@ def file_upload(request):
 def deleteBulkData(request):
     contentIds = request.POST.getlist('numberIdsArray[]')
     deletetable = request.POST.get('delete')
-    print(contentIds)
 
     if(deletetable == 'course'):
-        print('hiii')
+
         Course.objects.filter(id__in=contentIds).delete()
         return HttpResponse('success')
 
