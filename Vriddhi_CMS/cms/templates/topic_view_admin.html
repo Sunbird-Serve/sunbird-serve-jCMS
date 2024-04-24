@@ -46,7 +46,7 @@
                                         <option value="">Select Board</option>
                                         <option value="all">All Board</option>
                                         {% for board in get_all_board %}
-                                            <option value="{{ board.id }}">{{ board.board_name }}</option>
+                                        <option value="{{ board }}">{{ board }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -56,7 +56,7 @@
                                         <option value="">Select Subject</option>
                                         <option value="all">All Subject</option>
                                         {% for subject in get_all_subject %}
-                                            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                                        <option value="{{ subject }}">{{ subject }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -154,8 +154,8 @@
                             <tr>
                                 <td> {{ topics.start_index|default:0|add:forloop.counter0 }}</td>
                                 <td><input type="checkbox" class="singleCheckBox" value="{{topic.id}}" name="_selected_action"></td>
-                                <td> {{ topic.course.board.board_name }}</td>
-                                <td> {{ topic.course.subject.subject_name }} - [{{ topic.course.grade }}]</td>
+                                <td> {{ topic.course_id.board_name }}</td>
+                                <td> {{ topic.course_id.subject }} - [{{ topic.course_id.grade }}]</td>
                                 <td> {{ topic.title }}</td>
                                 <td> {{ topic.status }}</td>
                                 <td>

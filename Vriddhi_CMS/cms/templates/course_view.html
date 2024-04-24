@@ -50,7 +50,7 @@
                 <option value="">Select Board</option>
                 <option value="all">All Board</option>
                 {% for board in get_all_board %}
-                    <option value="{{ board.id }}">{{ board.board_name }}</option>
+                <option value="{{ board }}">{{ board }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -61,7 +61,7 @@
                 <option value="">Select Subject</option>
                 <option value="all">All Subject</option>
                 {% for subject in get_all_subject %}
-                    <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                <option value="{{ subject }}">{{ subject }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -91,8 +91,8 @@
                 <div class="col-md-4 mb-5">
                     <div class="course-card course_details cursor-pointer h-100" >
                         <input type="hidden" class="course_id" value="{{course.id}}">
-                        <h5 class="course-title">{{ course.board.board_name }}</h5>
-                        <p class="course-detail"><strong>Subject:</strong> {{ course.subject.subject_name }}</p>
+                        <h5 class="course-title">{{ course.board_name }}</h5>
+                        <p class="course-detail"><strong>Subject:</strong> {{ course.subject }}</p>
                         <p class="course-detail"><strong>Grade:</strong> {{ course.grade }}</p>
                     </div>
                 </div>
