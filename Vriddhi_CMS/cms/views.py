@@ -7,7 +7,7 @@ import requests
 from django.views.generic.base import View
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.db.models import Q, F
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from cms.models import *
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -29,7 +29,7 @@ from django.contrib.auth import logout as auth_logout
 import xlrd
 import xlwt
 from django.contrib.auth.models import User
-
+# import logutility as logService
 
 # User register
 def register(request):

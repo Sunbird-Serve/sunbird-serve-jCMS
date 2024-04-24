@@ -1,16 +1,31 @@
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from cms.models import *
-from django.core.urlresolvers import reverse
+# from django.urls import reverse
+from django.http import HttpResponseForbidden
 
-class APIKeyMiddleware(object):
+class APIKeyMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-    def process_request(self, request):
+    def __call__(self, request):
+        # Code to be executed for each request before
+        # the view (and later middleware) are called.
         if request.path.startswith('/api/'):
             api_key = request.META.get('HTTP_APIKEY')
             if not self.is_valid_api_key(api_key):
                 return HttpResponseForbidden("Invalid API key")
-            return None
+        
+        # Get the response from the next middleware or the view
+        response = self.get_response(request)
+
+        # Code to be executed for each request/response after
+        # the view is called.
+
+        return response
 
     def is_valid_api_key(self, api_key):
-        keyval = APIKey.objects.get(key=api_key)
-        return api_key == keyval.key 
+        try:
+            keyval = APIKey.objects.get(key=api_key)
+            return api_key == keyval.key
+        except APIKey.DoesNotExist:
+            return False

@@ -16,3 +16,6 @@ logfiles/*
 local_settings.py
 .vscode
 gitstatic/
+static/
+migrations/
+

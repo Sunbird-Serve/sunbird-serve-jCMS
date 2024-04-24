@@ -22,8 +22,8 @@ class AttributeAdmin(admin.ModelAdmin):
     ordering = ['id']
     
 class CourseAdmin(admin.ModelAdmin):
-    list_filter = ('subject', 'board', 'grade','type', 'language')
-    list_display = ['id', 'board', 'subject', 'grade', 'type','description','picture','get_topics', 'language']
+    list_filter = ('subject', 'board_name', 'grade','type', 'language')
+    list_display = ['id', 'board_name', 'subject', 'grade', 'type','description','picture','get_topics', 'language']
     ordering = ['id']
 
 
@@ -41,25 +41,28 @@ class LanguageAdmin(admin.ModelAdmin):
     ordering = ['id']
 
 # Create dynamicfield for board
-class BoardAdminForm(forms.ModelForm):
-    board = forms.ModelChoiceField(queryset=Board.objects.all(), empty_label="Select Board")
-    class Meta:
-        model = Topic
+# class BoardAdminForm(forms.ModelForm):
+#     board = forms.ModelChoiceField(queryset=Board.objects.all(), empty_label="Select Board")
+#     class Meta:
+#         model = Topic
+#         fields = '__all__'
 
-class CombinedForm(forms.ModelForm):
-    board = forms.ModelChoiceField(queryset=Board.objects.all(), empty_label="Select Board", label="Board")
-    course = forms.ModelChoiceField(queryset=Course.objects.all(), empty_label=None, label="Course")
+# class CombinedForm(forms.ModelForm):
+#     board = forms.ModelChoiceField(queryset=Board.objects.all(), empty_label="Select Board", label="Board")
+#     course = forms.ModelChoiceField(queryset=Course.objects.all(), empty_label=None, label="Course")
     
-    class Meta:
-        model = SubTopics
+#     class Meta:
+#         model = SubTopics
+#         fields = '__all__'
+
 
 class TopicAdmin(admin.ModelAdmin):
-    form = BoardAdminForm #Add dynamic field
-    list_filter = ('course',)
-    list_display = ['title', 'course', 'url','status','priority']
+    # form = BoardAdminForm #Add dynamic field
+    list_filter = ('course_id',)
+    list_display = ['title', 'course_id', 'url','status','priority']
     ordering = ['priority']
     # Arrange field in DjangoAdmin
-    fields = ['board', 'course', 'title', 'url', 'num_sessions', 'status', 'priority']
+    fields = [ 'course_id', 'title', 'url', 'num_sessions', 'status', 'priority']
 
     class Media:
         js = ('cms/js/dynamic_course_dropdown.js',)
@@ -69,10 +72,10 @@ class TopicDetailsAdmin(admin.ModelAdmin):
     ordering = ['id']
 
 class SubTopicsAdmin(admin.ModelAdmin):
-    form = CombinedForm
-    list_display = ['id','name', 'topic', 'created_date', 'updated_date','author','created_by','updated_by','status']
+    # form = CombinedForm
+    list_display = ['id','name', 'topic', 'created_date', 'updated_date','author_id','created_by','updated_by','status']
     fields = [
-        'board', 'course', 'topic', 'name', 'created_date', 'updated_date', 'author', 'created_by', 'updated_by', 'status'
+        'board', 'course', 'topic', 'name', 'created_date', 'updated_date', 'author_id', 'created_by', 'updated_by', 'status'
     ]
     class Media:
         js = ('cms/js/dynamic_course_dropdown.js',)
@@ -145,8 +148,8 @@ class APIKeyAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "created_at","key"]
     form = CmsAPIKeyForm
         
-admin.site.register(Board, BoardAdmin)
-admin.site.register(Subject, SubjectAdmin)
+# admin.site.register(Board, BoardAdmin)
+# admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(CourseProvider, CourseProviderAdmin)
 admin.site.register(CourseAttribute, CourseAttributeAdmin)
