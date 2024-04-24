@@ -8,8 +8,8 @@ import hashlib
 from django.conf import settings
 
 class BoardAdmin(admin.ModelAdmin):
-    list_filter = ('id', 'board')
-    list_display = ['id', 'board']
+    list_filter = ('id', 'board_name')
+    list_display = ['id', 'board_name']
     ordering = ['id']
     
 class SubjectAdmin(admin.ModelAdmin):
