@@ -34,11 +34,11 @@ class Language(models.Model):
 
 
 class Course(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, null=True, default=None)
+    board_name = models.ForeignKey(Board, on_delete=models.CASCADE, null=True, default=None)
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True, default=None)
     grade = models.CharField(max_length=30,null=True, blank=False,db_index=True)
     type = models.CharField(max_length=30,null=True, blank=True,db_index=True)
-    description = models.TextField(max_length=2048, null=True, blank=True)
+    description = models.TextField(max_length=525, null=True, blank=True)
     picture = models.FileField(upload_to='static/uploads/images', null=True, blank=True)
     status = models.CharField(max_length=50,choices=(('active', 'Active'), ('inactive', 'Inactive')),default="active")
     language = models.ForeignKey(Language, null=True, blank=True, on_delete = models.DO_NOTHING)

@@ -116,7 +116,7 @@ def view_course(request):
         if selected_board == 'all':
             set_filters &= Q(status='active')
         else:
-            set_filters &= Q(board_id=selected_board)
+            set_filters &= Q(board_name_id=selected_board)
 
     if selected_subjectId:
         if selected_subjectId == 'all':
@@ -161,7 +161,7 @@ def view_content(request):
 def content_detail_view(request):
     course_id = request.GET.get('courseID')
     courseData = Course.objects.get(id=course_id)
-    boardName = Board.objects.get(id=courseData.board_id)
+    boardName = Board.objects.get(id=courseData.board_name_id)
     subjectName = Subject.objects.get(id=courseData.subject_id)
 
     topics = Topic.objects.filter(course_id=course_id).exclude(status='Inactive')
@@ -459,7 +459,7 @@ class SubTopicDetailsView(View):
             topicId = self.request.GET.get('topic_id', None)
 
             topicObj = Topic.objects.get(id=topicId)
-
+            print (topicObj)
             try:
                 subtopicObj = SubTopics.objects.get(id=subtopicId)
                 topicObj = subtopicObj.topic
@@ -469,22 +469,23 @@ class SubTopicDetailsView(View):
             contentRecords = ContentDetail.objects.filter(status="approved", subtopic=subtopicObj).exclude(status='Inactive').select_related(
                 'workstream_type', 'content_type', 'url_host').order_by('priority')
 
+            print(contentRecords)
 
             contentDetailData = {
                 'subtopic_id': subtopicId,
                 'subtopic_name': subtopicObj.name,
                 'subject': topicObj.course.subject.subject_name,
                 'grade': topicObj.course.grade,
-                'board': topicObj.course.board.board_name,
+                'board': topicObj.course.board_name_id,
                 'courseId':topicObj.course_id,
                 'topicId':topicId
             }
+            
             for i in range(len(contentRecords)):
                 contentRec = contentRecords[i]
                 workStreamType = contentRec.workstream_type
                 contentTypeRec = contentRec.content_type
                 contentHostRec = contentRec.url_host
-
                 if not contentTypeRec or not contentHostRec or not workStreamType: continue
                 # logService.logInfo("workStreamType code", workStreamType.code)
                 dataRecArr = contentDetailData.get(workStreamType.code)
@@ -505,7 +506,7 @@ class SubTopicDetailsView(View):
                 dataRecArr.append(contentDict)
 
             context = contentDetailData
-
+            print(contentDetailData)
 
             # videoList= []
             # videoList.append(contentRec.url)
@@ -531,7 +532,8 @@ class SubTopicDetailsView(View):
 
             return render_response(self.request, 'flm_content_details.html', context)
         except  Exception  as e:
-            return HttpResponseNotFound("Page not found " + e.message)
+            print(f"Exception occurred: {e}")
+            return HttpResponseNotFound("Page not found Error details: {e} ")
 
 
     # View Video and Worksheet Rating page 

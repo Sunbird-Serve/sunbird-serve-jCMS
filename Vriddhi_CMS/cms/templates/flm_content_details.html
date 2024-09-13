@@ -256,11 +256,12 @@
     </div>
 </div>
 <script src="https://vjs.zencdn.net/7.15.4/video.min.js"></script>
+<script src="/static/js/videojs_youtube.js"></script>
 <script type="text/javascript" src="/static/js/jquery.colorbox.min.js"></script>
 <script type="text/javascript" src="/static/js/bootstrap-tab.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-<script src="{% static 'js/flm_content_details.js' %}"></script>
+<script src="/static/js/flm_content_details.js"></script>
 <script>
     var data = "{{Video}}";
     var dataRecArrJSON = '{{ dataRecArr_json|escapejs }}';  // JSON string with proper 
