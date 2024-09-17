@@ -44,7 +44,7 @@ def register(request):
 # User login
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        username = request.POST['username'].lower()  # To avoid case sensitivity
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -248,228 +248,25 @@ def getSubtopic(request):
   
 class SubTopicDetailsView(View):
     ''''GET: rtc player'''
-    # def getChildRecord(self,contentId):
-    #     try:
-    #         url = "https://api.dev.diksha.gov.in/api/content/v1/read/"+contentId
-    #         authDict = {"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
 
-    #         url = str(url)
-    #         response = requests.get(url,headers=authDict)
-    #         respDict = response.json()
-    #         responseCode = respDict.get("responseCode")
-    #         contentList = []
-
-    #         if responseCode == "OK":
-    #             result = respDict.get("result")
-    #             contentObj = result.get("content")
-    #             if contentObj:
-    #                 name = contentObj.get("name")
-    #                 mimeType = contentObj.get("mimeType")
-    #                 artifactUrl = contentObj.get("artifactUrl")
-    #                 if (mimeType == "video/mp4" or mimeType == "application/pdf") and artifactUrl:
-    #                     mimtype = "worksheet"
-    #                     if mimeType == "video/mp4":
-    #                         mimtype = "video"
-
-    #                     ctObj = {
-    #                         "id":contentId,
-    #                         "name":name,
-    #                         "url":artifactUrl,
-    #                         "mimeType":mimtype
-
-    #                     }
-    #                     contentList.append(ctObj)
-
-
-    #         #print("contentList",contentList)
-    #         return contentList
-    #     except Exception as e:
-    #         print("getChildRecord ",e)
-    #         traceback.print_exc()
-    #         return None
-
-    # def getChildNodeDetails(self,leafNodes):
-    #     try:
-    #         childList = []
-    #         for contentId in leafNodes:
-    #             #print("contentId",contentId)
-    #             newList = self.getChildRecord(contentId)
-    #             if newList and len(newList) > 0:
-    #                 childList.extend(newList)
-    #         #print("childList",childList)
-    #         return childList
-    #     except Exception as e:
-    #         print("getChildNodeDetails ",e)
-    #         traceback.print_exc()
-    #         return None
-
-    # def getChildRecord(self, contentId):
-    #     try:
-    #         url = "https://api.dev.diksha.gov.in/api/content/v1/read/" + contentId
-    #         authDict = {
-    #             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
-
-    #         url = str(url)
-    #         response = requests.get(url, headers=authDict)
-    #         respDict = response.json()
-    #         responseCode = respDict.get("responseCode")
-    #         contentList = []
-
-    #         if responseCode == "OK":
-    #             result = respDict.get("result")
-    #             contentObj = result.get("content")
-    #             if contentObj:
-    #                 name = contentObj.get("name")
-    #                 mimeType = contentObj.get("mimeType")
-    #                 artifactUrl = contentObj.get("artifactUrl")
-    #                 if (mimeType == "video/mp4" or mimeType == "application/pdf") and artifactUrl:
-    #                     mimtype = "worksheet"
-    #                     if mimeType == "video/mp4":
-    #                         mimtype = "video"
-
-    #                     ctObj = {
-    #                         "id": contentId,
-    #                         "name": name,
-    #                         "url": artifactUrl,
-    #                         "mimeType": mimtype
-
-    #                     }
-    #                     contentList.append(ctObj)
-    #         return contentList
-    #     except Exception as e:
-    #         traceback.print_exc()
-    #         return None
-
-    # def getChildNodeDetails(self, leafNodes):
-    #     try:
-    #         childList = []
-    #         for contentId in leafNodes:
-    #             newList = self.getChildRecord(contentId)
-    #             if newList and len(newList) > 0:
-    #                 childList.extend(newList)
-    #         return childList
-    #     except Exception as e:
-    #         traceback.print_exc()
-    #         return None
-
-    # def getContentFromThirdParty(self):
-    #     try:
-    #         url = "https://api.dev.diksha.gov.in/api/content/v1/search"
-    #         payloadData = {
-    #             "request": {
-
-    #                 "filters": {
-    #                     "primaryCategory": [
-    #                         "Digital Textbook"
-    #                     ],
-    #                     "se_boards": [
-    #                         "CBSE"
-    #                     ],
-    #                     "se_mediums": [
-    #                         "English"
-    #                     ],
-    #                     "se_gradeLevels": [
-    #                         "Class 7"
-    #                     ]
-    #                 },
-    #                 "limit": 1000,
-    #                 "fields": [
-    #                     "string",
-    #                     "name",
-    #                     "contentType",
-    #                     "leafNodes"
-
-    #                 ]
-    #             }
-    #         }
-
-
-    #         authDict = {
-    #             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBOGt5dGptMDdXN2tJOGxNY0c3Unljc3I2b1Q2NWhoViJ9.OMhRtUiochad7pMiozTVY9lOUC9kG3Us7NnA-lezVoc"}
-    #         response = requests.post(url, json=payloadData, headers=authDict)
-    #         print(response)
-    #         respDict = response.json()
-    #         responseCode = respDict.get("responseCode")
-    #         contentList = []
-    #         videoList = []
-    #         if responseCode == "OK":
-    #             result = respDict.get("result")
-    #             contentObjs = result.get("content")
-    #             for each in contentObjs:
-    #                 eachId = each.get("identifier")
-    #                 contentType = each.get("contentType")
-
-
-    #                 leafNodes = each.get("leafNodes")
-    #                 if leafNodes and len(leafNodes) > 0:
-    #                     pass
-    #                 tlist = self.getChildNodeDetails(leafNodes)
-    #                 if tlist and len(tlist) > 0:
-    #                     for newObj in tlist:
-    #                         cType = newObj.get("mimeType")
-    #                         eachDict = {
-    #                             "id": 3788,
-    #                             "did": newObj.get("id"),
-    #                             "title": newObj.get("name"),
-    #                             "contentType": newObj.get("mimeType"),
-    #                             "url": newObj.get("url"),
-    #                             "author": "Diksha",
-    #                             "duration": 960,
-    #                             "isPrimary": True,
-    #                             "contentHost": "s3",
-    #                             "description": ''
-
-    #                         }
-    #                         if cType != "video":
-    #                             contentList.append(eachDict)
-    #                         else:
-    #                             videoList.append(eachDict)
-
-
-
-    #                 else:
-    #                     eachDict = {
-    #                         "id": 3788,
-    #                         "did": eachId,
-    #                         "title": each.get("name"),
-    #                         "contentType": contentType,
-    #                         "objectType": each.get("objectType"),
-    #                         "url": "https://dev.diksha.gov.in/play/collection/" + eachId + "?contentType=" + contentType
-    #                     }
-
-    #                     contentList.append(eachDict)
-
-
-    #             return (contentList, videoList)
-    #         else:
-    #             return ([], [])
-
-
-    #     except Exception as e:
-    #         traceback.print_exc()
-    #         return (None, None)
-
-
-
-    # Get video content
-    def get(self, request,  *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         try:
-
             subtopicId = self.request.GET.get('subtopic_id', None)
             topicId = self.request.GET.get('topic_id', None)
 
-            topicObj = Topic.objects.get(id=topicId)
-            print (topicObj)
             try:
-                subtopicObj = SubTopics.objects.get(id=subtopicId)
-                topicObj = subtopicObj.topic
-            except:
-                return HttpResponseNotFound("SubTopics Not found")
+                topicObj = Topic.objects.get(id=topicId)
+            except Topic.DoesNotExist:
+                return HttpResponseNotFound("Topic Not found")
+                
+            try:
+                subtopicObj = SubTopics.objects.get(id=subtopicId, topic=topicObj)
+            except SubTopics.DoesNotExist:
+                return HttpResponseNotFound("Subtopic Not found")
 
-            contentRecords = ContentDetail.objects.filter(status="approved", subtopic=subtopicObj).exclude(status='Inactive').select_related(
-                'workstream_type', 'content_type', 'url_host').order_by('priority')
-
-            print(contentRecords)
+            video_url = ContentDetail.objects.filter(
+                subtopic_id=subtopicId, topic_id=topicId, status="approved"
+            ).exclude(status='Inactive').values_list('url', flat=True).first()
 
             contentDetailData = {
                 'subtopic_id': subtopicId,
@@ -477,64 +274,21 @@ class SubTopicDetailsView(View):
                 'subject': topicObj.course.subject.subject_name,
                 'grade': topicObj.course.grade,
                 'board': topicObj.course.board_name_id,
-                'courseId':topicObj.course_id,
-                'topicId':topicId
+                'courseId': topicObj.course_id,
+                'topicId': topicId,
+                'video_url': video_url if video_url else "https://www.youtube.com/embed/4Y1aGTZGpCA",
             }
-            
-            for i in range(len(contentRecords)):
-                contentRec = contentRecords[i]
-                workStreamType = contentRec.workstream_type
-                contentTypeRec = contentRec.content_type
-                contentHostRec = contentRec.url_host
-                if not contentTypeRec or not contentHostRec or not workStreamType: continue
-                # logService.logInfo("workStreamType code", workStreamType.code)
-                dataRecArr = contentDetailData.get(workStreamType.code)
-                if dataRecArr is None:
-                    dataRecArr = []
-                    contentDetailData[workStreamType.code] = dataRecArr
 
-                contentDict = {"id": contentRec.id,
-                               "title": contentRec.name,
-                               "description": contentRec.description,
-                               "author": "eVidyaloka",
-                               "duration": contentRec.duration,
-                               "url": contentRec.url,
-                               "isPrimary": contentRec.is_primary,
-                               "contentType": contentTypeRec.code,
-                               "contentHost": contentHostRec.code
-                               }
-                dataRecArr.append(contentDict)
+            if video_url:
+                print(f"Video URL found: {video_url}")
+            else:
+                print("No video URL found, using default.")
 
-            context = contentDetailData
-            print(contentDetailData)
+            return render_response(self.request, 'flm_content_details.html', contentDetailData)
 
-            # videoList= []
-            # videoList.append(contentRec.url)
-            # cList = len(videoList)
-            # print(video_list_length)
-
-            # cList, videoList = self.getContentFromThirdParty()
-
-            # if cList and len(cList) > 0:
-            #     context['tpContentList'] = cList
-            #     context['showTpContent'] = 1
-            # else:
-            #     context['showTpContent'] = 0
-
-            # if videoList and len(videoList) > 0:
-            #     evdList = context['video']
-            #     if evdList and len(evdList) > 0:
-            #         evdList.extend(videoList)
-
-            # response_data = json.dumps(context)
-            # print((response_data))
-            # return render(self.request, 'flm_content_details.html', {'contentDetails': response_data})
-
-            return render_response(self.request, 'flm_content_details.html', context)
-        except  Exception  as e:
+        except Exception as e:
             print(f"Exception occurred: {e}")
-            return HttpResponseNotFound("Page not found Error details: {e} ")
-
+            return HttpResponseNotFound(f"Page not found. Error details: {e}")
 
     # View Video and Worksheet Rating page 
     def post(self, request,  *args, **kwargs):
@@ -543,7 +297,7 @@ class SubTopicDetailsView(View):
             today = datetime.datetime.now()
             min_dt = datetime.datetime.combine(today, today.time().min)
             max_dt = datetime.datetime.combine(today, today.time().max)
-            existing_rating = Flm_Content_Rating.objects.filter(reviewer=self.request.user, subtopic_id=int(requestParams['subtopicId']), updated_on__range=(min_dt, max_dt))
+            existing_rating = FLMContentRating.objects.filter(reviewer=self.request.user, subtopic_id=int(requestParams['subtopicId']), updated_on__range=(min_dt, max_dt))
             if len(existing_rating) >0:
                 rate = existing_rating[0]
                 rate.videoRating=float(requestParams['videoRating'])
@@ -551,7 +305,7 @@ class SubTopicDetailsView(View):
                 rate.comment=str(requestParams['comment'])
                 rate.save()
             else:
-                rate = Flm_Content_Rating.objects.create(reviewer=self.request.user, subtopic_id=int(requestParams['subtopicId']), videoRating=float(requestParams['videoRating']), worksheetRating=float(requestParams['worksheetRating']), comment=str(requestParams['comment']))
+                rate = FLMContentRating.objects.create(reviewer=self.request.user, subtopic_id=int(requestParams['subtopicId']), videoRating=float(requestParams['videoRating']), worksheetRating=float(requestParams['worksheetRating']), comment=str(requestParams['comment']))
             return genUtility.getSuccessApiResponse(request, {'message': 'Rating saved successfully', 'id':rate.id})
         except Exception as e:
             traceback.print_exc()
