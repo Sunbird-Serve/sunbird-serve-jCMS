@@ -24,20 +24,17 @@
     <div class="flex flex-col lg:flex-row  items-center justify-around w-full lg:h-[45rem]">
         <div class="w-full h-full">
             <div class="md:mx-10 flex items-center justify-start">
-                <div id="no_video" class="flex items-center justify-center bg-blue-200 border-2" ><div class="text-4xl font-bold">NO Compatble Video Available</div></div>
-                <video id="my_video_player" class="video-js vjs-default-skin" controls fluid width="800" height="320" poster="/static/images/evidyalogo.jpg" data-setup="{}">
-                    
-                    <source id="VideoSource" src="https://youtu.be/4Y1aGTZGpCA"  type="video/youtube"/>
-                    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to aweb browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-                </video>
+                <div id="no_video" class="flex items-center justify-center bg-blue-200 border-2">
+                    <div class="text-4xl font-bold">NO Compatible Video Available</div>
+                </div>
+                <iframe id="my_video_player" width="800" height="320" src="{{ video_url }}"  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="flex w-full px-2 md:px-10 my-10 pb-4 border-b">
                 <div class="w-3/5">
                     <h3 id="current_video_title" class="text-left text-3xl font-bold">Introduction</h3>
                     <p id="current_video_description" class="text-left text-xl mt-4">This is the default video</p>
                 </div>
-
-            </div> 
+            </div>  
             {% comment %} <video controls>
                 <source src="{{ Video.1.url }}" type="video/mp4">
             </video>  {% endcomment %}
