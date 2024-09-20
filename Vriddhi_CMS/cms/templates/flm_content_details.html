@@ -84,6 +84,13 @@
                 </div>
             </div>
 
+            <div id="additional_resources" onclick="make_additional_res_table()" tabindex="3" class="flex items-center justify-center w-full cursor-pointer bg-gray-300 border-blue-200 border-t-2 border-x-2 border-gray-300 hover:border-blue-200 hover:bg-gray-400 font-bold rounded-t-2xl">
+                <div class="text-center text-2xl p-4"><i class="fas fa-book"></i></div>
+                <div class="text-cneter p-2">
+                    <p id="">Additional Resources</p>
+                </div>
+            </div>
+
 
 
             {% if showTpContent == 1 %}
@@ -259,6 +266,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
 <script src="/static/js/flm_content_details.js"></script>
+{{ worksheet|json_script:"worksheets_data" }} {{ textbook|json_script:"textbook_data" }} {{ Additional_Resources|json_script:"additional_res" }}
 <script>
     var data = "{{Video}}";
     var dataRecArrJSON = '{{ dataRecArr_json|escapejs }}';  // JSON string with proper 
@@ -267,6 +275,134 @@
     var thumbnailUrl = '{{ video.thumbnailUrl }}'
     var topicId = '{{topicId}}'
     var subtopicId = '{{subtopic_id}}'
+    var worksheets_data = JSON.parse(document.getElementById('worksheets_data').textContent);
+    var textbooks_data = JSON.parse(document.getElementById('textbook_data').textContent);
+    var additional_res = JSON.parse(document.getElementById('additional_res').textContent);
+
+    function opendoc(url, id) {
+        window.open(url, '_blank');
+
+    }
+
+    function make_worksheet_table() {
+    $('#content_wraper').show();
+    $('#doubts_wraper').hide();
+    $("#content_details div").remove();
+
+    let externalLinks = [];
+    let worksheets = JSON.parse(document.getElementById('worksheets_data').textContent);
+
+    if (worksheets.length > 0) {
+        for (let index = 0; index < worksheets.length; index++) {
+            const worksheet = worksheets[index];
+
+            if (worksheet['contentHost'] === 'thirdparty') {
+                externalLinks.push({
+                    title: 'External Link',
+                    url: worksheet['url']
+                });
+                continue;
+            }
+
+            let url = "'" + worksheet['url'] + "'";
+            let id = "'" + worksheet['id'] + "'";
+            $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-2 md:gap-4 items-center justify-center md:mx-48"> \
+                <div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400 shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
+                    <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                    <div class="h-full mx-2 flex items-stretch justify-center">\
+                        <p class="font-bold text-3xl self-start text-center py-20">' + worksheet['title'] + '</p>\
+                    </div></div></div>');
+        }
+    }else {
+            $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
+        }
+
+    if (externalLinks.length > 0) {
+        for (let index = 0; index < externalLinks.length; index++) {
+            const link = externalLinks[index];
+            let url = "'" + link['url'] + "'";
+
+            $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-2 md:gap-4 items-center justify-center md:mx-48"> \
+                <div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="window.open(' + url + ')" style="background-image: url()" > \
+                    <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                    <div class="h-full mx-2 flex items-stretch justify-center">\
+                        <p class="font-bold text-3xl self-start text-center py-20">' + link['title'] + '</p>\
+                    </div></div></div>');
+        }
+        }
+}
+
+
+    function make_textbook_table() {
+    $('#content_wraper').show();
+    $('#doubts_wraper').hide();
+    $("#content_details div").remove();
+
+    let externalLinks = [];
+
+    if (textbooks_data.length > 0) {
+        for (let index = 0; index < textbooks_data.length; index++) {
+            const textbook = textbooks_data[index];
+
+            if (textbook['contentHost'] === 'thirdparty') {
+                externalLinks.push({
+                    title: 'External Link',
+                    url: textbook['url']
+                });
+                continue;
+            }
+
+            //else display other content
+            let url = "'" + textbook['url'] + "'";
+            $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"> \
+                <div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 shadow-2xl bg-contain bg-center bg-no-repeat rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="window.open(' + url + ')" style="background-image: url()" > \
+                    <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                    <div class="h-full mx-2 flex items-stretch justify-center">\
+                        <p class="font-bold text-3xl self-start text-center py-20">' + textbook['title'] + '</p>\
+                    </div></div></div>');
+        } }else {
+            $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
+        }
+
+
+
+    if (externalLinks.length > 0) {
+        for (let index = 0; index < externalLinks.length; index++) {
+            const link = externalLinks[index];
+            let url = "'" + link['url'] + "'";
+
+            $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-4 md:gap-16 items-center justify-center md:mx-48"> \
+                <div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 shadow-2xl bg-contain bg-center bg-no-repeat rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="window.open(' + url + ')" style="background-image: url()" > \
+                    <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                    <div class="h-full mx-2 flex items-stretch justify-center">\
+                        <p class="font-bold text-3xl self-start text-center py-20">' + link['title'] + '</p>\
+                    </div></div></div>');
+        }
+    }
+}
+
+    function make_additional_res_table() {
+        $('#content_wraper').show()
+        $('#doubts_wraper').hide()
+        $("#content_details div").remove();
+        if (additional_res.length > 0) {
+        console.log("make_additional_res_table ",additional_res)
+            for (let index = 0; index < additional_res.length; index++) {
+                const worksheet = additional_res[index];
+                let url = "'" + worksheet['url'] + "'"
+                let id = "'" + worksheet['id'] + "'"
+
+                $('#content_details').append('<div class="grid grid-flow-row grid-cols-2 md:grid-cols-6 gap-2 md:gap-4 items-center justify-center md:mx-48"><div class="h-96 w-64 md:w-72 flex flex-row border-2 border-gray-400 hover:border-blue-400  shadow-2xl bg-gradient-to-t from-gray-100 to-blue-200 rounded-l-lg rounded-r-3xl transform hover:z-50 hover:rotate-6 cursor-pointer" onclick="opendoc(' + url + ', ' + id + ')" style="background-image: url()" > \
+                            <div class="h-full w-4 border-r-4 border-gray-500 border-dotted"></div>\
+                            <div class="h-full mx-2 flex items-stretch justify-center">\
+                                <p class="font-bold text-3xl self-start text-center py-20">' + 'External Link' + '</p>\
+                            </div></div></div>')
+            }
+        } else {
+            $('#content_details').append('<div class="text-center text-bold text-3xl"> No Content Available </div>')
+        }
+    }
+
     
 </script>
 

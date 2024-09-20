@@ -268,6 +268,9 @@ class SubTopicDetailsView(View):
                 subtopic_id=subtopicId, topic_id=topicId, status="approved"
             ).exclude(status='Inactive').values_list('url', flat=True).first()
 
+            contentRecords = ContentDetail.objects.filter(status="approved", subtopic=subtopicObj).select_related(
+                'workstream_type', 'content_type', 'url_host').order_by('priority')
+
             contentDetailData = {
                 'subtopic_id': subtopicId,
                 'subtopic_name': subtopicObj.name,
@@ -278,12 +281,36 @@ class SubTopicDetailsView(View):
                 'topicId': topicId,
                 'video_url': video_url if video_url else "https://www.youtube.com/embed/4Y1aGTZGpCA",
             }
+            for i in range(len(contentRecords)):
+                contentRec = contentRecords[i]
+                workStreamType = contentRec.workstream_type
+                contentTypeRec = contentRec.content_type
+                contentHostRec = contentRec.url_host
+
+                if not contentTypeRec or not contentHostRec or not workStreamType: continue
+                # logService.logInfo("workStreamType code", workStreamType.code)
+                dataRecArr = contentDetailData.get(workStreamType.code)
+                if dataRecArr is None:
+                    dataRecArr = []
+                    contentDetailData[workStreamType.code] = dataRecArr
+
+                contentDict = {"id": contentRec.id,
+                               "title": contentRec.name,
+                               "description": contentRec.description,
+                               "author": "eVidyaloka",
+                               "duration": contentRec.duration,
+                               "url": contentRec.url,
+                               "isPrimary": contentRec.is_primary,
+                               "contentType": contentTypeRec.code,
+                               "contentHost": contentHostRec.code
+                               }
+                dataRecArr.append(contentDict)
 
             if video_url:
                 print(f"Video URL found: {video_url}")
             else:
                 print("No video URL found, using default.")
-
+            print("content>>>>>>>>>>>",contentDetailData)
             return render_response(self.request, 'flm_content_details.html', contentDetailData)
 
         except Exception as e:
