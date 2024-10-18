@@ -4,6 +4,7 @@ from .views import *
 from django.views.static import serve as static_serve
 urlpatterns = [
     path('', user_login, name='login'),
+    path('admin_login/', admin_login, name='login'),
     path('logout/', custom_logout, name='logout'),
     path('register/', register, name='register'),
     path('register/admin/', adminRegister, name='adminRegister'),

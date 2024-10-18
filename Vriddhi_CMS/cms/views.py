@@ -53,6 +53,17 @@ def user_login(request):
     
     return render(request, 'login.html')
 
+# Admin login
+def admin_login(request):
+    if request.method == 'POST':
+        username = request.POST['username'].lower()  # To avoid case sensitivity
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')
+    
+    return render(request, 'login.html')
 
 # Get all courses
 def get_courses(request):
@@ -92,7 +103,7 @@ def get_subTopics(request):
 
 
 # View all course data
-@login_required
+#@login_required
 def view_course(request):
     selected_board = request.GET.get('boardId')
     selected_subjectId = request.GET.get('subjectId')
@@ -1016,6 +1027,7 @@ def custom_logout(request):
     auth_logout(request)
     return HttpResponseRedirect(reverse('login'))
 
+@login_required
 def dashboard(request):
     active_course_count = Course.objects.filter(status='active').count()
     active_topics_count = Topic.objects.exclude(status='Inactive').count()

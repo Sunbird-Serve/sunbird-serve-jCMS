@@ -35,7 +35,7 @@ function make_topics_table(topics,subtopics) {
             <td class="text-center text-xl p-2 mobile_hide">'+`${index + 1}`+'</td>\
             <td class="p-2 text-left subtopic-cell" rowspan="1">'+subtopic["subtopic_names"]+'</td>\
             <td class="">'+`${button}`+'</td>\
-            <td class="p-2 text-left subtopic-cell" rowspan="1">'+subtopic["subtopic_statuses"]+'</td>';
+            ';
         
         subTopicTableData += `</tr>`;
         $("#subtopicsDetails").append(subTopicTableData);
@@ -61,6 +61,9 @@ function make_subtopics_table(topics, topicId) {
     $.get('/home/getSubtopic/',data,function(response,status){
         var subtopics = response
 
+        console.log("Subtopic Contents: ");
+        console.log(subtopics);
+
         $('#subtopics_length').empty();
         $('#subtopics_length').append("(" + subtopics.length + ")");
 
@@ -71,21 +74,45 @@ function make_subtopics_table(topics, topicId) {
             for (let index = 0; index < subtopics.length; index++) {
                 var subtopic = subtopics[index];
 
-                let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic.id + "&topic_id=" + topicId + "'"
-                let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
+                let button = '';
+                
+                // Check if content_details exists and has URLs with 'external' status
+                if (subtopic.content_details && subtopic.content_details.length > 0) {
+                    // Loop through the content details to find approved content
+                    for (let i = 0; i < subtopic.content_details.length; i++) {
+                        let content = subtopic.content_details[i];
+
+                        if (content.status === 'external') {
+                            // Create a button for external content (video or document)
+                            button += `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="window.open('${content.url}', '_blank')" >View ${content.url.endsWith('.mp4') ? 'Video' : 'Textbook'}</button>`;
+                        }else {
+                            // Default case: navigate to internal content-details page if no external content exists
+                            let click = `location.href='/subtopic/content-details/?subtopic_id=${subtopic.id}&topic_id=${topicId}'`;
+                            let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
+                            button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >View Content</button>`;
+                        }
+                    }
+                } else {
+                    // Default case: navigate to internal content-details page if no external content exists
+                    let click = `location.href='/subtopic/content-details/?subtopic_id=${subtopic.id}&topic_id=${topicId}'`;
+                    let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
+                    button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >View Content</button>`;
+                }
+
+                //let click = "location.href='/subtopic/content-details/?subtopic_id=" + subtopic.id + "&topic_id=" + topicId + "'"
+                //let onclick = 'onclick="popup(' + subtopic["id"] + ')"'
 
 
-                let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >view content</button>`
+                //let button = `<button class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-xs px-4 md:px-4 py-2 rounded shadow focus:outline-none mr-1 mb-2 mt-2 ease-linear transition-all duration-150 content-view-button" type="button" onclick="${click}" >view content</button>`
 
 
 
                 var subTopicTableData = `<tr id="" class="border-b-2 subtopic hover:bg-gray-100">
                     <td class="text-center text-xl p-2 mobile_hide">${index + 1}</td>
                     <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.name}</td>
-                    <td class="">${button}</td>
-                    <td class="p-2 text-left subtopic-cell" rowspan="1">${subtopic.status}</td>`;
+                    <td class="p-2 text-left">${button}</td>
+                    </tr>`;
                 
-                subTopicTableData += `</tr>`;
                 $("#subtopicsDetails").append(subTopicTableData);
 
 
